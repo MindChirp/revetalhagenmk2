@@ -1,12 +1,13 @@
+import type { PageProps } from ".next/types/app/nyheter/[id]/page";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
 import Image from "next/image";
 
-async function Page({ params }: { params: Promise<{ id: number }> }) {
+async function Page({ params }: PageProps) {
   // Fetch the news article using the ID from params
-  const { id } = await params;
+  const { id } = (await params) as { id: string };
   const data = await api.news.getById({ id: Number(id) });
   return (
     <SlideAnimation
