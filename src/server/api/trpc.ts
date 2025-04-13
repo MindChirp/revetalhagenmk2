@@ -128,3 +128,29 @@ export const memberProcedure = t.procedure
       },
     });
   });
+
+export const adminProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message:
+          "Du er ikke logget inn, og har derfor ikke tilgang til denne dataen",
+      });
+    }
+
+    if (!ctx.session.user.role?.includes("admin")) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Du har ikke tilgang til denne dataen",
+      });
+    }
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  });

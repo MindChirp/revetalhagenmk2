@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { news, user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -59,5 +59,22 @@ export const newsRouter = createTRPCRouter({
         .where(eq(news.id, input.id));
 
       return newsWithAuthor[0];
+    }),
+  create: adminProcedure
+    .input(
+      z.object({
+        title: z.string().min(1, "Tittel er påkrevd"),
+        content: z.string().min(1, "Innhold er påkrevd"),
+        image: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const obj = await ctx.db.insert(news).values({
+        content: input.content,
+        name: input.title,
+        author: ctx.session.user.id,
+      });
+
+      return obj;
     }),
 });

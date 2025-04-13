@@ -11,11 +11,15 @@ import {
 interface BottomDialogProps extends ComponentProps<typeof motion.div> {
   // Add any additional props you need here
   open?: boolean;
+  description?: string;
+  title?: string;
   onOpenChange?: (open: boolean) => void;
 }
 
 function BottomDialog({
   children,
+  title,
+  description,
   open,
   onOpenChange,
   ...props
@@ -71,11 +75,8 @@ function BottomDialog({
             {/* <div className="border-border bg-background h-full w-full rounded-[60px] border-2 p-5"></div> */}
             <Card className="rounded-3xl">
               <CardHeader>
-                <CardTitle>Legg til et område</CardTitle>
-                <CardDescription>
-                  Legg til ulike typer områder til hovedsiden. Disse endringene
-                  vil umiddelbart bli synlige for alle som besøker siden.
-                </CardDescription>
+                <CardTitle>{title}</CardTitle>
+                <CardDescription>{description}</CardDescription>
               </CardHeader>
               <CardContent className="flex max-h-[calc(100vh_-_200px)] flex-col gap-10 overflow-x-hidden overflow-y-auto">
                 {children as ReactNode}

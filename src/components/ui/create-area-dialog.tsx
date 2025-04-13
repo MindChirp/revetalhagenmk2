@@ -12,7 +12,13 @@ function CreateAreaDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   return (
-    <BottomDialog open={open} onOpenChange={onOpenChange}>
+    <BottomDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Legg til et område"
+      description="Legg til ulike typer områder til hovedsiden. Disse endringene
+                  vil umiddelbart bli synlige for alle som besøker siden."
+    >
       <CreateAreaForm>
         {({ canSubmit }) => (
           <CardAction className="flex w-full justify-end gap-2.5">

@@ -5,12 +5,15 @@ import { parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { authClient } from "@/server/auth/client";
+import NewsDialog from "../ui/news-dialog";
+import { useState } from "react";
 
 export enum TimeDirection {
   NEWEST = "nyeste",
   OLDEST = "eldste",
 }
 function NewsFilters() {
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [filters, setFilters] = useQueryStates({
     orderBy: parseAsStringEnum<TimeDirection>(
       Object.values(TimeDirection),
@@ -94,7 +97,11 @@ function NewsFilters() {
       />
       {session?.user?.role === "admin" && (
         <div className="flex w-full justify-end">
-          <Button>
+          <NewsDialog
+            open={createDialogOpen}
+            onOpenChange={setCreateDialogOpen}
+          />
+          <Button onClick={() => setCreateDialogOpen(true)}>
             <PlusIcon /> Opprett
           </Button>
         </div>
