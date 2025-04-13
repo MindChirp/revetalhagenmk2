@@ -2,7 +2,7 @@ import Hero from "@/components/screen/hero";
 import AboutUs from "@/components/ui/about-us";
 import { api, HydrateClient } from "@/trpc/server";
 
-export default async function Home() {
+export default function Home() {
   void api.post.getLatest.prefetch();
 
   return (
