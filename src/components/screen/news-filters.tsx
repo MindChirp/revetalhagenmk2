@@ -1,8 +1,10 @@
+"use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpAZIcon, ArrowUpZAIcon, PlusIcon } from "lucide-react";
 import { parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { authClient } from "@/server/auth/client";
 
 export enum TimeDirection {
   NEWEST = "nyeste",
@@ -15,6 +17,7 @@ function NewsFilters() {
     ).withDefault(TimeDirection.NEWEST),
     q: parseAsString,
   });
+  const { data: session } = authClient.useSession();
   return (
     <div className="flex flex-row gap-5">
       <Button
@@ -89,11 +92,13 @@ function NewsFilters() {
           })
         }
       />
-      <div className="flex w-full justify-end">
-        <Button>
-          <PlusIcon /> Opprett
-        </Button>
-      </div>
+      {session?.user?.role === "admin" && (
+        <div className="flex w-full justify-end">
+          <Button>
+            <PlusIcon /> Opprett
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
