@@ -2,15 +2,18 @@
 
 import { authClient } from "@/server/auth/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarIcon, HomeIcon, Newspaper } from "lucide-react";
+import { CalendarIcon, HomeIcon, Loader, Newspaper } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./button";
 import HeaderNavigationButton from "./header-navigation-button";
 import UserArea from "./user-area";
+import { useState } from "react";
+import SlideAnimation from "./animated/slide-animation";
 
 function Header() {
   const { data: session, isPending } = authClient.useSession();
+  const [signInLoading, setSignInLoading] = useState(false);
 
   return (
     <div className="absolute z-50 flex w-full flex-row items-center justify-between px-10 py-5">
@@ -54,7 +57,26 @@ function Header() {
               }}
             >
               <Link href="/sign-in">
-                <Button>Logg inn</Button>
+                <Button
+                  onClick={() => {
+                    setSignInLoading(true);
+                    setTimeout(() => {
+                      setSignInLoading(false);
+                    }, 2000);
+                  }}
+                  className="min-w-28"
+                >
+                  <AnimatePresence mode="wait">
+                    {signInLoading && (
+                      <SlideAnimation key="loader" direction="left">
+                        <Loader className="animate-spin" />
+                      </SlideAnimation>
+                    )}
+                    {!signInLoading && (
+                      <SlideAnimation key="sign-in">Logg inn</SlideAnimation>
+                    )}
+                  </AnimatePresence>
+                </Button>
               </Link>
             </motion.div>
           )}

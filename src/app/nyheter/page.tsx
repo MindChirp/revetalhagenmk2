@@ -1,6 +1,7 @@
 "use client";
 
 import NewsFilters from "@/components/screen/news-filters";
+import SlideAnimation from "@/components/ui/animated/slide-animation";
 import NewsList from "@/components/ui/news-list";
 import { motion } from "framer-motion";
 
@@ -35,24 +36,14 @@ function Page() {
               duration: 0.5,
             }}
           >
-            <motion.span
-              className="block"
-              initial={{
-                opacity: 0,
-                y: 50,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
+            <SlideAnimation
+              direction="up"
               transition={{
-                delay: 1.25,
-                type: "spring",
-                duration: 0.5,
+                delay: 1.2,
               }}
             >
               nytt
-            </motion.span>
+            </SlideAnimation>
           </motion.div>
           i Revetalhagen?
         </h1>

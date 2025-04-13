@@ -9,7 +9,8 @@ import { useDebounce } from "use-debounce";
 import { Button } from "./button";
 import { AnimatePresence } from "framer-motion";
 import { Loader } from "lucide-react";
-import SlideUp from "./animated/slide-up";
+import SlideAnimation from "./animated/slide-animation";
+import Link from "next/link";
 
 function NewsList() {
   const [filters] = useQueryStates({
@@ -40,43 +41,53 @@ function NewsList() {
       <div className="">
         <AnimatePresence mode="wait">
           {!news?.pages.length && (isFetching || isFetchingNextPage) && (
-            <SlideUp className="flex h-[300px] items-center justify-center">
+            <SlideAnimation
+              className="flex h-[300px] items-center justify-center"
+              direction="up"
+            >
               <Loader key="loader" className="animate-spin" />
-            </SlideUp>
+            </SlideAnimation>
           )}
 
           {!news?.pages.flatMap((i) => i.news).length &&
             !(isFetching || isFetchingNextPage) && (
-              <SlideUp
+              <SlideAnimation
+                direction="up"
                 key="empty"
                 className="flex h-[300px] items-center justify-center"
               >
                 Ingen nyheter funnet
-              </SlideUp>
+              </SlideAnimation>
             )}
           {news?.pages && (
-            <SlideUp
+            <SlideAnimation
+              direction="up"
               className="grid grid-cols-1 gap-2.5 md:grid-cols-3"
               key="news-list"
             >
               {news?.pages.flatMap((page) => {
                 return page.news.map((article) => (
-                  <Card key={article.id + "nyhet"}>
-                    <CardHeader>
-                      <CardTitle>{article.name}</CardTitle>
-                      <CardDescription className="line-clamp-3">
-                        {article.content}
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
+                  <Link
+                    href={`/nyheter/${article.id}`}
+                    key={article.id + "nyhet"}
+                  >
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>{article.name}</CardTitle>
+                        <CardDescription className="line-clamp-3">
+                          {article.content}
+                        </CardDescription>
+                      </CardHeader>
+                    </Card>
+                  </Link>
                 ));
               })}
-            </SlideUp>
+            </SlideAnimation>
           )}
         </AnimatePresence>
       </div>
       <Button
-        className="w-fit"
+        className="w-fit min-w-60"
         disabled={!hasNextPage && !isFetchingNextPage && !isFetching}
         onClick={() => fetchNextPage()}
       >

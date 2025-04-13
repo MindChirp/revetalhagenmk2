@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { news, user } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 export const newsRouter = createTRPCRouter({
   getAllInfinite: publicProcedure
@@ -32,5 +34,30 @@ export const newsRouter = createTRPCRouter({
             : undefined,
         news: items,
       };
+    }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const newsWithAuthor = await ctx.db
+        .select()
+        .from(news)
+        .leftJoin(user, eq(news.author, user.id))
+        .where(eq(news.id, input.id));
+
+      if (!newsWithAuthor) {
+        throw new Error("News not found");
+      }
+
+      // Update view count
+      await ctx.db
+        .update(news)
+        .set({ views: (newsWithAuthor[0]?.news.views ?? 0) + 1 })
+        .where(eq(news.id, input.id));
+
+      return newsWithAuthor[0];
     }),
 });

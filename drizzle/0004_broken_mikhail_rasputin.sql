@@ -1,0 +1,1 @@
+ALTER TABLE "revetalhagenmk2_news" ADD COLUMN "views" integer DEFAULT 0;

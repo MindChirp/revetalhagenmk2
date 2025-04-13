@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpAZIcon, ArrowUpZAIcon } from "lucide-react";
+import { ArrowUpAZIcon, ArrowUpZAIcon, PlusIcon } from "lucide-react";
 import { parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -89,6 +89,11 @@ function NewsFilters() {
           })
         }
       />
+      <div className="flex w-full justify-end">
+        <Button>
+          <PlusIcon /> Opprett
+        </Button>
+      </div>
     </div>
   );
 }

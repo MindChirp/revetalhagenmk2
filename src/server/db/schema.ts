@@ -36,10 +36,8 @@ export const news = createTable("news", (d) => ({
     .notNull(),
   updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
   content: d.text().notNull(),
-  author: d
-    .text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "set null" }),
+  author: d.text().references(() => user.id, { onDelete: "set null" }),
+  views: d.integer().default(0),
 }));
 
 export * from "./auth-schema";
