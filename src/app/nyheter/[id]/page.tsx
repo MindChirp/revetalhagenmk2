@@ -1,13 +1,13 @@
 import SlideAnimation from "@/components/ui/animated/slide-animation";
-import TextHighlight from "@/components/ui/text-highlight";
+import { api } from "@/trpc/server";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
-import { api } from "@/trpc/server";
 import Image from "next/image";
 
-async function Page({ params }: { params: { id: number } }) {
+async function Page({ params }: { params: Promise<{ id: number }> }) {
   // Fetch the news article using the ID from params
-  const data = await api.news.getById({ id: Number(params.id) });
+  const { id } = await params;
+  const data = await api.news.getById({ id: Number(id) });
   return (
     <SlideAnimation
       className="flex flex-col gap-5 px-10 pt-32 pb-10"
