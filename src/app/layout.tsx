@@ -7,6 +7,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import Header from "@/components/ui/header";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense } from "react";
+import "@schedule-x/theme-shadcn/dist/index.css";
 
 export const metadata: Metadata = {
   title: "Revetalhagen",

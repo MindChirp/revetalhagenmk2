@@ -124,3 +124,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.sx-react-calendar-wrapper {
+  height: auto;
+  width: 90%;
+}
