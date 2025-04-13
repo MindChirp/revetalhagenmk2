@@ -107,11 +107,10 @@ function AboutGrid({ mirrored }: { mirrored?: boolean }) {
             <Card className="bg-accent h-full w-full border-none shadow-none">
               <CardContent>
                 <p>
-                  Skibidi Lorem ipsum dolor sit amet consectetur adipisicing
-                  elit. Rem deserunt repellendus nostrum at, corporis natus
-                  eligendi, odit iure, aperiam modi delectus fugiat laborum
-                  laboriosam totam sapiente consequuntur voluptates et
-                  assumenda.
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
+                  deserunt repellendus nostrum at, corporis natus eligendi, odit
+                  iure, aperiam modi delectus fugiat laborum laboriosam totam
+                  sapiente consequuntur voluptates et assumenda.
                 </p>
               </CardContent>
             </Card>

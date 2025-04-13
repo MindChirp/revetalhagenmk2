@@ -15,6 +15,13 @@
       "when": 1744319095410,
       "tag": "0001_military_the_hood",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1744566249798,
+      "tag": "0002_spicy_katie_power",
+      "breakpoints": true
     }
   ]
 }

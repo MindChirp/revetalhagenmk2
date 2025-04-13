@@ -2,7 +2,7 @@
 
 import { authClient } from "@/server/auth/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarIcon, HomeIcon } from "lucide-react";
+import { CalendarIcon, HomeIcon, Newspaper } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./button";
@@ -30,6 +30,9 @@ function Header() {
         </HeaderNavigationButton>
         <HeaderNavigationButton icon={<CalendarIcon />} href="/arrangementer">
           Arrangementer
+        </HeaderNavigationButton>
+        <HeaderNavigationButton icon={<Newspaper />} href="/nyheter">
+          Nyheter
         </HeaderNavigationButton>
       </div>
       <div className="absolute top-1/2 right-10 w-fit -translate-y-1/2">
