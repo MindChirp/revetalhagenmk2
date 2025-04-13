@@ -1,9 +1,11 @@
 import Hero from "@/components/screen/hero";
 import AboutUs from "@/components/ui/about-us";
-import { api, HydrateClient } from "@/trpc/server";
+import { HydrateClient } from "@/trpc/server";
 
 export default function Home() {
-  void api.post.getLatest.prefetch();
+  // if (typeof window === "undefined") {
+  //   void api.post.getLatest.prefetch();
+  // }
 
   return (
     <HydrateClient>
