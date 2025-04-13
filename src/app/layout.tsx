@@ -6,6 +6,7 @@ import { Poppins } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/react";
 import Header from "@/components/ui/header";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Revetalhagen",
@@ -28,7 +29,7 @@ export default function RootLayout({
         <NuqsAdapter>
           <TRPCReactProvider>
             <Header />
-            {children}
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
           </TRPCReactProvider>
         </NuqsAdapter>
       </body>

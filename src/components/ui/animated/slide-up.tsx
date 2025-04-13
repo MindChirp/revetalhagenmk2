@@ -25,10 +25,7 @@ function SlideUp({
         duration: 0.2,
       }}
       {...props}
-      className={cn(
-        "col-span-3 flex h-[300px] items-center justify-center",
-        className,
-      )}
+      className={cn("", className)}
     >
       {children}
     </motion.div>

@@ -2,19 +2,9 @@
 
 import NewsFilters from "@/components/screen/news-filters";
 import NewsList from "@/components/ui/news-list";
-import { api } from "@/trpc/react";
 import { motion } from "framer-motion";
 
 function Page() {
-  const { data: news } = api.news.getAllInfinite.useInfiniteQuery(
-    {
-      limit: 10,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
-  );
-
   return (
     <div className="flex flex-col gap-2.5 px-10 pt-36">
       <motion.div

@@ -40,31 +40,24 @@ function NewsList() {
       <div className="">
         <AnimatePresence mode="wait">
           {!news?.pages.length && (isFetching || isFetchingNextPage) && (
-            <SlideUp>
+            <SlideUp className="flex h-[300px] items-center justify-center">
               <Loader key="loader" className="animate-spin" />
             </SlideUp>
           )}
 
           {!news?.pages.flatMap((i) => i.news).length &&
             !(isFetching || isFetchingNextPage) && (
-              <SlideUp key="empty">Ingen nyheter funnet</SlideUp>
+              <SlideUp
+                key="empty"
+                className="flex h-[300px] items-center justify-center"
+              >
+                Ingen nyheter funnet
+              </SlideUp>
             )}
           {news?.pages && (
-            <motion.div
+            <SlideUp
               className="grid grid-cols-1 gap-2.5 md:grid-cols-3"
-              key={"news-list"}
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              exit={{
-                opacity: 0,
-                y: 20,
-              }}
+              key="news-list"
             >
               {news?.pages.flatMap((page) => {
                 return page.news.map((article) => (
@@ -78,7 +71,7 @@ function NewsList() {
                   </Card>
                 ));
               })}
-            </motion.div>
+            </SlideUp>
           )}
         </AnimatePresence>
       </div>
