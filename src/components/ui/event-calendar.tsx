@@ -59,14 +59,17 @@ function EventCalendar() {
             initial={{
               opacity: 0,
               height: 0,
+              marginBottom: 0,
             }}
             animate={{
               opacity: 1,
               height: "auto",
+              marginBottom: 10,
             }}
             exit={{
               opacity: 0,
               height: 0,
+              marginBottom: 0,
             }}
           >
             <Loader className="animate-spin" />
