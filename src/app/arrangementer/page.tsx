@@ -29,7 +29,9 @@ async function Page() {
       </h1>
       <div className="relative flex w-full flex-0 flex-col items-center gap-2.5 pb-10">
         <CreateNews />
-        <EventCalendar />
+        <div className="flex w-full flex-col items-center justify-center">
+          <EventCalendar />
+        </div>
       </div>
     </div>
   );

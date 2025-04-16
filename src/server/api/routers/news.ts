@@ -66,6 +66,7 @@ export const newsRouter = createTRPCRouter({
         title: z.string().min(1, "Tittel er påkrevd"),
         content: z.string().min(1, "Innhold er påkrevd"),
         image: z.string().optional(),
+        preview: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -73,6 +74,7 @@ export const newsRouter = createTRPCRouter({
         content: input.content,
         name: input.title,
         author: ctx.session.user.id,
+        preview: input.preview,
       });
 
       return obj;

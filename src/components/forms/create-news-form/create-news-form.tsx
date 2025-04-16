@@ -2,16 +2,18 @@
 
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useQuill } from "react-quilljs";
 import { z } from "zod";
+import "quill/dist/quill.snow.css";
 
 const formSchema = z.object({
   title: z.string().min(1, "Tittel er påkrevd"),
   content: z.string().min(1, "Innhold er påkrevd"),
   image: z.string().optional(),
+  preview: z.string().optional(),
 });
 type ChildType = {
   canSubmit: boolean;
@@ -30,6 +32,13 @@ function CreateNewsForm({ children, onSubmit }: CreateNewsFormProps) {
     },
   });
 
+  const { quill, quillRef, editor } = useQuill();
+
+  editor?.on("text-change", () => {
+    form.setValue("content", quill?.getSemanticHTML() ?? "");
+    console.log(quill?.getText(0, 100));
+    form.setValue("preview", editor.getText(0, 100));
+  });
   return (
     <div>
       <Form {...form}>
@@ -48,7 +57,9 @@ function CreateNewsForm({ children, onSubmit }: CreateNewsFormProps) {
             name="content"
             control={form.control}
             render={({ field }) => (
-              <Textarea placeholder="Innhold" {...field} />
+              <div className="flex flex-col">
+                <div ref={quillRef} />
+              </div>
             )}
           />
           {children?.({

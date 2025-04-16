@@ -5,6 +5,8 @@ import { format } from "date-fns";
 import { nb } from "date-fns/locale";
 import Image from "next/image";
 
+import "quill/dist/quill.snow.css";
+
 async function Page({ params }: PageProps) {
   // Fetch the news article using the ID from params
   const { id } = (await params) as { id: string };
@@ -68,7 +70,6 @@ async function Page({ params }: PageProps) {
                 <div>
                   <h3 className="font-semibold">Opprettet </h3>
                   <h4>
-                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
                     {format(data.news.createdAt, "do LLL yyy", {
                       locale: nb,
                     })}
@@ -79,7 +80,6 @@ async function Page({ params }: PageProps) {
                 <div>
                   <h3 className="font-semibold">Oppdatert</h3>
                   <h4>
-                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
                     {format(data.news.createdAt, "do LLL yyy", {
                       locale: nb,
                     })}
@@ -98,8 +98,11 @@ async function Page({ params }: PageProps) {
       </div>
 
       <SlideAnimation>
-        <div className="bg-accent rounded-[60px] p-10">
-          {data?.news.content}
+        <div
+          className="bg-accent rounded-[60px] p-10"
+          dangerouslySetInnerHTML={{ __html: data?.news.content ?? "" }}
+        >
+          {/* {data?.news.content} */}
         </div>
       </SlideAnimation>
     </SlideAnimation>

@@ -6,6 +6,7 @@ import { Button } from "./button";
 import { PlusIcon } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
+import { useQuill } from "react-quilljs";
 
 function CreateNews() {
   const { data: session } = authClient.useSession();

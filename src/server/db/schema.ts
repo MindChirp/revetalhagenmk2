@@ -4,6 +4,7 @@
 import { sql } from "drizzle-orm";
 import { index, pgTableCreator } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
+import { start } from "repl";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -27,6 +28,22 @@ export const posts = createTable(
   (t) => [index("name_idx").on(t.name)],
 );
 
+export const event = createTable("event", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  title: d.varchar({ length: 256 }),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  description: d.text(),
+  author: d.text().references(() => user.id, { onDelete: "set null" }),
+  start: d.timestamp({ withTimezone: true }).notNull(),
+  end: d.timestamp({ withTimezone: true }).notNull(),
+  location: d.text(),
+  image: d.text(),
+}));
+
 export const news = createTable("news", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
   name: d.varchar({ length: 256 }),
@@ -38,6 +55,7 @@ export const news = createTable("news", (d) => ({
   content: d.text().notNull(),
   author: d.text().references(() => user.id, { onDelete: "set null" }),
   views: d.integer().default(0),
+  preview: d.text(),
 }));
 
 export * from "./auth-schema";

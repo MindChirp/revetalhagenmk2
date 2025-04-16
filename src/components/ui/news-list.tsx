@@ -75,7 +75,7 @@ function NewsList() {
                       <CardHeader>
                         <CardTitle>{article.name}</CardTitle>
                         <CardDescription className="line-clamp-3">
-                          {article.content}
+                          {article.preview}
                         </CardDescription>
                       </CardHeader>
                     </Card>
