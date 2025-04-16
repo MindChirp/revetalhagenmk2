@@ -7,14 +7,14 @@ import {
   createViewWeek,
 } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react";
-import { format } from "date-fns";
+import { endOfWeek, format, startOfWeek } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 
 function EventCalendar() {
-  const [from, setFrom] = useState(new Date());
-  const [to, setTo] = useState(new Date());
+  const [from, setFrom] = useState(startOfWeek(new Date()));
+  const [to, setTo] = useState(endOfWeek(new Date()));
   const { data: events, isPending } = api.events.getEvents.useQuery({
     from: from,
     to: to,
