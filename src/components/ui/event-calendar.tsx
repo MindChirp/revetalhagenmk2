@@ -51,34 +51,7 @@ function EventCalendar() {
     theme: "shadcn",
   });
 
-  return (
-    <>
-      <AnimatePresence>
-        {isPending && (
-          <motion.div
-            initial={{
-              opacity: 0,
-              height: 0,
-              marginBottom: 0,
-            }}
-            animate={{
-              opacity: 1,
-              height: "auto",
-              marginBottom: 10,
-            }}
-            exit={{
-              opacity: 0,
-              height: 0,
-              marginBottom: 0,
-            }}
-          >
-            <Loader className="animate-spin" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {true && <ScheduleXCalendar calendarApp={calendar} />}
-    </>
-  );
+  return <ScheduleXCalendar calendarApp={calendar} />;
 }
 
 export default EventCalendar;

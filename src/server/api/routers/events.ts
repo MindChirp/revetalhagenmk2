@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
+import { event } from "@/server/db/schema";
 
 export const eventsRouter = createTRPCRouter({
   getEvents: publicProcedure
@@ -25,8 +26,32 @@ export const eventsRouter = createTRPCRouter({
         limit: input.limit ?? 50,
       });
 
-      console.log(input.from, input.to, events.length);
-
       return events;
+    }),
+
+  createEvent: adminProcedure
+    .input(
+      z.object({
+        title: z.string().min(1),
+        content: z.string().min(1),
+        start: z.date(),
+        end: z.date(),
+        image: z.string().optional(),
+        location: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const created = await ctx.db.insert(event).values({
+        title: input.title,
+        end: input.end,
+        start: input.start,
+        author: ctx.session.user.id,
+        updatedAt: new Date(),
+        location: input.location,
+        image: input.image,
+        description: input.content,
+      });
+
+      return created;
     }),
 });

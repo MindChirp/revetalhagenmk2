@@ -1,5 +1,5 @@
 import SlideAnimation from "@/components/ui/animated/slide-animation";
-import CreateNews from "@/components/ui/create-news";
+import CreateEvent from "@/components/ui/create-event";
 import EventCalendar from "@/components/ui/event-calendar";
 
 async function Page() {
@@ -28,7 +28,7 @@ async function Page() {
         i Revetalhagen?
       </h1>
       <div className="relative flex w-full flex-0 flex-col items-center gap-2.5 pb-10">
-        <CreateNews />
+        <CreateEvent />
         <div className="flex w-full flex-col items-center justify-center">
           <EventCalendar />
         </div>
