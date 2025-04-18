@@ -37,8 +37,8 @@ function CreateEventForm({ children, onSubmit }: CreateEventFormProps) {
     defaultValues: {
       title: "",
       content: "",
-      start: undefined,
-      end: undefined,
+      start: new Date(),
+      end: new Date(),
       image: "",
       location: "",
     },
@@ -99,6 +99,16 @@ function CreateEventForm({ children, onSubmit }: CreateEventFormProps) {
               )}
             />
           </div>
+          <FormField
+            name="location"
+            control={form.control}
+            render={({ field }) => (
+              <div className="flex w-full flex-col gap-1">
+                <Label>Sted</Label>
+                <Input {...field} placeholder="Revetal..." />
+              </div>
+            )}
+          />
           {children?.({
             canSubmit: form.formState.isValid && form.formState.isDirty,
           })}
