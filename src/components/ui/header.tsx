@@ -25,11 +25,13 @@ import {
 } from "./sheet";
 import { cn } from "@/lib/utils";
 import SignInCard from "./sign-in-card";
+import { usePathname } from "next/navigation";
 
 function Header() {
   const { data: session, isPending } = authClient.useSession();
   const [signInLoading, setSignInLoading] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const path = usePathname();
 
   return (
     <div className="absolute z-50 flex w-full flex-row items-center justify-between px-5 py-5 md:px-10">
@@ -114,7 +116,7 @@ function Header() {
                 y: 10,
               }}
             >
-              <Link href="/sign-in">
+              <Link href={`/sign-in?redirect=${encodeURI(path)}`}>
                 <Button
                   onClick={() => {
                     setSignInLoading(true);

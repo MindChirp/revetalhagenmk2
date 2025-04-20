@@ -12,13 +12,13 @@ import { AnimatePresence } from "framer-motion";
 import { authClient } from "@/server/auth/client";
 import { Loader } from "lucide-react";
 
-function SignInCard() {
+function SignInCard({ signinRedirect }: { signinRedirect?: string }) {
   const [googleLoading, setGoogleLoading] = useState(false);
   const googleSignIn = async () => {
     setGoogleLoading(true);
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL: signinRedirect ?? "/",
     });
     // setGoogleLoading(false);
   };
