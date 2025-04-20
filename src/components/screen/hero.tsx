@@ -7,10 +7,10 @@ import React from "react";
 
 function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
   return (
-    <>
+    <div className="flex min-h-screen w-full items-center">
       <div
         className={cn(
-          "flex min-h-screen w-full grid-cols-[min-content_1fr] grid-rows-[min-content_min-content_1fr] flex-col justify-start gap-10 md:grid",
+          "flex w-full grid-cols-[min-content_1fr] grid-rows-[min-content_min-content_1fr] flex-col justify-start gap-10 md:grid md:justify-center",
           className,
         )}
         {...props}
@@ -103,17 +103,17 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
             width={500}
           />
         </button>
-        <button
-          className="border-secondary text-foreground hover:bg-secondary/30 bg-background absolute bottom-5 left-1/2 flex -translate-x-1/2 animate-bounce cursor-pointer flex-row items-center gap-2.5 rounded-full border-2 p-5 transition-colors"
-          onClick={() =>
-            window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
-          }
-        >
-          <ArrowDown />
-          <p>Bla ned</p>
-        </button>
       </div>
-    </>
+      <button
+        className="border-secondary text-foreground hover:bg-secondary/30 bg-background absolute bottom-5 left-1/2 flex -translate-x-1/2 animate-bounce cursor-pointer flex-row items-center gap-2.5 rounded-full border-2 p-5 transition-colors"
+        onClick={() =>
+          window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
+        }
+      >
+        <ArrowDown />
+        <p>Bla ned</p>
+      </button>
+    </div>
   );
 }
 

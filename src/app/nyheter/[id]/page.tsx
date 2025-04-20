@@ -13,7 +13,7 @@ async function Page({ params }: PageProps) {
   const data = await api.news.getById({ id: Number(id) });
   return (
     <SlideAnimation
-      className="flex flex-col gap-5 px-10 pt-32 pb-10"
+      className="flex flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-32"
       direction="up"
       transition={{
         delay: 0.2,
@@ -29,11 +29,11 @@ async function Page({ params }: PageProps) {
           duration: 0.3,
         }}
       >
-        <h1 className="text-foreground flex flex-row gap-5 pl-10 text-6xl leading-20">
+        <h1 className="text-foreground flex w-full flex-row gap-5 text-4xl leading-12 md:pl-10 md:text-6xl md:leading-20">
           {data?.news.name}
         </h1>
       </SlideAnimation>
-      <div className="flex h-96 w-full flex-row gap-5">
+      <div className="flex h-fit w-full flex-col gap-5 md:h-96 md:flex-row">
         <SlideAnimation
           className="h-full w-full"
           transition={{
@@ -54,14 +54,14 @@ async function Page({ params }: PageProps) {
         </SlideAnimation>
         <SlideAnimation
           direction="up"
-          className="w-96"
+          className="h-fit w-full md:w-96"
           transition={{
             delay: 0.4,
             duration: 0.5,
           }}
         >
-          <div className="flex h-full flex-col gap-5">
-            <div className="bg-secondary flex h-full w-full flex-col gap-2.5 rounded-[60px] px-10 pt-10">
+          <div className="flex w-full flex-col gap-5 md:h-full">
+            <div className="bg-secondary flex h-fit w-full flex-col gap-2.5 rounded-[60px] p-10 md:h-full">
               <div>
                 <h3 className="font-semibold">Skrevet av</h3>
                 <h4>{data?.user?.name}</h4>

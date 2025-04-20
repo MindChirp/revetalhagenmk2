@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <HydrateClient>
       <div className="min-h-full w-full">
-        <Hero className="bg-red relative z-10 pt-32" />
+        <Hero className="relative z-10" />
         <AboutUs />
       </div>
     </HydrateClient>
