@@ -5,19 +5,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Loader, PlusIcon, XIcon } from "lucide-react";
 import { Button } from "./button";
 import BottomDialog from "./bottom-dialog";
-import { useState } from "react";
+import { useState, type HTMLAttributes } from "react";
 import CreateEventForm from "../forms/create-event-form";
 import { CardAction } from "./card";
 import { api } from "@/trpc/react";
 
-function CreateEvent() {
+function CreateEvent({ ...props }: HTMLAttributes<HTMLDivElement>) {
   const { data: session } = authClient.useSession();
   const [open, setOpen] = useState(false);
-  const { mutate } = api.events.createEvent.useMutation();
 
   const { mutateAsync, isPending } = api.events.createEvent.useMutation();
   return (
-    <div>
+    <div {...props}>
       <AnimatePresence initial={false}>
         {session?.user.role === "admin" && (
           <motion.div

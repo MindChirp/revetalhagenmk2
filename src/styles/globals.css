@@ -127,5 +127,10 @@
 
 .sx-react-calendar-wrapper {
   height: auto;
-  width: 90%;
+  width: 100%;
+}
+
+.sx__calendar {
+  border-radius: 24px !important;
+  padding: 24px !important;
 }

@@ -46,7 +46,6 @@ function BottomDialog({
             exit={{
               opacity: 0,
             }}
-            transition={{}}
           />
         )}
       </AnimatePresence>
@@ -54,7 +53,7 @@ function BottomDialog({
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed bottom-10 left-1/2 z-50 w-full -translate-x-1/2 px-10"
+            className="fixed bottom-10 left-1/2 z-50 w-full -translate-x-1/2 px-5 md:px-10"
             initial={{
               y: "100%",
               opacity: 0,

@@ -5,17 +5,16 @@ import {
   createViewMonthAgenda,
   createViewMonthGrid,
   createViewWeek,
+  viewMonthGrid,
 } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react";
 import { endOfWeek, format, startOfWeek } from "date-fns";
-import { AnimatePresence, motion } from "framer-motion";
-import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 
 function EventCalendar() {
   const [from, setFrom] = useState(startOfWeek(new Date()));
   const [to, setTo] = useState(endOfWeek(new Date()));
-  const { data: events, isPending } = api.events.getEvents.useQuery({
+  const { data: events } = api.events.getEvents.useQuery({
     from: from,
     to: to,
   });
@@ -41,6 +40,7 @@ function EventCalendar() {
       createViewMonthAgenda(),
       createViewMonthGrid(),
     ],
+    defaultView: viewMonthGrid.name,
     callbacks: {
       onRangeUpdate: (range) => {
         setFrom(new Date(range.start));

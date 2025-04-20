@@ -25,7 +25,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${poppins.variable} min-h-screen`}>
+    <html lang="en" className={`${poppins.variable} min-h-screen max-w-screen`}>
       <body>
         <NuqsAdapter>
           <TRPCReactProvider>

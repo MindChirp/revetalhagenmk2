@@ -5,7 +5,20 @@ import TextHighlight from "./text-highlight";
 import { Card, CardContent } from "./card";
 import { cn } from "@/lib/utils";
 
-function AboutGrid({ mirrored }: { mirrored?: boolean }) {
+interface AboutGridProps {
+  mirrored?: boolean;
+  imageTitle: string;
+  title: string;
+  titleHighlightIndex?: number;
+  description: string;
+}
+function AboutGrid({
+  mirrored,
+  imageTitle,
+  title,
+  titleHighlightIndex,
+  description,
+}: AboutGridProps) {
   const ref = useRef(null);
   const inView = useInView(ref, {
     margin: "-40%",
@@ -22,8 +35,8 @@ function AboutGrid({ mirrored }: { mirrored?: boolean }) {
     <section ref={ref}>
       <motion.div
         className={cn(
-          "flex gap-10",
-          mirrored ? "flex-row-reverse" : "flex-row",
+          "mx-auto flex flex-col items-center gap-0 md:w-3/4 md:flex-row md:items-start md:gap-10",
+          mirrored ? "md:flex-row-reverse" : "md:flex-row",
         )}
         variants={{
           hidden: {
@@ -42,28 +55,28 @@ function AboutGrid({ mirrored }: { mirrored?: boolean }) {
         initial="hidden"
         animate={controls}
       >
-        <div className="relative aspect-[3/4] w-96 rounded-[60px]">
+        <div className="relative aspect-[3/4] w-3/4 rounded-[60px] md:w-96">
           <div
             className={cn(
-              "bg-background absolute top-0 pb-10",
+              "bg-background absolute top-0 pb-5 md:pb-10",
               mirrored
-                ? "right-0 rounded-bl-[60px] pl-10"
-                : "left-0 rounded-br-[60px] pr-10",
+                ? "right-0 rounded-bl-3xl pl-5 md:rounded-bl-[60px] md:pl-10"
+                : "left-0 rounded-br-3xl pr-5 md:rounded-br-[60px] md:pr-10",
             )}
           >
-            <p className="text-3xl">Levende miljø</p>
+            <p className="text-3xl">{imageTitle}</p>
           </div>
           <Image
             src="/images/skur_revetalhagen.jpg"
-            className="h-full w-full rounded-[60px] object-cover"
+            className="h-full w-full rounded-[60px] object-cover md:min-w-92"
             alt="Hagen"
             height={500}
             width={500}
           />
         </div>
-        <div className="flex w-min flex-col gap-10">
+        <div className="flex w-full flex-col items-center gap-5 md:gap-10">
           <motion.div
-            className="w-fit pt-10"
+            className="w-full pt-10"
             initial="hidden"
             animate={controls}
             variants={{
@@ -81,12 +94,21 @@ function AboutGrid({ mirrored }: { mirrored?: boolean }) {
               delay: 0.5,
             }}
           >
-            <h2 className="w-lg text-2xl">
-              Revetalhagen har et <TextHighlight>levende</TextHighlight> miljø
+            <h2 className="w-full max-w-full text-2xl text-wrap break-normal md:w-lg">
+              {title.split(" ").map((word, index) => {
+                if (index === titleHighlightIndex) {
+                  return (
+                    <span key={index + "highlight" + word}>
+                      <TextHighlight>{word}</TextHighlight>{" "}
+                    </span>
+                  );
+                }
+                return <span key={"word-" + index}>{word} </span>;
+              })}
             </h2>
           </motion.div>
           <motion.div
-            className="w-full"
+            className="w-full md:w-full"
             initial="hidden"
             animate={controls}
             variants={{
@@ -106,12 +128,7 @@ function AboutGrid({ mirrored }: { mirrored?: boolean }) {
           >
             <Card className="bg-accent h-full w-full border-none shadow-none">
               <CardContent>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem
-                  deserunt repellendus nostrum at, corporis natus eligendi, odit
-                  iure, aperiam modi delectus fugiat laborum laboriosam totam
-                  sapiente consequuntur voluptates et assumenda.
-                </p>
+                <p>{description}</p>
               </CardContent>
             </Card>
           </motion.div>
