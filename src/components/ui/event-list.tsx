@@ -7,6 +7,7 @@ import { Loader } from "lucide-react";
 import { useMemo, type ComponentProps } from "react";
 import { Card, CardDescription, CardHeader, CardTitle } from "./card";
 import SlideAnimation from "./animated/slide-animation";
+import Link from "next/link";
 
 function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
   const dateToday = useMemo(() => new Date(), []);
@@ -44,22 +45,24 @@ function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
           }}
         >
           {data?.map((event) => (
-            <Card key={event.id}>
-              <CardHeader>
-                <CardTitle>{event.title}</CardTitle>
-                <CardDescription>
-                  <div className="flex flex-col gap-2">
-                    <span className="line-clamp-3">
-                      {event.description ?? "Ingen beskrivelse tilgjengelig"}
-                    </span>
-                    <div>
-                      {format(event.start, "dd.MM.yyyy")} -{" "}
-                      {format(event.end, "dd.MM.yyyy")}
+            <Link key={event.id + "event"} href={`/arrangementer/${event.id}`}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{event.title}</CardTitle>
+                  <CardDescription>
+                    <div className="flex flex-col gap-2">
+                      <span className="line-clamp-3">
+                        {event.description ?? "Ingen beskrivelse tilgjengelig"}
+                      </span>
+                      <div>
+                        {format(event.start, "dd.MM.yyyy")} -{" "}
+                        {format(event.end, "dd.MM.yyyy")}
+                      </div>
                     </div>
-                  </div>
-                </CardDescription>
-              </CardHeader>
-            </Card>
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
           ))}
         </motion.div>
       )}

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
-import { event } from "@/server/db/schema";
+import { event, user } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 export const eventsRouter = createTRPCRouter({
   getEvents: publicProcedure
@@ -53,5 +54,19 @@ export const eventsRouter = createTRPCRouter({
       });
 
       return created;
+    }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const eventWithAuthor = await ctx.db
+        .select()
+        .from(event)
+        .leftJoin(user, eq(event.author, user.id))
+        .where(eq(event.id, input.id));
+      return eventWithAuthor?.[0];
     }),
 });
