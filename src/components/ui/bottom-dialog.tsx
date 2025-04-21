@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./card";
+import { createPortal } from "react-dom";
 
 interface BottomDialogProps extends ComponentProps<typeof motion.div> {
   // Add any additional props you need here
@@ -29,14 +30,14 @@ function BottomDialog({
     else document.body.style.overflow = "auto";
   }, [open]);
 
-  return (
+  return createPortal(
     <>
       <AnimatePresence>
         {open && (
           <motion.div
             {...props}
             onClick={() => onOpenChange?.(false)}
-            className="fixed top-0 left-0 z-50 h-full w-full bg-black/50"
+            className="fixed top-0 left-0 z-50 h-full w-full rounded-3xl bg-black/50"
             initial={{
               opacity: 0,
             }}
@@ -84,7 +85,8 @@ function BottomDialog({
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </>,
+    document.body,
   );
 }
 

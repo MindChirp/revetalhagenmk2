@@ -10,6 +10,7 @@ import { z } from "zod";
 import { DateTimePicker } from "../ui/date-time-picker";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
+import type { event } from "@/server/db/schema";
 
 const formSchema = z.object({
   title: z.string().min(1, "Tittel er påkrevd"),
@@ -29,18 +30,23 @@ type ChildType = {
 interface CreateEventFormProps {
   children?: (props: ChildType) => React.ReactNode;
   onSubmit?: (data: z.infer<typeof formSchema>) => void;
+  defaultValues?: typeof event.$inferSelect;
 }
 
-function CreateEventForm({ children, onSubmit }: CreateEventFormProps) {
+function CreateEventForm({
+  defaultValues,
+  children,
+  onSubmit,
+}: CreateEventFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      start: new Date(),
-      end: new Date(),
-      image: "",
-      location: "",
+      title: defaultValues?.title ?? "",
+      content: defaultValues?.description ?? "",
+      start: defaultValues?.start ?? new Date(),
+      end: defaultValues?.end ?? new Date(),
+      image: defaultValues?.image ?? "",
+      location: defaultValues?.location ?? "",
     },
   });
 

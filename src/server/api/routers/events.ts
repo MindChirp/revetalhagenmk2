@@ -69,4 +69,42 @@ export const eventsRouter = createTRPCRouter({
         .where(eq(event.id, input.id));
       return eventWithAuthor?.[0];
     }),
+  updateEvent: adminProcedure
+    .input(
+      z.object({
+        title: z.string().min(1),
+        id: z.number(),
+        content: z.string().min(1),
+        start: z.date(),
+        end: z.date(),
+        image: z.string().optional(),
+        location: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const updated = await ctx.db
+        .update(event)
+        .set({
+          title: input.title,
+          end: input.end,
+          start: input.start,
+          updatedAt: new Date(),
+          location: input.location,
+          image: input.image,
+          description: input.content,
+        })
+        .where(eq(event.id, input.id));
+
+      return updated;
+    }),
+  deleteEvent: adminProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.delete(event).where(eq(event.id, input.id));
+      return { success: true };
+    }),
 });

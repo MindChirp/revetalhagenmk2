@@ -1,8 +1,13 @@
+"use server";
 import type { PageProps } from ".next/types/app/arrangementer/[id]/page";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
+import EventContextMenu from "@/components/ui/event-context-menu";
+import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import "quill/dist/quill.snow.css";
 
@@ -10,6 +15,14 @@ async function Page({ params }: PageProps) {
   // Fetch the news article using the ID from params
   const { id } = (await params) as { id: string };
   const data = await api.events.getById({ id: Number(id) });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!data) {
+    // Redirect to 404
+    redirect("/404");
+  }
   return (
     <SlideAnimation
       className="flex flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-32"
@@ -23,14 +36,18 @@ async function Page({ params }: PageProps) {
     >
       <SlideAnimation
         direction="up"
+        className="flex flex-row items-center gap-5"
         transition={{
           delay: 0.6,
           duration: 0.3,
         }}
       >
-        <h1 className="text-foreground flex w-full flex-row gap-5 text-4xl leading-12 md:pl-10 md:text-6xl md:leading-20">
+        <h1 className="text-foreground flex w-fit flex-row gap-5 text-4xl leading-12 md:pl-10 md:text-6xl md:leading-20">
           {data?.event.title}
         </h1>
+        {session?.user.role === "admin" && (
+          <EventContextMenu event={data?.event} />
+        )}
       </SlideAnimation>
       <div className="flex h-fit w-full flex-col gap-5 md:h-96 md:flex-row">
         <SlideAnimation

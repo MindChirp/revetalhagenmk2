@@ -1,5 +1,5 @@
 import SlideAnimation from "@/components/ui/animated/slide-animation";
-import CreateEvent from "@/components/ui/create-event";
+import EventDialog from "@/components/ui/event-dialog";
 import EventCalendar from "@/components/ui/event-calendar";
 import EventList from "@/components/ui/event-list";
 
@@ -32,7 +32,7 @@ async function Page() {
         <div className="flex w-full flex-1 flex-col items-center gap-2.5 md:items-start">
           <h2 className="font-semibold">Kommende arrangementer</h2>
           <EventList className="w-full" />
-          <CreateEvent className="mx-auto md:mx-0" />
+          <EventDialog className="mx-auto md:mx-0" />
         </div>
         <div className="flex w-full flex-2 flex-col items-center justify-center gap-2.5 md:items-start">
           <h2 className="font-semibold">Arrangementskalender</h2>

@@ -44,11 +44,11 @@ async function Page({ params }: PageProps) {
         >
           <div className="h-full w-full overflow-hidden rounded-[60px]">
             <Image
-              src="/images/revetalhagen_hage.jpg"
-              className="h-full w-full object-cover object-bottom"
+              src="/images/hagen_wide.jpg"
+              className="h-full w-full object-cover object-center"
               alt="Hagen"
-              width={500}
-              height={500}
+              width={2000}
+              height={2000}
             />
           </div>
         </SlideAnimation>
@@ -99,7 +99,7 @@ async function Page({ params }: PageProps) {
 
       <SlideAnimation>
         <div
-          className="bg-accent rounded-[60px] p-10"
+          className="bg-accent max-w-screen rounded-[60px] p-10 text-wrap"
           dangerouslySetInnerHTML={{ __html: data?.news.content ?? "" }}
         >
           {/* {data?.news.content} */}
