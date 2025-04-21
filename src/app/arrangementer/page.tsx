@@ -34,7 +34,7 @@ async function Page() {
           <EventList className="w-full" />
           <CreateEvent className="mx-auto md:mx-0" />
         </div>
-        <div className="flex flex-2 flex-col items-center justify-center gap-2.5 md:items-start">
+        <div className="flex w-full flex-2 flex-col items-center justify-center gap-2.5 md:items-start">
           <h2 className="font-semibold">Arrangementskalender</h2>
           <EventCalendar />
         </div>

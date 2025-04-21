@@ -9,11 +9,13 @@ import {
 } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react";
 import { endOfWeek, format, startOfWeek } from "date-fns";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function EventCalendar() {
   const [from, setFrom] = useState(startOfWeek(new Date()));
   const [to, setTo] = useState(endOfWeek(new Date()));
+  const router = useRouter();
   const { data: events } = api.events.getEvents.useQuery({
     from: from,
     to: to,
@@ -45,6 +47,9 @@ function EventCalendar() {
       onRangeUpdate: (range) => {
         setFrom(new Date(range.start));
         setTo(new Date(range.end));
+      },
+      onEventClick: (event) => {
+        router.push(`/arrangementer/${event.id}`);
       },
     },
     locale: "nb-NO",
