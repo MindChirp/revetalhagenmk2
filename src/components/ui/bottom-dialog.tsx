@@ -37,7 +37,7 @@ function BottomDialog({
           <motion.div
             {...props}
             onClick={() => onOpenChange?.(false)}
-            className="fixed top-0 left-0 z-50 h-full w-full rounded-3xl bg-black/50"
+            className="fixed top-0 left-0 z-50 h-full w-full bg-black/50"
             initial={{
               opacity: 0,
             }}

@@ -1,0 +1,2 @@
+ALTER TABLE "revetalhagenmk2_eventMessage" ADD COLUMN "replyTo" integer;--> statement-breakpoint
+ALTER TABLE "revetalhagenmk2_eventMessage" ADD CONSTRAINT "revetalhagenmk2_eventMessage_replyTo_revetalhagenmk2_eventMessage_id_fk" FOREIGN KEY ("replyTo") REFERENCES "public"."revetalhagenmk2_eventMessage"("id") ON DELETE set null ON UPDATE no action;

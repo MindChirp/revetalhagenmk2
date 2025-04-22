@@ -45,7 +45,7 @@ async function Page({ params }: PageProps) {
           <div className="h-full w-full overflow-hidden rounded-[60px]">
             <Image
               src="/images/hagen_wide.jpg"
-              className="h-full w-full object-cover object-center"
+              className="bg-secondary h-full w-full object-cover object-center"
               alt="Hagen"
               width={2000}
               height={2000}

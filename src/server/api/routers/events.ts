@@ -1,7 +1,12 @@
 import { z } from "zod";
-import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
-import { event, user } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  memberProcedure,
+  publicProcedure,
+} from "../trpc";
+import { event, eventMessage, user } from "@/server/db/schema";
+import { and, asc, desc, eq } from "drizzle-orm";
 
 export const eventsRouter = createTRPCRouter({
   getEvents: publicProcedure
@@ -105,6 +110,81 @@ export const eventsRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.db.delete(event).where(eq(event.id, input.id));
+      return { success: true };
+    }),
+  getComments: memberProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const comments = await ctx.db
+        .select()
+        .from(eventMessage)
+        .orderBy(asc(eventMessage.createdAt))
+        .where(eq(eventMessage.event, input.eventId))
+        .leftJoin(user, eq(eventMessage.author, user.id));
+
+      return comments;
+    }),
+  addComment: memberProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+        content: z.string().min(1),
+        replyTo: z.number().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.insert(eventMessage).values({
+        content: input.content,
+        event: input.eventId,
+        author: ctx.session.user.id,
+        replyTo: input.replyTo,
+      });
+
+      return { success: true };
+    }),
+
+  editComment: memberProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        content: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(eventMessage)
+        .set({
+          content: input.content,
+        })
+        .where(
+          and(
+            eq(eventMessage.id, input.id),
+            eq(eventMessage.author, ctx.session.user.id),
+          ),
+        );
+
+      return { success: true };
+    }),
+  deleteComment: memberProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(eventMessage)
+        .where(
+          and(
+            eq(eventMessage.id, input.id),
+            eq(eventMessage.author, ctx.session.user.id),
+          ),
+        );
+
       return { success: true };
     }),
 });

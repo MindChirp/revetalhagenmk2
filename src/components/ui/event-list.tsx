@@ -17,17 +17,9 @@ function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
   });
 
   return (
-    <AnimatePresence mode="sync">
+    <AnimatePresence mode="wait">
       {isPending && (
-        <SlideAnimation
-          key="loader"
-          direction="up"
-          className="mx-auto"
-          exit={{
-            height: 0,
-            opacity: 0,
-          }}
-        >
+        <SlideAnimation key="loader" direction="up" className="mx-auto">
           <Loader className="animate-spin" />
         </SlideAnimation>
       )}

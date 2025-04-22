@@ -2,9 +2,13 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import {
+  index,
+  PgInteger,
+  pgTableCreator,
+  type AnyPgColumn,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
-import { start } from "repl";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -56,6 +60,21 @@ export const news = createTable("news", (d) => ({
   author: d.text().references(() => user.id, { onDelete: "set null" }),
   views: d.integer().default(0),
   preview: d.text(),
+}));
+
+export const eventMessage = createTable("eventMessage", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  event: d.integer().references(() => event.id, { onDelete: "cascade" }),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  content: d.text().notNull(),
+  author: d.text().references(() => user.id, { onDelete: "set null" }),
+  replyTo: d
+    .integer()
+    .references((): AnyPgColumn => eventMessage.id, { onDelete: "set null" }),
 }));
 
 export * from "./auth-schema";

@@ -1,5 +1,6 @@
 "use server";
 import type { PageProps } from ".next/types/app/arrangementer/[id]/page";
+import EventChat from "@/components/screen/event-chat";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import EventContextMenu from "@/components/ui/event-context-menu";
 import { auth } from "@/server/auth";
@@ -101,6 +102,12 @@ async function Page({ params }: PageProps) {
             {/* {data?.news.content} */}
           </div>
         </SlideAnimation>
+        {session && (
+          <EventChat
+            className="max-h-full w-full md:w-fit"
+            eventId={Number(id)}
+          />
+        )}
       </div>
     </SlideAnimation>
   );
