@@ -17,7 +17,7 @@ function EventChat({ eventId, ...props }: EventChatProps) {
   return (
     <div {...props}>
       <MemberChat
-        scrollContainerStyling="max-h-80 overflow-y-auto"
+        scrollContainerStyling="max-h-80 overflow-y-auto md:w-50 lg:w-auto"
         messages={messages ?? []}
         onDeleteMessage={(id) =>
           deleteComment({ id }).then(() => {

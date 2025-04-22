@@ -89,9 +89,7 @@ function MemberChat({
           <FormField
             control={form.control}
             name="message"
-            render={({ field }) => (
-              <Input placeholder="Send en melding" {...field} />
-            )}
+            render={({ field }) => <Input placeholder="Skriv noe" {...field} />}
           />
           <Button type="submit">
             <SendIcon />
