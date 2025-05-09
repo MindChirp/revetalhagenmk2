@@ -104,7 +104,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
           />
         </button>
       </div>
-      <button
+      {/* <button
         className="border-secondary text-foreground hover:bg-secondary/30 bg-background absolute bottom-5 left-1/2 flex -translate-x-1/2 animate-bounce cursor-pointer flex-row items-center gap-2.5 rounded-full border-2 p-5 transition-colors"
         onClick={() =>
           window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
@@ -112,7 +112,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
       >
         <ArrowDown />
         <p>Bla ned</p>
-      </button>
+      </button> */}
     </div>
   );
 }

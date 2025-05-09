@@ -11,7 +11,7 @@ export default function Home() {
     <HydrateClient>
       <div className="min-h-full w-full">
         <Hero className="relative z-10" />
-        <AboutUs />
+        {/* <AboutUs /> */}
       </div>
     </HydrateClient>
   );
