@@ -1,3 +1,5 @@
+import { event, eventMessage, user } from "@/server/db/schema";
+import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
 import {
   adminProcedure,
@@ -5,8 +7,6 @@ import {
   memberProcedure,
   publicProcedure,
 } from "../trpc";
-import { event, eventMessage, user } from "@/server/db/schema";
-import { and, asc, desc, eq } from "drizzle-orm";
 
 export const eventsRouter = createTRPCRouter({
   getEvents: publicProcedure

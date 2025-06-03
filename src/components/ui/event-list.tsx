@@ -58,6 +58,21 @@ function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
           ))}
         </motion.div>
       )}
+      {data?.length === 0 && !isPending && (
+        <motion.div
+          key="no-events"
+          className="text-muted-foreground text-center"
+          initial={{ opacity: 0, height: 0, paddingBottom: 0 }}
+          animate={{ opacity: 1, height: "auto", paddingBottom: 2 }}
+          transition={{
+            type: "spring",
+            damping: 20,
+            duration: 0.5,
+          }}
+        >
+          Ingen kommende arrangementer
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 }

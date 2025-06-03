@@ -77,4 +77,26 @@ export const eventMessage = createTable("eventMessage", (d) => ({
     .references((): AnyPgColumn => eventMessage.id, { onDelete: "set null" }),
 }));
 
+/**
+ * This table is used for general page content that is not tied to a specific
+ * route. It can be used for static pages like "About Us", "Contact", etc.
+ * It is designed to store content in a structured format that can be easily
+ * rendered on the frontend.
+ */
+export const pageContent = createTable("pageContent", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  order: d.integer().notNull().default(0),
+  slug: d.varchar(),
+  content: d
+    .json()
+    .$type<
+      Record<string, unknown> & {
+        title: string;
+        image?: string;
+        content: string;
+      }
+    >()
+    .notNull(),
+}));
+
 export * from "./auth-schema";

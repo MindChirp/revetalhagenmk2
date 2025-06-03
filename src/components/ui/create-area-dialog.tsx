@@ -1,3 +1,5 @@
+"use client";
+
 import { PlusIcon, XIcon } from "lucide-react";
 import CreateAreaForm from "../forms/create-area-form/create-area-form";
 import BottomDialog from "./bottom-dialog";
