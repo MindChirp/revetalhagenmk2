@@ -1,8 +1,8 @@
 import React from "react";
 
-interface SquigglyCircleProps extends React.SVGProps<SVGSVGElement> {}
-
-const SquigglyCircle: React.FC<SquigglyCircleProps> = ({ ...props }) => (
+const SquigglyCircle: React.FC<React.SVGProps<SVGSVGElement>> = ({
+  ...props
+}) => (
   <svg
     width="200"
     height="200"

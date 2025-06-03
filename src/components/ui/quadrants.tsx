@@ -1,8 +1,6 @@
 import React from "react";
 
-interface QuadrantsProps extends React.SVGProps<SVGSVGElement> {}
-
-const Quadrants: React.FC<QuadrantsProps> = (props) => (
+const Quadrants: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     width="200"
     height="200"
