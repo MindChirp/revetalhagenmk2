@@ -29,10 +29,10 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
   });
 
   return (
-    <div className="relative flex min-h-screen w-full max-w-screen items-center overflow-hidden">
+    <div className="relative flex min-h-screen w-full max-w-screen items-center overflow-x-hidden overflow-y-hidden pt-20">
       <div
         className={cn(
-          "flex w-full grid-cols-[min-content_1fr] grid-rows-[min-content_min-content_1fr] flex-col justify-start gap-10 pr-10 md:grid md:justify-center",
+          "mx-auto flex w-[95vw] grid-cols-[min-content_1fr] grid-rows-[min-content_min-content_1fr] flex-col justify-start gap-10 md:grid md:w-full md:justify-center md:pr-10",
           className,
         )}
         {...props}
@@ -140,7 +140,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
             )}
           </AnimatePresence>
         </motion.div>
-        <button className="bg-secondary/50 border-secondary text-secondary-foreground col-start-1 row-start-2 flex h-auto w-fit cursor-pointer flex-col items-center justify-evenly rounded-r-[60px] p-5 backdrop-blur-md transition-all hover:pl-10">
+        <button className="bg-secondary/50 border-secondary text-secondary-foreground col-start-1 row-start-2 flex h-auto w-full cursor-pointer flex-col items-center justify-evenly p-5 backdrop-blur-md transition-all hover:pl-10 max-sm:rounded-full md:w-fit md:rounded-r-[60px]">
           <div className="flex flex-row items-center gap-2.5 text-nowrap">
             <p>Bli medlem</p>
 
@@ -166,7 +166,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
         <p>Bla ned</p>
       </button> */}
       <SquigglyCircle
-        className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/2 animate-spin opacity-30"
+        className="absolute top-0 right-0 w-[400] translate-x-1/3 -translate-y-1/2 animate-spin opacity-50 md:w-[800] md:opacity-30"
         style={{
           animationDuration: "50s",
         }}
@@ -174,7 +174,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
         height={800}
       />
       <Quadrants
-        className="absolute bottom-10 left-10 opacity-50"
+        className="absolute -bottom-10 left-0 w-[300] opacity-70 md:bottom-10 md:left-10 md:w-[500] md:opacity-50"
         width={500}
         height={500}
       />

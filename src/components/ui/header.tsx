@@ -1,7 +1,13 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { authClient } from "@/server/auth/client";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
 import {
   CalendarIcon,
   HomeIcon,
@@ -11,11 +17,11 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "./button";
-import HeaderNavigationButton from "./header-navigation-button";
-import UserArea from "./user-area";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import SlideAnimation from "./animated/slide-animation";
+import { Button } from "./button";
+import HeaderNavigationButton from "./header-navigation-button";
 import {
   Sheet,
   SheetContent,
@@ -23,18 +29,35 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./sheet";
-import { cn } from "@/lib/utils";
 import SignInCard from "./sign-in-card";
-import { usePathname } from "next/navigation";
+import UserArea from "./user-area";
 
 function Header() {
   const { data: session, isPending } = authClient.useSession();
   const [signInLoading, setSignInLoading] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const path = usePathname();
+  const { scrollY } = useScroll();
+  const [scrolled, setScrolled] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (value) => {
+    console.log("Scroll value:", value);
+    if (value > 10 && !scrolled) {
+      console.log("Scrolled past 50px");
+      setScrolled(true);
+    } else if (value <= 10 && scrolled) {
+      console.log("Scrolled back to top");
+      setScrolled(false);
+    }
+  });
 
   return (
-    <div className="absolute z-50 flex w-full flex-row items-center justify-between px-5 py-5 md:px-10">
+    <div
+      className={cn(
+        "fixed top-0 z-50 flex w-full flex-row items-center justify-between px-5 py-5 transition-colors md:px-10",
+        scrolled ? "bg-background/80 backdrop-blur-md" : "bg-transparent",
+      )}
+    >
       <div className="flex w-fit flex-row items-center gap-5">
         <Sheet onOpenChange={setSheetOpen} open={sheetOpen}>
           <SheetTrigger asChild>
