@@ -1,13 +1,8 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
-import {
-  index,
-  PgInteger,
-  pgTableCreator,
-  type AnyPgColumn,
-} from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
+import { index, pgTableCreator, type AnyPgColumn } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 
 /**
@@ -100,3 +95,4 @@ export const pageContent = createTable("pageContent", (d) => ({
 }));
 
 export * from "./auth-schema";
+export * from "./relations";

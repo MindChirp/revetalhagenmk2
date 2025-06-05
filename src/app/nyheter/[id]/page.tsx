@@ -99,7 +99,7 @@ async function Page({ params }: PageProps) {
 
       <SlideAnimation>
         <div
-          className="bg-accent max-w-screen rounded-[60px] p-10 text-wrap"
+          className="bg-accent max-w-screen overflow-hidden rounded-[60px] p-10 text-wrap"
           dangerouslySetInnerHTML={{ __html: data?.news.content ?? "" }}
         >
           {/* {data?.news.content} */}

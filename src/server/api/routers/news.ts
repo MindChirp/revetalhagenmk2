@@ -17,6 +17,7 @@ export const newsRouter = createTRPCRouter({
       const limit = input.limit ?? 10;
       const { cursor } = input;
 
+      // Get list of news, including the author object
       const items = await ctx.db.query.news.findMany({
         orderBy: (news, { asc }) => [asc(news.id)],
         where: (news, { gt, like, and }) =>
@@ -24,9 +25,32 @@ export const newsRouter = createTRPCRouter({
             cursor ? gt(news.id, cursor) : undefined,
             like(news.name, `%${input.query ?? ""}%`),
           ),
-        limit: limit,
+        columns: {
+          author: false,
+        },
+        with: {
+          author: {
+            columns: {
+              id: true,
+              name: true,
+              image: true,
+              email: true,
+              role: true,
+            },
+          },
+        },
+        limit,
       });
 
+      // const items = await ctx.db.query.news.findMany({
+      //   orderBy: (news, { asc }) => [asc(news.id)],
+      //   where: (news, { gt, like, and }) =>
+      //     and(
+      //       cursor ? gt(news.id, cursor) : undefined,
+      //       like(news.name, `%${input.query ?? ""}%`),
+      //     ),
+      //   limit: limit,
+      // });
       return {
         nextCursor:
           items.length === limit

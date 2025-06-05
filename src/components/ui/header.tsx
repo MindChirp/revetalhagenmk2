@@ -9,6 +9,7 @@ import {
   useScroll,
 } from "framer-motion";
 import {
+  BedIcon,
   CalendarIcon,
   HomeIcon,
   Loader,
@@ -31,6 +32,7 @@ import {
 } from "./sheet";
 import SignInCard from "./sign-in-card";
 import UserArea from "./user-area";
+import MobileSideBar from "./mobile-side-bar";
 
 function Header() {
   const { data: session, isPending } = authClient.useSession();
@@ -43,10 +45,8 @@ function Header() {
   useMotionValueEvent(scrollY, "change", (value) => {
     console.log("Scroll value:", value);
     if (value > 10 && !scrolled) {
-      console.log("Scrolled past 50px");
       setScrolled(true);
     } else if (value <= 10 && scrolled) {
-      console.log("Scrolled back to top");
       setScrolled(false);
     }
   });
@@ -59,48 +59,7 @@ function Header() {
       )}
     >
       <div className="flex w-fit flex-row items-center gap-5">
-        <Sheet onOpenChange={setSheetOpen} open={sheetOpen}>
-          <SheetTrigger asChild>
-            <Button className="md:hidden" variant="ghost">
-              <MenuIcon
-                className={cn(
-                  "scale-200 transition-all",
-                  sheetOpen ? "rotate-180" : undefined,
-                )}
-              />
-            </Button>
-          </SheetTrigger>
-
-          <SheetContent
-            side="left"
-            className="w-[400px] max-w-screen p-10 sm:w-[540px]"
-          >
-            <SheetHeader>
-              <SheetTitle>Meny</SheetTitle>
-            </SheetHeader>
-
-            <div
-              className="flex flex-col gap-5"
-              onClick={() => setSheetOpen(false)}
-            >
-              <HeaderNavigationButton icon={<HomeIcon />} href="/">
-                Hjem
-              </HeaderNavigationButton>
-              <HeaderNavigationButton
-                icon={<CalendarIcon />}
-                href="/arrangementer"
-              >
-                Arrangementer
-              </HeaderNavigationButton>
-              <HeaderNavigationButton icon={<Newspaper />} href="/nyheter">
-                Nyheter
-              </HeaderNavigationButton>
-            </div>
-            <div className="flex flex-1 justify-end"></div>
-            {!session?.user && <SignInCard />}
-            {session?.user && <UserArea session={session} />}
-          </SheetContent>
-        </Sheet>
+        <MobileSideBar open={sheetOpen} onOpenChange={setSheetOpen} />
         <Image
           className="aspect-square w-10"
           src="/images/nakuhel-logo.webp"
@@ -113,6 +72,9 @@ function Header() {
       <div className="hidden w-full items-center justify-center gap-5 md:flex">
         <HeaderNavigationButton icon={<HomeIcon />} href="/">
           Hjem
+        </HeaderNavigationButton>
+        <HeaderNavigationButton icon={<BedIcon />} href="/booking">
+          Booking
         </HeaderNavigationButton>
         <HeaderNavigationButton icon={<CalendarIcon />} href="/arrangementer">
           Arrangementer

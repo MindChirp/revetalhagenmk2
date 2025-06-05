@@ -107,8 +107,8 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
             className="mx-auto h-96 w-full rounded-[60px] object-cover md:mx-0"
             src="/images/laahnehuset.jpg"
             alt="Lånehuset"
-            height={1000}
-            width={1000}
+            height={2000}
+            width={2000}
           />
           <AnimatePresence>
             {!paragraphLoading && (
@@ -140,7 +140,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
             )}
           </AnimatePresence>
         </motion.div>
-        <button className="bg-secondary/50 border-secondary text-secondary-foreground col-start-1 row-start-2 flex h-auto w-full cursor-pointer flex-col items-center justify-evenly p-5 backdrop-blur-md transition-all hover:pl-10 max-sm:rounded-full md:w-fit md:rounded-r-[60px]">
+        <button className="bg-secondary/50 border-secondary text-secondary-foreground col-start-1 row-start-2 flex h-auto w-full cursor-pointer flex-col items-center justify-evenly border border-l-0 p-5 backdrop-blur-md transition-all hover:pl-10 max-sm:rounded-full md:w-fit md:rounded-r-[60px]">
           <div className="flex flex-row items-center gap-2.5 text-nowrap">
             <p>Bli medlem</p>
 

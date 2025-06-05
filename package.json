@@ -27,6 +27,7 @@
     "@radix-ui/react-popover": "^1.1.7",
     "@radix-ui/react-scroll-area": "^1.2.4",
     "@radix-ui/react-slot": "^1.2.0",
+    "@radix-ui/react-tooltip": "^1.2.7",
     "@schedule-x/calendar": "^2.28.0",
     "@schedule-x/react": "^2.27.1",
     "@schedule-x/theme-shadcn": "^2.28.0",

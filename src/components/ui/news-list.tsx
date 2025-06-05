@@ -11,6 +11,9 @@ import { AnimatePresence } from "framer-motion";
 import { Loader } from "lucide-react";
 import SlideAnimation from "./animated/slide-animation";
 import Link from "next/link";
+import { Avatar, AvatarImage } from "./avatar";
+import { AvatarFallback } from "@radix-ui/react-avatar";
+import NewsCard from "./news-card";
 
 function NewsList() {
   const [filters] = useQueryStates({
@@ -71,14 +74,16 @@ function NewsList() {
                     href={`/nyheter/${article.id}`}
                     key={article.id + "nyhet"}
                   >
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>{article.name}</CardTitle>
-                        <CardDescription className="line-clamp-3">
-                          {article.preview}
-                        </CardDescription>
-                      </CardHeader>
-                    </Card>
+                    <NewsCard
+                      description={article.preview ?? ""}
+                      title={article.name ?? ""}
+                      author={{
+                        role: article.author?.role ?? "user",
+                        image: article.author?.image ?? "",
+                        name: article.author?.name ?? "Ukjent",
+                        email: article.author?.email ?? "",
+                      }}
+                    />
                   </Link>
                 ));
               })}
@@ -86,60 +91,62 @@ function NewsList() {
           )}
         </AnimatePresence>
       </div>
-      <Button
-        className="w-fit min-w-60"
-        disabled={!hasNextPage && !isFetchingNextPage && !isFetching}
-        onClick={() => fetchNextPage()}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          {isFetchingNextPage && (
-            <motion.div
-              key="loader"
-              className="flex flex-row items-center gap-2"
-              initial={{
-                opacity: 0,
-                x: -20,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              exit={{
-                opacity: 0,
-                x: 20,
-              }}
-              transition={{
-                duration: 0.2,
-              }}
-            >
-              <Loader className="animate-spin" /> Laster flere nyheter
-            </motion.div>
-          )}
-          {!isFetchingNextPage && (
-            <motion.div
-              key="more"
-              className="flex flex-row items-center gap-2"
-              initial={{
-                opacity: 0,
-                x: -20,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              exit={{
-                opacity: 0,
-                x: 20,
-              }}
-              transition={{
-                duration: 0.2,
-              }}
-            >
-              Mer nyheter
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </Button>
+      {hasNextPage && (
+        <Button
+          className="w-fit min-w-60"
+          disabled={!hasNextPage && !isFetchingNextPage && !isFetching}
+          onClick={() => fetchNextPage()}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {isFetchingNextPage && (
+              <motion.div
+                key="loader"
+                className="flex flex-row items-center gap-2"
+                initial={{
+                  opacity: 0,
+                  x: -20,
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  x: 20,
+                }}
+                transition={{
+                  duration: 0.2,
+                }}
+              >
+                <Loader className="animate-spin" /> Laster flere nyheter
+              </motion.div>
+            )}
+            {!isFetchingNextPage && (
+              <motion.div
+                key="more"
+                className="flex flex-row items-center gap-2"
+                initial={{
+                  opacity: 0,
+                  x: -20,
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  x: 20,
+                }}
+                transition={{
+                  duration: 0.2,
+                }}
+              >
+                Mer nyheter
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </Button>
+      )}
     </div>
   );
 }
