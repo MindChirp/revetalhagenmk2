@@ -34,6 +34,7 @@ function MemberChat({
   messages,
   onSendMessage,
   onDeleteMessage,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onEditMessage,
   scrollContainerStyling,
 }: MemberChatProps) {

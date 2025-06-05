@@ -2,9 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { format, formatDate } from "date-fns";
-import React, { useMemo, useState } from "react";
+import { format } from "date-fns";
 import { nb } from "date-fns/locale";
+import React, { useMemo, useState } from "react";
 import { Input } from "./input";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 

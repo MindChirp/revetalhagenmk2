@@ -18,7 +18,7 @@ function EventDialog({ defaultEvent, ...props }: EventDialogProps) {
   const { data: session } = authClient.useSession();
   const [open, setOpen] = useState(false);
 
-  const { mutateAsync: updateMutateAsync, isPending: updatePending } =
+  const { mutateAsync: updateMutateAsync } =
     api.events.updateEvent.useMutation();
   const { mutateAsync, isPending } = api.events.createEvent.useMutation();
   const trpcUtils = api.useUtils();

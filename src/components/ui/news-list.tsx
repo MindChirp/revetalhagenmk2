@@ -1,18 +1,13 @@
 "use client";
-import { motion } from "framer-motion";
 import { api } from "@/trpc/react";
-import React from "react";
-import { Card, CardDescription, CardHeader, CardTitle } from "./card";
-import { parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
-import { TimeDirection } from "../screen/news-filters";
-import { useDebounce } from "use-debounce";
-import { Button } from "./button";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "lucide-react";
-import SlideAnimation from "./animated/slide-animation";
 import Link from "next/link";
-import { Avatar, AvatarImage } from "./avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
+import { parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
+import { useDebounce } from "use-debounce";
+import { TimeDirection } from "../screen/news-filters";
+import SlideAnimation from "./animated/slide-animation";
+import { Button } from "./button";
 import NewsCard from "./news-card";
 
 function NewsList() {

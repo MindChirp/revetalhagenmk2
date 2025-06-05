@@ -13,7 +13,6 @@ import {
   CalendarIcon,
   HomeIcon,
   Loader,
-  MenuIcon,
   Newspaper,
 } from "lucide-react";
 import Image from "next/image";
@@ -23,16 +22,8 @@ import { useState } from "react";
 import SlideAnimation from "./animated/slide-animation";
 import { Button } from "./button";
 import HeaderNavigationButton from "./header-navigation-button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "./sheet";
-import SignInCard from "./sign-in-card";
-import UserArea from "./user-area";
 import MobileSideBar from "./mobile-side-bar";
+import UserArea from "./user-area";
 
 function Header() {
   const { data: session, isPending } = authClient.useSession();

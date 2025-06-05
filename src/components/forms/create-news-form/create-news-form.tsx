@@ -56,7 +56,7 @@ function CreateNewsForm({ children, onSubmit }: CreateNewsFormProps) {
           <FormField
             name="content"
             control={form.control}
-            render={({ field }) => (
+            render={({}) => (
               <div className="flex flex-col">
                 <div ref={quillRef} />
               </div>

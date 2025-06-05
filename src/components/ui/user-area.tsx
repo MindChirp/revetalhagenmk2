@@ -1,12 +1,12 @@
 "use client";
 
-import type { auth } from "@/server/auth";
-import React, { useMemo, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { cn } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Button } from "./button";
+import type { auth } from "@/server/auth";
 import { authClient } from "@/server/auth/client";
+import React, { useMemo } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Button } from "./button";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 interface UserAreaProps extends React.HTMLProps<HTMLDivElement> {
   session?: Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -16,7 +16,7 @@ function UserArea({
   session: serverSession,
   ...props
 }: UserAreaProps) {
-  const { data: clientSession, isPending } = authClient.useSession();
+  const { data: clientSession } = authClient.useSession();
   const session = useMemo(() => {
     if (clientSession) return clientSession;
     if (serverSession) return serverSession;

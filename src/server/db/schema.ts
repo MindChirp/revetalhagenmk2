@@ -94,5 +94,12 @@ export const pageContent = createTable("pageContent", (d) => ({
     .notNull(),
 }));
 
+export const newsRelations = relations(news, ({ one }) => ({
+  author: one(user, {
+    fields: [news.author],
+    references: [user.id],
+  }),
+}));
+
 export * from "./auth-schema";
-export * from "./relations";
+// export * from "./relations";

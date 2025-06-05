@@ -55,7 +55,7 @@ function CreateAreaForm({ children }: CreateAreaFormProps) {
         <FormField
           control={form.control}
           name="areaValues"
-          render={({ field }) => (
+          render={({}) => (
             <div className="w-full">
               <AnimatePresence initial={false} mode="wait">
                 {formValues.areaType === 0 && <GridTypeInput key={"grid"} />}
