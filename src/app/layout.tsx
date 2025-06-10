@@ -8,6 +8,7 @@ import Header from "@/components/ui/header";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense } from "react";
 import "@schedule-x/theme-shadcn/dist/index.css";
+import Footer from "@/components/screen/footer/footer";
 
 export const metadata: Metadata = {
   title: "Revetalhagen",
@@ -32,6 +33,7 @@ export default function RootLayout({
           <TRPCReactProvider>
             <Header />
             <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+            <Footer className="mt-20" />
           </TRPCReactProvider>
         </NuqsAdapter>
       </body>

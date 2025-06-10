@@ -29,7 +29,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
   });
 
   return (
-    <div className="relative flex min-h-screen w-full max-w-screen items-center overflow-x-hidden overflow-y-hidden pt-20">
+    <div className="relative flex min-h-screen w-full max-w-screen items-center overflow-x-hidden overflow-y-hidden pt-20 pb-5">
       <div
         className={cn(
           "mx-auto flex w-[95vw] grid-cols-[min-content_1fr] grid-rows-[min-content_min-content_1fr] flex-col justify-start gap-10 md:grid md:w-full md:justify-center md:pr-10",
