@@ -1,6 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -12,27 +18,49 @@ import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence } from "framer-motion";
 import { SearchIcon, XIcon } from "lucide-react";
-import { parseAsString, useQueryStates } from "nuqs";
+import { parseAsIsoDateTime, parseAsString, useQueryStates } from "nuqs";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { motion } from "framer-motion";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 
 const formSchema = z.object({
   itemType: z.string().min(1, "Gjenstandstype er påkrevd"),
+  from: z.date().optional(),
+  to: z.date().optional(),
 });
 function BookingWizardForm() {
   const { data: itemTypes } = api.booking.getItemTypes.useQuery();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
   const [queries, setQueries] = useQueryStates({
     type: parseAsString,
+    from: parseAsIsoDateTime,
+    to: parseAsIsoDateTime,
   });
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      itemType: queries.type ?? undefined,
+      from: new Date(),
+      to: new Date(),
+    },
+  });
+
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
     void setQueries({
       type: data.itemType,
+      from: data.from ?? undefined,
+      to: data.to ?? undefined,
     });
+
+    // Scroll
+    const element = document.getElementById("booking-item-list");
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   };
 
   return (
@@ -69,6 +97,32 @@ function BookingWizardForm() {
             </FormItem>
           )}
         />
+        <div className="flex flex-row gap-2.5">
+          <FormField
+            control={form.control}
+            name="from"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fra</FormLabel>
+                <FormControl>
+                  <DateTimePicker {...field} className="bg-card/50" />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="to"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Til</FormLabel>
+                <FormControl>
+                  <DateTimePicker {...field} className="bg-card/50" />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="flex flex-row">
           <Button className="flex-1" type="submit">
             <SearchIcon />
@@ -89,11 +143,10 @@ function BookingWizardForm() {
                 <Button
                   variant="secondary"
                   className="w-fit"
-                  onClick={() =>
-                    setQueries({
-                      type: undefined,
-                    })
-                  }
+                  onClick={(e) => {
+                    e.preventDefault();
+                    void setQueries(null);
+                  }}
                 >
                   <XIcon />
                   Nullstill

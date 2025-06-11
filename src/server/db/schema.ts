@@ -112,6 +112,9 @@ export const pageContent = createTable("pageContent", (d) => ({
     .notNull(),
 }));
 
+/**
+ * The following tables are used for managing items that can be booked.
+ */
 export const itemType = createTable("itemType", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
   name: d.varchar({ length: 256 }),
@@ -121,6 +124,7 @@ export const item = createTable("item", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
   name: d.varchar({ length: 256 }),
   type: d.integer().references(() => itemType.id, { onDelete: "set null" }),
+  price: d.integer().notNull().default(0),
   createdAt: d
     .timestamp({ withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
@@ -128,6 +132,29 @@ export const item = createTable("item", (d) => ({
   updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
   description: d.text(),
   image: d.text(),
+}));
+
+export const booking = createTable("booking", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  item: d.integer().references(() => item.id, { onDelete: "cascade" }),
+  // user: d.text().references(() => user.id, { onDelete: "set null" }),
+  email: d.text(),
+  name: d.text().notNull(),
+  phone: d.varchar({ length: 32 }),
+  from: d.timestamp({ withTimezone: true }).notNull(),
+  to: d.timestamp({ withTimezone: true }).notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+}));
+
+export const itemRelations = relations(item, ({ one }) => ({
+  bookings: one(booking, {
+    fields: [item.id],
+    references: [booking.item],
+    relationName: "itemBookings",
+  }),
 }));
 
 export * from "./auth-schema";

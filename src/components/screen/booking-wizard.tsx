@@ -12,7 +12,7 @@ import BookingWizardForm from "../forms/booking-wizard-form/booking-wizard-form"
 
 function BookingWizard() {
   return (
-    <div className="relative mx-auto flex h-[70vh] w-[95vw] items-center justify-start rounded-3xl px-10 shadow-lg">
+    <div className="relative mx-auto flex h-fit w-[95vw] items-start justify-start rounded-3xl shadow-lg md:h-[70vh] md:items-center md:px-10">
       <Image
         src="/images/wide1.jpg"
         alt="Revetalhagen"
@@ -20,7 +20,7 @@ function BookingWizard() {
         width={2000}
         height={2000}
       />
-      <Card className="bg-card/50 z-10 w-fit min-w-96 backdrop-blur-md">
+      <Card className="bg-card/50 z-10 w-full backdrop-blur-md md:w-fit md:min-w-96">
         <CardHeader className="">
           <CardTitle className="flex items-center gap-2.5">
             <StarsIcon /> <span>Hva ser du etter?</span>

@@ -7,6 +7,7 @@ import { nb } from "date-fns/locale";
 import React, { useMemo, useState } from "react";
 import { Input } from "./input";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { cn } from "@/lib/utils";
 
 // Function for generating time slots with a 15 minute interval between two dates
 const generateTimeSlots = (start: Date, end: Date) => {
@@ -27,6 +28,7 @@ interface DateTimePickerProps
 function DateTimePicker({
   value = new Date(),
   onChange,
+  className,
   ...props
 }: DateTimePickerProps) {
   const today = new Date();
@@ -50,7 +52,7 @@ function DateTimePicker({
           })}
           {...props}
           readOnly
-          className="cursor-pointer"
+          className={cn("cursor-pointer", className)}
         />
         {/* <Button className="min-w-32">{value}</Button> */}
       </PopoverTrigger>

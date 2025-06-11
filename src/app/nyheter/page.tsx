@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 function Page() {
   return (
-    <div className="flex flex-col gap-2.5 px-10 pt-36">
+    <div className="flex min-h-screen flex-col gap-2.5 px-10 pt-36">
       <motion.div
         className="col-start-2 row-start-1 w-fit"
         initial={{ opacity: 0, x: -50 }}

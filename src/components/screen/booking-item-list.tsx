@@ -1,5 +1,5 @@
 import { api } from "@/trpc/react";
-import { parseAsString, useQueryStates } from "nuqs";
+import { parseAsIsoDate, parseAsString, useQueryStates } from "nuqs";
 import React from "react";
 import {
   Card,
@@ -10,11 +10,15 @@ import {
 } from "../ui/card";
 import { AnimatePresence, motion } from "framer-motion";
 import SlideAnimation from "../ui/animated/slide-animation";
-import { Loader } from "lucide-react";
+import { BadgeInfoIcon, Loader, ShoppingCartIcon } from "lucide-react";
+import Image from "next/image";
+import { Button } from "../ui/button";
 
 function BookingItemList() {
   const [filterQueries] = useQueryStates({
     type: parseAsString,
+    from: parseAsIsoDate,
+    to: parseAsIsoDate,
   });
   const {
     data: items,
@@ -24,27 +28,31 @@ function BookingItemList() {
     isRefetchError,
   } = api.booking.getItems.useQuery({
     type: filterQueries.type ? parseInt(filterQueries.type) : undefined,
+    from: filterQueries.from ?? undefined,
+    to: filterQueries.to ?? undefined,
   });
   return (
-    <div className="flex min-h-[80vh] w-full flex-col items-center gap-2.5">
+    <div
+      className="flex min-h-[80vh] w-full flex-col items-center gap-2.5"
+      id="booking-item-list"
+    >
       <AnimatePresence mode="wait" initial={false}>
-        {(!(isFetching || isRefetching) && items?.length) ??
-          (0 > 0 && (
-            <motion.h2
-              key="result-count"
-              className="text-card-foreground px-10 text-5xl font-black"
-              initial={{
-                opacity: 0,
-                height: 0,
-              }}
-              animate={{
-                opacity: 1,
-                height: "auto",
-              }}
-            >
-              {items?.length ?? 0} resultat{items?.length !== 1 ? "er" : ""}
-            </motion.h2>
-          ))}
+        {!(isFetching || isRefetching) && (items?.length ?? 0) > 0 && (
+          <motion.h2
+            key="result-count"
+            className="text-card-foreground px-10 text-5xl font-black"
+            initial={{
+              opacity: 0,
+              height: 0,
+            }}
+            animate={{
+              opacity: 1,
+              height: "auto",
+            }}
+          >
+            {items?.length ?? 0} resultat{items?.length !== 1 ? "er" : ""}
+          </motion.h2>
+        )}
 
         {(isFetching || isRefetching) && (
           <SlideAnimation direction="up" key="loader">
@@ -58,11 +66,18 @@ function BookingItemList() {
             </h2>
           </SlideAnimation>
         )}
-        <div className="grid w-full grid-cols-1 gap-5 px-10 sm:grid-cols-2 md:grid-cols-3">
+        {(isError || isRefetchError) && (
+          <SlideAnimation direction="up" key="error">
+            <h2 className="text-card-foreground py-5 text-xl font-black">
+              Noe gikk galt, prøv igjen senere.
+            </h2>
+          </SlideAnimation>
+        )}
+        <div className="grid w-full grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:w-fit md:grid-cols-3 md:px-10">
           {items?.map((item, index) => (
             <motion.div
               key={item.id + "" + index}
-              className="h-full w-full"
+              className="h-full w-full md:max-w-80"
               initial={{
                 opacity: 0,
                 y: 25,
@@ -72,15 +87,35 @@ function BookingItemList() {
                 y: 0,
               }}
             >
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle>{item.name}</CardTitle>
-                  <CardDescription>{item.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {/* <span>{item.description ?? "Ingen beskrivelse tilgjengelig"}</span> */}
-                </CardContent>
-              </Card>
+              <div className="border-border bg-card flex h-full flex-col overflow-hidden rounded-lg border shadow-xs md:w-80">
+                {item.image && (
+                  <Image
+                    src={item.image}
+                    alt={item.name ?? "Booking-gjenstand"}
+                    width={1000}
+                    height={500}
+                    className="h-48 w-full rounded-t-lg rounded-b-md object-cover shadow-xs"
+                  />
+                )}
+                <div className="flex grow flex-col gap-2.5 py-5">
+                  <CardHeader className="grow">
+                    <CardTitle>{item.name}</CardTitle>
+                    <CardDescription className="line-clamp-3">
+                      {item.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex flex-row items-center gap-2.5">
+                    <Button>
+                      <BadgeInfoIcon />
+                      Mer info
+                    </Button>
+
+                    <span className="text-primary font-semibold">
+                      {item.price} kroner
+                    </span>
+                  </CardContent>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
