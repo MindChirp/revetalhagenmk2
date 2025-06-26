@@ -2,6 +2,7 @@
 import React, { type HTMLAttributes } from "react";
 import MemberChat from "../ui/member-chat";
 import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 interface EventChatProps extends HTMLAttributes<HTMLDivElement> {
   eventId: number;
@@ -14,18 +15,26 @@ function EventChat({ eventId, ...props }: EventChatProps) {
   const { mutateAsync: addComment } = api.events.addComment.useMutation();
   const { mutateAsync: editComment } = api.events.editComment.useMutation();
   const { mutateAsync: deleteComment } = api.events.deleteComment.useMutation();
+
+  const handleDeleteComment = (id: number) => {
+    if (!id) return;
+    void deleteComment({
+      id,
+    })
+      .then((res) => {
+        toast("Kommentaren er slettet!");
+        void utils.events.getComments.invalidate();
+      })
+      .catch((err) => {
+        toast("Kunne ikke slette kommentaren");
+      });
+  };
   return (
     <div {...props}>
       <MemberChat
-        scrollContainerStyling="max-h-80 overflow-y-auto md:w-50 lg:w-auto"
+        scrollContainerStyling="md:w-50 h-fit lg:w-auto"
         messages={messages ?? []}
-        onDeleteMessage={(id) =>
-          deleteComment({ id }).then(() => {
-            void utils.events.getComments.invalidate({
-              eventId: eventId,
-            });
-          })
-        }
+        onDeleteMessage={handleDeleteComment}
         onEditMessage={(id, message) =>
           editComment({ id, content: message }).then(() => {
             void utils.events.getComments.invalidate({

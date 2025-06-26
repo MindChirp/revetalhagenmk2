@@ -56,4 +56,12 @@ export const bookingRouter = createTRPCRouter({
 
       return items;
     }),
+  getItemById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const item = await ctx.db.query.item.findFirst({
+        where: (item, { eq }) => eq(item.id, input.id),
+      });
+      return item;
+    }),
 });

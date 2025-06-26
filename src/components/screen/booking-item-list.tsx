@@ -13,6 +13,7 @@ import SlideAnimation from "../ui/animated/slide-animation";
 import { BadgeInfoIcon, Loader, ShoppingCartIcon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 function BookingItemList() {
   const [filterQueries] = useQueryStates({
@@ -105,11 +106,12 @@ function BookingItemList() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex flex-row items-center gap-2.5">
-                    <Button>
-                      <BadgeInfoIcon />
-                      Mer info
-                    </Button>
-
+                    <Link href={`/booking/${item.id}`}>
+                      <Button>
+                        <BadgeInfoIcon />
+                        Mer info
+                      </Button>
+                    </Link>
                     <span className="text-primary font-semibold">
                       {item.price} kroner
                     </span>

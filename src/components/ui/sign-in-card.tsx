@@ -58,9 +58,9 @@ function SignInCard({ signinRedirect }: { signinRedirect?: string }) {
             )}
           </AnimatePresence>
         </Button>
-        <Button variant="secondary" disabled>
+        {/* <Button variant="secondary" disabled>
           Logg inn med RevetalhagenID
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );

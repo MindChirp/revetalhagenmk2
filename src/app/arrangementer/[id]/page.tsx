@@ -1,11 +1,11 @@
 "use server";
-import type { PageProps } from ".next/types/app/arrangementer/[id]/page";
+import type { PageProps } from ".next/types/app/arrangementer/page";
 import EventChat from "@/components/screen/event-chat";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import EventContextMenu from "@/components/ui/event-context-menu";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { nb } from "date-fns/locale";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -24,6 +24,7 @@ async function Page({ params }: PageProps) {
     // Redirect to 404
     redirect("/404");
   }
+
   return (
     <SlideAnimation
       className="flex flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-32"
@@ -59,39 +60,46 @@ async function Page({ params }: PageProps) {
             duration: 0.5,
           }}
         >
-          <div className="flex w-full flex-col gap-5 md:h-full">
-            <div className="bg-secondary flex h-fit w-full flex-col gap-2.5 rounded-[60px] p-10 md:h-full">
+          <div className="flex h-fit w-full flex-col gap-5 md:h-full">
+            <div className="bg-secondary flex h-full w-full flex-col gap-2.5 rounded-[60px] p-10 md:h-full">
               <div>
-                <h3 className="font-semibold">Opprettet av</h3>
-                <h4>{data?.user?.name}</h4>
+                <h3 className="font-semibold">Dato</h3>
+                <h4>
+                  {isSameDay(data?.event.start, data?.event.end)
+                    ? format(data?.event.start, "do LLL yyy", { locale: nb })
+                    : format(data?.event.start, "do LLL yyy", { locale: nb }) +
+                      " - " +
+                      format(data?.event.end, "do LLL yyy", { locale: nb })}
+                </h4>
               </div>
               {data?.event.createdAt && (
                 <div>
-                  <h3 className="font-semibold">Opprettet </h3>
+                  <h3 className="font-semibold">Tidspunkt </h3>
                   <h4>
-                    {format(data.event.createdAt, "do LLL yyy", {
-                      locale: nb,
-                    })}
+                    {format(data.event.start, "HH:mm", { locale: nb }) +
+                      " - " +
+                      format(data.event.end, "HH:mm", { locale: nb })}
                   </h4>
                 </div>
               )}
               {data?.event.updatedAt && (
                 <div>
-                  <h3 className="font-semibold">Oppdatert</h3>
+                  <h3 className="font-semibold">Sted</h3>
                   <h4>
-                    {format(data.event.createdAt, "do LLL yyy", {
-                      locale: nb,
-                    })}
+                    {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+                    {data?.event.location
+                      ? data?.event.location
+                      : "Ikke spesifisert"}
                   </h4>
                 </div>
               )}
+              {data?.event.author && (
+                <div>
+                  <h3 className="font-semibold">Arrangør</h3>
+                  <h4>{data?.user?.name}</h4>
+                </div>
+              )}
             </div>
-            {/* <div className="bg-accent text-accent-foreground flex h-fit flex-row items-baseline gap-2.5 rounded-[60px] p-10">
-              <h4 className="text-4xl">{data?.news.views}</h4>
-              <p className="text-sm">
-                visning{data?..views != 1 ? "er" : ""}
-              </p>
-            </div> */}
           </div>
         </SlideAnimation>
         <SlideAnimation className="h-full w-full">
@@ -102,13 +110,13 @@ async function Page({ params }: PageProps) {
             {/* {data?.news.content} */}
           </div>
         </SlideAnimation>
-        {session && (
-          <EventChat
-            className="max-h-full w-full md:w-fit"
-            eventId={Number(id)}
-          />
-        )}
       </div>
+      {session && (
+        <EventChat
+          className="max-h-full w-full md:w-fit"
+          eventId={Number(id)}
+        />
+      )}
     </SlideAnimation>
   );
 }
