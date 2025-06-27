@@ -1,3 +1,4 @@
+"use client";
 import { api } from "@/trpc/react";
 import { parseAsIsoDate, parseAsString, useQueryStates } from "nuqs";
 import React from "react";
@@ -106,7 +107,9 @@ function BookingItemList() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex flex-row items-center gap-2.5">
-                    <Link href={`/booking/${item.id}`}>
+                    <Link
+                      href={`/booking/${item.id}?from=${filterQueries.from?.toISOString() ?? ""}&to=${filterQueries.to?.toISOString() ?? ""}`}
+                    >
                       <Button>
                         <BadgeInfoIcon />
                         Mer info

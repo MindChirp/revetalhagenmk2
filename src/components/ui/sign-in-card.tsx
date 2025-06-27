@@ -23,7 +23,7 @@ function SignInCard({ signinRedirect }: { signinRedirect?: string }) {
     // setGoogleLoading(false);
   };
   return (
-    <Card>
+    <Card className="w-full md:min-w-80">
       <CardHeader>
         <CardTitle>Logg inn</CardTitle>
         <CardDescription>

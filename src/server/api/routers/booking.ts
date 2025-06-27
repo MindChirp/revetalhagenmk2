@@ -1,7 +1,7 @@
+import { booking, itemMeta } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
-import { booking, item } from "@/server/db/schema";
-import { and, eq, gt, ilike, lt, notExists } from "drizzle-orm";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 
 export const bookingRouter = createTRPCRouter({
   getItemTypes: publicProcedure.query(async ({ ctx }) => {
@@ -61,7 +61,42 @@ export const bookingRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const item = await ctx.db.query.item.findFirst({
         where: (item, { eq }) => eq(item.id, input.id),
+        with: {
+          itemMeta: true,
+        },
       });
       return item;
+    }),
+  addItemMeta: adminProcedure
+    .input(
+      z.object({
+        icon: z.string().optional(),
+        label: z.string().min(1).max(256),
+        itemId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { icon, label, itemId } = input;
+      const meta = await ctx.db
+        .insert(itemMeta)
+        .values({
+          icon: icon ?? null,
+          label,
+          item: itemId,
+        })
+        .returning();
+
+      return meta[0];
+    }),
+
+  deleteItemMeta: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      const deletedMeta = await ctx.db
+        .delete(itemMeta)
+        .where(eq(itemMeta.id, id))
+        .returning();
+      return deletedMeta[0];
     }),
 });

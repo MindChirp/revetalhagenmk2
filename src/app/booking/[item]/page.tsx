@@ -1,19 +1,39 @@
+import { Badge } from "@/components/ui/badge";
 import BookingCalendarDialog from "@/components/ui/booking-calendar-dialog";
 import { Button } from "@/components/ui/button";
-import type { item } from "@/server/db/schema";
+import { Card, CardContent } from "@/components/ui/card";
+import CreateItemMeta from "@/components/ui/create-item-meta";
+import DeleteItemMeta from "@/components/ui/delete-item-meta";
+import { Separator } from "@/components/ui/separator";
+import { ItemTypePriceTypeMap } from "@/lib/item-type";
+import { auth } from "@/server/auth";
+import { authClient } from "@/server/auth/client";
 import { api } from "@/trpc/server";
-import { CalendarIcon, ShoppingCartIcon } from "lucide-react";
+import { format } from "date-fns";
+import { nb } from "date-fns/locale";
+import { CalendarIcon, CheckIcon, ShoppingCartIcon, XIcon } from "lucide-react";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { headers } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import React from "react";
 
-async function Item({ params }: { params: Promise<{ item: string }> }) {
+async function Item({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ item: string }>;
+  searchParams: Promise<{ from?: string; to?: string }>;
+}) {
   const { item } = await params;
+  const { from, to } = await searchParams;
   if (!item) {
     // Redirect to not found
     redirect("/404");
   }
   const itemData = await api.booking.getItemById({ id: Number(item) });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   // const item: ItemType = {
   //   id: 1,
   //   createdAt: new Date(),
@@ -43,19 +63,67 @@ async function Item({ params }: { params: Promise<{ item: string }> }) {
           className="absolute top-0 left-0 h-full w-full object-cover"
         />
       </div>
-      <h1 className="w-fit text-5xl font-black">{itemData.name}</h1>
-      <div className="flex flex-col gap-2.5 md:flex-row md:gap-5">
-        <Button size={"lg"}>
-          <ShoppingCartIcon /> Book nå
-        </Button>
-        <BookingCalendarDialog
-          trigger={
-            <Button size={"lg"} variant="outline">
-              <CalendarIcon />
-              Se bookingkalender
-            </Button>
-          }
-        />
+      <div className="flex flex-col gap-2.5">
+        <h1 className="w-fit text-5xl font-black">{itemData.name}</h1>
+        {from && to && (
+          <Badge>
+            <CheckIcon />
+            Ledig fra{" "}
+            {format(from, "do LLL yyy", {
+              locale: nb,
+            })}{" "}
+            til{" "}
+            {format(to, "do LLL yyy", {
+              locale: nb,
+            })}
+          </Badge>
+        )}
+        <Card className="mt-5 gap-2.5">
+          <CardContent className="flex flex-col gap-2.5">
+            <Badge variant="secondary">
+              {itemData.type && (
+                <span className="flex items-center gap-2.5">
+                  <DynamicIcon name="banknote" />
+                  {itemData.price} {ItemTypePriceTypeMap[itemData.type]}
+                </span>
+              )}
+            </Badge>
+            <div className="flex flex-col flex-wrap gap-2.5 md:flex-row md:gap-5">
+              {itemData.itemMeta.map((meta) => (
+                <span
+                  className="flex items-center gap-2.5"
+                  key={meta.id + "meta"}
+                >
+                  {meta.icon && <DynamicIcon name={meta.icon as IconName} />}
+                  {meta.label}
+                  {session?.user.role === "admin" && (
+                    <DeleteItemMeta id={Number(item)} />
+                  )}
+                </span>
+              ))}
+              {session?.user.role === "admin" && (
+                <CreateItemMeta itemId={Number(item)} />
+              )}
+              <Separator orientation="horizontal" />
+              <span>
+                {itemData.description ?? "Ingen beskrivelse tilgjengelig"}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+        <div className="mt-5 flex flex-col gap-2.5 md:flex-row md:gap-5">
+          <Button size={"lg"}>
+            <ShoppingCartIcon /> Book nå
+          </Button>
+          <BookingCalendarDialog
+            trigger={
+              <Button size={"lg"} variant="outline">
+                <CalendarIcon />
+                Se bookingkalender
+              </Button>
+            }
+          />
+        </div>
       </div>
     </div>
   );
