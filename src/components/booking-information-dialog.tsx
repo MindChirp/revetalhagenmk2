@@ -20,7 +20,7 @@ function BookingInformationDialog() {
   const { data, isLoading } = api.cms.getContent.useQuery({
     slug: "booking-information",
   });
-  const { mutateAsync, isPending } = api.cms.updateContent.useMutation();
+  const { mutateAsync } = api.cms.updateContent.useMutation();
   const { data: session } = authClient.useSession();
   const utils = api.useUtils();
 

@@ -1,15 +1,14 @@
 "use client";
-import nb from "react-phone-number-input/locale/nb";
 import { cn } from "@/lib/utils";
 import { CheckIcon, ChevronsUpDown } from "lucide-react";
 import {
   useCallback,
   type ComponentProps,
-  type HTMLAttributes,
   type InputHTMLAttributes,
 } from "react";
 import * as RPNInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
+import nb from "react-phone-number-input/locale/nb";
 import { Button } from "./ui/button";
 import {
   Command,

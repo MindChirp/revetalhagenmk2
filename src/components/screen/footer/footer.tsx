@@ -3,7 +3,6 @@ import { SiFacebook, SiInstagram } from "@icons-pack/react-simple-icons";
 import Image from "next/image";
 import React from "react";
 import SocialButton from "./social-button";
-import { Separator } from "@/components/ui/separator";
 
 function Footer({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
@@ -12,6 +11,7 @@ function Footer({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
         "relative min-h-96 w-full overflow-hidden rounded-t-3xl",
         className,
       )}
+      {...props}
     >
       <Image
         src="/images/wide1.jpg"

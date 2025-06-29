@@ -1,8 +1,8 @@
 "use client";
-import React, { type HTMLAttributes } from "react";
-import MemberChat from "../ui/member-chat";
 import { api } from "@/trpc/react";
+import { type HTMLAttributes } from "react";
 import { toast } from "sonner";
+import MemberChat from "../ui/member-chat";
 
 interface EventChatProps extends HTMLAttributes<HTMLDivElement> {
   eventId: number;
@@ -21,11 +21,11 @@ function EventChat({ eventId, ...props }: EventChatProps) {
     void deleteComment({
       id,
     })
-      .then((res) => {
+      .then(() => {
         toast("Kommentaren er slettet!");
         void utils.events.getComments.invalidate();
       })
-      .catch((err) => {
+      .catch(() => {
         toast("Kunne ikke slette kommentaren");
       });
   };
