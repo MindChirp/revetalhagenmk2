@@ -34,7 +34,6 @@ function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (value) => {
-    console.log("Scroll value:", value);
     if (value > 10 && !scrolled) {
       setScrolled(true);
     } else if (value <= 10 && scrolled) {

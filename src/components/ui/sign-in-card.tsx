@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import {
   Card,
@@ -23,7 +24,7 @@ function SignInCard({ signinRedirect }: { signinRedirect?: string }) {
     // setGoogleLoading(false);
   };
   return (
-    <Card>
+    <Card className="w-full md:min-w-80">
       <CardHeader>
         <CardTitle>Logg inn</CardTitle>
         <CardDescription>
@@ -58,9 +59,9 @@ function SignInCard({ signinRedirect }: { signinRedirect?: string }) {
             )}
           </AnimatePresence>
         </Button>
-        <Button variant="secondary" disabled>
+        {/* <Button variant="secondary" disabled>
           Logg inn med RevetalhagenID
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );

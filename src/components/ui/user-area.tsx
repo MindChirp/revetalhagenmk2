@@ -7,6 +7,8 @@ import React, { useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { ShieldCheckIcon, ShieldIcon, UserIcon } from "lucide-react";
+import { Badge } from "./badge";
 
 interface UserAreaProps extends React.HTMLProps<HTMLDivElement> {
   session?: Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -34,7 +36,23 @@ function UserArea({
             </AvatarFallback>
           </Avatar>
         </PopoverTrigger>
-        <PopoverContent>
+        <PopoverContent className="flex flex-col gap-2.5">
+          <div className="flex w-full flex-col items-center justify-center">
+            <div className="relative">
+              {session?.user.role === "admin" && (
+                <Badge className="absolute top-0 right-0 z-10">
+                  <ShieldCheckIcon />
+                </Badge>
+              )}
+              <Avatar className="h-20 w-20">
+                <AvatarImage src={session?.user.image ?? ""} />
+                <AvatarFallback>
+                  <UserIcon />
+                </AvatarFallback>
+              </Avatar>
+            </div>
+            <span className="font-semibold">Hei, {session?.user.name}!</span>
+          </div>
           <Button
             variant={"destructive"}
             className="w-full cursor-pointer"

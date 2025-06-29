@@ -1,4 +1,5 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { format } from "date-fns";
@@ -23,7 +24,8 @@ function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
           <Loader className="animate-spin" />
         </SlideAnimation>
       )}
-      {data && !isPending && (
+
+      {data && !isPending && data.length > 0 && (
         <motion.div
           key="event-list"
           {...props}
@@ -61,16 +63,23 @@ function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
       {data?.length === 0 && !isPending && (
         <motion.div
           key="no-events"
-          className="text-muted-foreground text-center"
+          className={cn("w-full overflow-hidden")}
           initial={{ opacity: 0, height: 0, paddingBottom: 0 }}
-          animate={{ opacity: 1, height: "auto", paddingBottom: 2 }}
+          animate={{ opacity: 1, height: "auto" }}
           transition={{
             type: "spring",
             damping: 20,
             duration: 0.5,
           }}
         >
-          Ingen kommende arrangementer
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>Det er ingen kommende arrangementer</CardTitle>
+              <CardDescription>
+                Men sjekk igjen seinere for oppdateringer!
+              </CardDescription>
+            </CardHeader>
+          </Card>
         </motion.div>
       )}
     </AnimatePresence>

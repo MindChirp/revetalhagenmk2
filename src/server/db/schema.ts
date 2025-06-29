@@ -13,6 +13,9 @@ import { user } from "./auth-schema";
  */
 export const createTable = pgTableCreator((name) => `revetalhagenmk2_${name}`);
 
+/**
+ * This is not used
+ */
 export const posts = createTable(
   "post",
   (d) => ({
@@ -26,6 +29,10 @@ export const posts = createTable(
   }),
   (t) => [index("name_idx").on(t.name)],
 );
+
+/**
+ * The following tables are used for managing events
+ */
 
 export const event = createTable("event", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -43,6 +50,25 @@ export const event = createTable("event", (d) => ({
   image: d.text(),
 }));
 
+export const eventMessage = createTable("eventMessage", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  event: d.integer().references(() => event.id, { onDelete: "cascade" }),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  content: d.text().notNull(),
+  author: d.text().references(() => user.id, { onDelete: "set null" }),
+  replyTo: d
+    .integer()
+    .references((): AnyPgColumn => eventMessage.id, { onDelete: "set null" }),
+}));
+
+/**
+ * The following tables are used for managing news articles
+ */
+
 export const news = createTable("news", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
   name: d.varchar({ length: 256 }),
@@ -57,19 +83,11 @@ export const news = createTable("news", (d) => ({
   preview: d.text(),
 }));
 
-export const eventMessage = createTable("eventMessage", (d) => ({
-  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-  event: d.integer().references(() => event.id, { onDelete: "cascade" }),
-  createdAt: d
-    .timestamp({ withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  content: d.text().notNull(),
-  author: d.text().references(() => user.id, { onDelete: "set null" }),
-  replyTo: d
-    .integer()
-    .references((): AnyPgColumn => eventMessage.id, { onDelete: "set null" }),
+export const newsRelations = relations(news, ({ one }) => ({
+  author: one(user, {
+    fields: [news.author],
+    references: [user.id],
+  }),
 }));
 
 /**
@@ -94,10 +112,65 @@ export const pageContent = createTable("pageContent", (d) => ({
     .notNull(),
 }));
 
-export const newsRelations = relations(news, ({ one }) => ({
-  author: one(user, {
-    fields: [news.author],
-    references: [user.id],
+/**
+ * The following tables are used for managing items that can be booked.
+ */
+export const itemType = createTable("itemType", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  name: d.varchar({ length: 256 }),
+}));
+
+export const item = createTable("item", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  name: d.varchar({ length: 256 }),
+  type: d.integer().references(() => itemType.id, { onDelete: "set null" }),
+  price: d.integer().notNull().default(0),
+  personPrice: d.integer().notNull().default(0),
+  memberDiscount: d.doublePrecision().notNull().default(0),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  description: d.text(),
+  image: d.text(),
+}));
+
+export const itemMeta = createTable("itemMeta", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  icon: d.text(),
+  label: d.varchar({ length: 256 }),
+  item: d.integer().references(() => item.id, { onDelete: "cascade" }),
+}));
+
+export const booking = createTable("booking", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  item: d.integer().references(() => item.id, { onDelete: "cascade" }),
+  // user: d.text().references(() => user.id, { onDelete: "set null" }),
+  email: d.text(),
+  name: d.text().notNull(),
+  phone: d.varchar({ length: 32 }),
+  from: d.timestamp({ withTimezone: true }).notNull(),
+  to: d.timestamp({ withTimezone: true }).notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+}));
+
+export const itemRelations = relations(item, ({ one, many }) => ({
+  bookings: one(booking, {
+    fields: [item.id],
+    references: [booking.item],
+    relationName: "itemBookings",
+  }),
+  itemMeta: many(itemMeta),
+}));
+
+export const itemMetaRelations = relations(itemMeta, ({ one }) => ({
+  item: one(item, {
+    fields: [itemMeta.item],
+    references: [item.id],
   }),
 }));
 

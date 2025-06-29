@@ -52,6 +52,8 @@ function EventCalendar() {
         router.push(`/arrangementer/${event.id}`);
       },
     },
+
+    showWeekNumbers: true,
     locale: "nb-NO",
     theme: "shadcn",
   });

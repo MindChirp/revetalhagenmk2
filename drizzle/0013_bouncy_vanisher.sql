@@ -1,0 +1,1 @@
+ALTER TABLE "revetalhagenmk2_item" ADD COLUMN "price" integer DEFAULT 0 NOT NULL;

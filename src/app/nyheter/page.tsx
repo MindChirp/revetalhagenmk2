@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 function Page() {
   return (
-    <div className="flex flex-col gap-2.5 px-10 pt-36">
+    <div className="flex min-h-screen w-full flex-col gap-2.5 pt-36 md:px-10">
       <motion.div
         className="col-start-2 row-start-1 w-fit"
         initial={{ opacity: 0, x: -50 }}
@@ -19,7 +19,7 @@ function Page() {
           duration: 0.5,
         }}
       >
-        <h1 className="text-foreground flex flex-row gap-5 pl-20 text-6xl leading-20">
+        <h1 className="text-foreground flex w-fit flex-row flex-wrap justify-center gap-x-2 text-center text-4xl leading-12 md:gap-5 md:pl-20 md:text-6xl md:leading-20">
           Hva er siste
           <motion.div
             className="text-secondary-foreground bg-secondary overflow-hidden rounded-3xl px-2"
@@ -48,7 +48,7 @@ function Page() {
           i Revetalhagen?
         </h1>
       </motion.div>
-      <div className="flex flex-col gap-5 px-20">
+      <div className="flex flex-col gap-5 px-5 md:px-20">
         <NewsFilters />
         <NewsList />
       </div>
