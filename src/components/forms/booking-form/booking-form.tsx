@@ -124,7 +124,12 @@ function BookingForm({
                 <FormControl>
                   <DateTimePicker
                     {...field}
-                    allowTime={type !== ItemType.OVERNATTING}
+                    allowTime={
+                      type !==
+                      (ItemType.OVERNATTING ||
+                        ItemType.MØTEROM ||
+                        ItemType.ARRANGEMENTSROM)
+                    }
                     onChange={(date) => field.onChange(date)}
                     value={field.value}
                   />
@@ -142,7 +147,12 @@ function BookingForm({
                 <FormControl>
                   <DateTimePicker
                     {...field}
-                    allowTime={type !== ItemType.OVERNATTING}
+                    allowTime={
+                      type !==
+                      (ItemType.OVERNATTING ||
+                        ItemType.MØTEROM ||
+                        ItemType.ARRANGEMENTSROM)
+                    }
                     onChange={(date) => field.onChange(date)}
                     value={field.value}
                   />

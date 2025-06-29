@@ -33,8 +33,8 @@ async function Booking() {
           </h1>
           <span className="max-w-xl text-center">
             Om litt vil du kunne booke rom og gjenstander fra denne siden.
-            Dersom du er administrator og ikke er logget inn, vil du ha mulighet
-            til å se innholdet på denne siden når du er logget inn.
+            Dersom du er administrator og ikke er logget inn, har du allerede
+            mulighet til å se innholdet på denne siden når du er logget inn.
           </span>
           {!session && (
             <div className="mt-2.5 w-fit">
