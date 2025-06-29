@@ -24,11 +24,13 @@ interface DateTimePickerProps
   extends Omit<React.ComponentProps<typeof Input>, "value" | "onChange"> {
   value?: Date;
   onChange?: (date: Date) => void;
+  allowTime?: boolean;
 }
 function DateTimePicker({
   value = new Date(),
   onChange,
   className,
+  allowTime = true,
   ...props
 }: DateTimePickerProps) {
   const today = new Date();
@@ -42,12 +44,14 @@ function DateTimePicker({
     return generateTimeSlots(start, end);
   }, []);
 
+  const formatString = allowTime ? "do MMM yyyy HH:mm" : "do MMM yyyy";
+
   return (
     <Popover>
       <PopoverTrigger className="w-full">
         <Input
           type="text"
-          value={format(value, "do MMM yyyy HH:mm", {
+          value={format(value, formatString, {
             locale: nb,
           })}
           {...props}
@@ -72,41 +76,45 @@ function DateTimePicker({
                 className="bg-background p-2 sm:pe-5"
                 disabled={[{ before: today }]}
               />
-              <div className="relative w-full max-sm:h-48 sm:w-40">
-                <div className="border-border absolute inset-0 py-4 max-sm:border-t">
-                  <ScrollArea className="border-border h-full sm:border-s">
-                    <div className="space-y-3">
-                      <div className="flex h-5 shrink-0 items-center px-5">
-                        <p className="text-sm font-medium">
-                          {format(value, "EEEE, d")}
-                        </p>
-                      </div>
-                      <div className="grid gap-1.5 px-5 max-sm:grid-cols-2">
-                        {timeSlots.map((timeSlot) => (
-                          <Button
-                            key={timeSlot}
-                            variant={time === timeSlot ? "default" : "outline"}
-                            size="sm"
-                            className="w-full"
-                            onClick={() =>
-                              onChange?.(
-                                new Date(
-                                  value.setHours(
-                                    parseInt(timeSlot?.split(":")[0] ?? "0"),
-                                    parseInt(timeSlot?.split(":")[1] ?? "0"),
+              {allowTime && (
+                <div className="relative w-full max-sm:h-48 sm:w-40">
+                  <div className="border-border absolute inset-0 py-4 max-sm:border-t">
+                    <ScrollArea className="border-border h-full sm:border-s">
+                      <div className="space-y-3">
+                        <div className="flex h-5 shrink-0 items-center px-5">
+                          <p className="text-sm font-medium">
+                            {format(value, "EEEE, d")}
+                          </p>
+                        </div>
+                        <div className="grid gap-1.5 px-5 max-sm:grid-cols-2">
+                          {timeSlots.map((timeSlot) => (
+                            <Button
+                              key={timeSlot}
+                              variant={
+                                time === timeSlot ? "default" : "outline"
+                              }
+                              size="sm"
+                              className="w-full"
+                              onClick={() =>
+                                onChange?.(
+                                  new Date(
+                                    value.setHours(
+                                      parseInt(timeSlot?.split(":")[0] ?? "0"),
+                                      parseInt(timeSlot?.split(":")[1] ?? "0"),
+                                    ),
                                   ),
-                                ),
-                              )
-                            }
-                          >
-                            {timeSlot}
-                          </Button>
-                        ))}
+                                )
+                              }
+                            >
+                              {timeSlot}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </ScrollArea>
+                    </ScrollArea>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

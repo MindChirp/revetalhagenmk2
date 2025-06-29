@@ -1,20 +1,18 @@
 "use client";
 import { api } from "@/trpc/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { BadgeInfoIcon, Loader } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { parseAsIsoDate, parseAsString, useQueryStates } from "nuqs";
-import React from "react";
+import SlideAnimation from "../ui/animated/slide-animation";
+import { Button } from "../ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { AnimatePresence, motion } from "framer-motion";
-import SlideAnimation from "../ui/animated/slide-animation";
-import { BadgeInfoIcon, Loader, ShoppingCartIcon } from "lucide-react";
-import Image from "next/image";
-import { Button } from "../ui/button";
-import Link from "next/link";
 
 function BookingItemList() {
   const [filterQueries] = useQueryStates({
@@ -42,7 +40,7 @@ function BookingItemList() {
         {!(isFetching || isRefetching) && (items?.length ?? 0) > 0 && (
           <motion.h2
             key="result-count"
-            className="text-card-foreground px-10 text-5xl font-black"
+            className="text-card-foreground px-10 text-3xl font-black"
             initial={{
               opacity: 0,
               height: 0,

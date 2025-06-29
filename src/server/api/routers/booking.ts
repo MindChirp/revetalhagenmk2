@@ -1,4 +1,4 @@
-import { booking, itemMeta } from "@/server/db/schema";
+import { booking, item, itemMeta } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
@@ -66,6 +66,33 @@ export const bookingRouter = createTRPCRouter({
         },
       });
       return item;
+    }),
+  updateItem: adminProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z.string().min(1).max(256).optional(),
+        description: z.string().optional(),
+        image: z.string().optional(),
+        type: z.number().optional(),
+        price: z.number().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, name, description, image, type, price } = input;
+      const updatedItem = await ctx.db
+        .update(item)
+        .set({
+          name: name ?? undefined,
+          description: description ?? undefined,
+          image: image ?? undefined,
+          type: type ?? undefined,
+          price: price ?? undefined,
+        })
+        .where(eq(item.id, id))
+        .returning();
+
+      return updatedItem[0];
     }),
   addItemMeta: adminProcedure
     .input(

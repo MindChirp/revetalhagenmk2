@@ -1,21 +1,24 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
-import { PencilIcon, SaveIcon } from "lucide-react";
-import React, { useState } from "react";
-import BottomDialog from "./ui/bottom-dialog";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
+import { Loader, PencilIcon, SaveIcon } from "lucide-react";
+import React, { useState, type ComponentProps } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Form, FormField } from "./ui/form";
+import { Textarea } from "./ui/textarea";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface EditableParagraphProps
   extends Omit<React.HTMLProps<HTMLSpanElement>, "onChange"> {
   content?: string;
   admin?: boolean;
+  buttonVariant?: ComponentProps<typeof Button>["variant"];
   onChange?: (content: string) => void;
+  loading?: boolean;
 }
 
 const formSchema = z.object({
@@ -25,7 +28,9 @@ const formSchema = z.object({
 function EditableParagraph({
   content,
   admin,
+  buttonVariant = "default",
   onChange,
+  loading,
   ...props
 }: EditableParagraphProps) {
   const [edit, setEdit] = useState(false);
@@ -67,32 +72,52 @@ function EditableParagraph({
               marginTop: 0,
             }}
           >
-            <Button onClick={() => setEdit(true)}>
-              <PencilIcon />
-              Rediger
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={buttonVariant}
+                  onClick={() => setEdit(true)}
+                  disabled={loading}
+                >
+                  {!loading ? (
+                    <>
+                      <PencilIcon />
+                      Rediger
+                    </>
+                  ) : (
+                    <Loader className="animate-spin" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Rediger innhold</TooltipContent>
+            </Tooltip>
           </motion.div>
         )}
       </AnimatePresence>
-      <BottomDialog open={edit} onOpenChange={setEdit}>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-5"
-          >
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => <Textarea {...field} />}
-            />
+      <Dialog open={edit} onOpenChange={setEdit}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rediger innhold</DialogTitle>
+          </DialogHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-5"
+            >
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => <Textarea {...field} />}
+              />
 
-            <Button className="w-fit" type="submit">
-              <SaveIcon />
-              Lagre
-            </Button>
-          </form>
-        </Form>
-      </BottomDialog>
+              <Button className="w-fit" type="submit">
+                <SaveIcon />
+                Lagre
+              </Button>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

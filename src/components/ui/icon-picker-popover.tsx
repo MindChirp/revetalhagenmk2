@@ -31,6 +31,7 @@ export function IconPickerPopover({
     if (!searchTerm.trim()) {
       return allLucideIconNames;
     }
+    // Perhaps switch to fuzzy searching in the future
     return allLucideIconNames.filter((name) =>
       name.toLowerCase().includes(searchTerm.toLowerCase().trim()),
     );

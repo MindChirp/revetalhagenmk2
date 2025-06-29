@@ -2,7 +2,7 @@
 
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader, PlusIcon } from "lucide-react";
+import { InfoIcon, Loader, PlusIcon } from "lucide-react";
 import { type IconName } from "lucide-react/dynamic";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,6 +26,7 @@ import {
 } from "./form";
 import { IconPickerPopover } from "./icon-picker-popover";
 import { Input } from "./input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 const formSchema = z.object({
   label: z.string(),
@@ -61,9 +62,14 @@ function CreateItemMeta({ itemId }: { itemId: number }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <PlusIcon />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="outline" onClick={() => setOpen(true)}>
+              <PlusIcon />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Opprett ny informasjonsbrikke</TooltipContent>
+        </Tooltip>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -105,6 +111,10 @@ function CreateItemMeta({ itemId }: { itemId: number }) {
                 )}
               />
             </div>
+            <span className="text-muted-foreground flex gap-2.5 text-sm">
+              <InfoIcon /> Begynn alle beskrivelser med en stor forbokstav - det
+              ser mer profesjonelt ut!
+            </span>
             <Button type="submit" disabled={isPending}>
               {isPending ? (
                 <Loader className="animate-spin" />

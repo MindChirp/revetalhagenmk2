@@ -125,6 +125,8 @@ export const item = createTable("item", (d) => ({
   name: d.varchar({ length: 256 }),
   type: d.integer().references(() => itemType.id, { onDelete: "set null" }),
   price: d.integer().notNull().default(0),
+  personPrice: d.integer().notNull().default(0),
+  memberDiscount: d.doublePrecision().notNull().default(0),
   createdAt: d
     .timestamp({ withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
