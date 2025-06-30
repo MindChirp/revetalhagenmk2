@@ -76,6 +76,8 @@ export const bookingRouter = createTRPCRouter({
         image: z.string().optional(),
         type: z.number().optional(),
         price: z.number().optional(),
+        memberDiscount: z.number().optional(),
+        personPrice: z.number().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -88,6 +90,8 @@ export const bookingRouter = createTRPCRouter({
           image: image ?? undefined,
           type: type ?? undefined,
           price: price ?? undefined,
+          memberDiscount: input.memberDiscount ?? undefined,
+          personPrice: input.personPrice ?? undefined,
         })
         .where(eq(item.id, id))
         .returning();

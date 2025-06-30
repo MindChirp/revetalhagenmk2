@@ -50,7 +50,7 @@ function BookingInformationDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size={"lg"}>
+        <Button variant="outline" size={"lg"} className="w-full md:w-fit">
           <InfoIcon /> Mer informasjon
         </Button>
       </DialogTrigger>

@@ -13,7 +13,7 @@ import CreateItemMeta from "@/components/ui/create-item-meta";
 import DeleteItemMeta from "@/components/ui/delete-item-meta";
 import EditableItemDescription from "@/components/ui/editable-item-description";
 import { Separator } from "@/components/ui/separator";
-import { type ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
+import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
@@ -82,10 +82,7 @@ async function Item({
               {itemData.type && (
                 <span className="flex items-center gap-2.5">
                   <DynamicIcon name="banknote" />
-                  {itemData.price}
-                  {"kr + "}
-                  {itemData.personPrice}{" "}
-                  {ItemTypePriceTypeMap[itemData.type as ItemType]}
+                  {`${itemData.price} ${(itemData.type as ItemType) === ItemType.OVERNATTING ? `+ ${itemData.personPrice}` : ""} ${ItemTypePriceTypeMap[itemData.type as ItemType]}`}
                 </span>
               )}
             </Badge>
@@ -123,6 +120,7 @@ async function Item({
           </CardHeader>
           <CardContent>
             <BookingForm
+              id={itemData.id}
               memberPriceDiscount={itemData.memberDiscount}
               type={itemData.type as ItemType}
               basePrice={itemData.price}
@@ -130,20 +128,23 @@ async function Item({
             />
           </CardContent>
         </Card>
-        <div className="mt-5 flex flex-col gap-2.5 md:flex-row md:gap-5">
-          <Button size={"lg"}>
-            <ShoppingCartIcon /> Book nå
-          </Button>
+        <div className="mt-5 flex w-full flex-col items-center gap-2.5 md:flex-row md:gap-5">
+          <div className="flex w-full flex-col gap-1 md:w-fit md:flex-row md:gap-2.5">
+            <Button size={"lg"}>
+              <ShoppingCartIcon /> Book nå
+            </Button>
 
+            <BookingCalendarDialog
+              trigger={
+                <Button size={"lg"} variant="outline">
+                  <CalendarIcon />
+                  Se bookingkalender
+                </Button>
+              }
+            />
+          </div>
+          <div className="bg-border hidden h-5 w-[1px] md:block" />
           <BookingInformationDialog />
-          <BookingCalendarDialog
-            trigger={
-              <Button size={"lg"} variant="outline">
-                <CalendarIcon />
-                Se bookingkalender
-              </Button>
-            }
-          />
         </div>
       </div>
     </div>

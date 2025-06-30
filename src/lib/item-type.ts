@@ -2,7 +2,7 @@ export const ItemTypePriceTypeMap: Record<ItemType, string> = {
   "1": "kr/natt per person", // Overnatting
   "2": "kr/dag", // Arrangementsrom
   "3": "kr/sesong", // Hageutstyr
-  "4": "kr/time", // Møterom
+  "4": "kr/dag", // Møterom
 };
 
 export enum ItemType {

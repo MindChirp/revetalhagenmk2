@@ -28,7 +28,7 @@ async function Booking() {
         </>
       ) : (
         <div className="flex w-full flex-1 flex-col items-center justify-center gap-2.5">
-          <h1 className="text-3xl font-black">
+          <h1 className="text-center text-3xl font-black">
             Oi, her har du ikke tilgang! (enda)
           </h1>
           <span className="max-w-xl text-center">

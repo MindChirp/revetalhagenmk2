@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
 
 function BookingItemList() {
   const [filterQueries] = useQueryStates({
@@ -113,8 +114,8 @@ function BookingItemList() {
                         Mer info
                       </Button>
                     </Link>
-                    <span className="text-primary font-semibold">
-                      {item.price} kroner
+                    <span className="text-primary leading-none font-semibold">
+                      {`${item.price} ${item.type === ItemType.OVERNATTING ? `+ ${item.personPrice}` : ""} ${ItemTypePriceTypeMap[item.type as ItemType]}`}
                     </span>
                   </CardContent>
                 </div>

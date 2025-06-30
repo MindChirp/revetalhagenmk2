@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
+import EditItemPriceDialog from "@/components/ui/edit-item-price-dialog";
 import {
   Form,
   FormControl,
@@ -55,8 +56,10 @@ type BookingFormProps = {
   basePrice: number;
   personPrice: number;
   memberPriceDiscount?: number;
+  id: number;
 };
 function BookingForm({
+  id,
   type,
   basePrice,
   personPrice,
@@ -253,6 +256,15 @@ function BookingForm({
                 </SlideAnimation>
               )}
             </AnimatePresence>
+            <EditItemPriceDialog
+              id={id}
+              defaultValues={{
+                memberDiscount: memberPriceDiscount ?? 0,
+                price: basePrice,
+                personPrice,
+              }}
+              type={type!}
+            />
           </div>
         </div>
         {typeof memberPriceDiscount === "number" && (
