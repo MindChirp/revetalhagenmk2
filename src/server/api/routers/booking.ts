@@ -2,6 +2,7 @@ import { booking, item, itemMeta } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
+import { CheckBookingValidity } from "@/lib/booking/booking-validity";
 
 export const bookingRouter = createTRPCRouter({
   getItemTypes: publicProcedure.query(async ({ ctx }) => {
@@ -129,5 +130,50 @@ export const bookingRouter = createTRPCRouter({
         .where(eq(itemMeta.id, id))
         .returning();
       return deletedMeta[0];
+    }),
+
+  createBooking: publicProcedure
+    .input(
+      z.object({
+        itemId: z.number(),
+        from: z.date(),
+        to: z.date(),
+        userId: z.number().optional(),
+        email: z.string().email().optional(),
+        phone: z.string().optional(),
+        name: z.string().optional(),
+        message: z.string().optional(),
+        personCount: z.number().min(1).max(100).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const {
+        itemId,
+        from,
+        to,
+        userId,
+        email,
+        phone,
+        name,
+        message,
+        personCount,
+      } = input;
+
+      // Check booking validity
+      const isValid = await CheckBookingValidity({
+        db: ctx.db,
+        itemId,
+        from,
+        to,
+      });
+
+      console.log("IS VALID? ", isValid);
+
+      if (!isValid) {
+        throw new Error("Invalid booking");
+      }
+
+      // Create booking
+      return undefined;
     }),
 });

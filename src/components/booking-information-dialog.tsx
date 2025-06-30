@@ -2,13 +2,15 @@
 import React from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { InfoIcon, Loader } from "lucide-react";
+import { InfoIcon, Loader, XIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { AnimatePresence } from "framer-motion";
 import SlideAnimation from "./ui/animated/slide-animation";
@@ -77,6 +79,13 @@ function BookingInformationDialog() {
             </SlideAnimation>
           )}
         </AnimatePresence>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button>
+              <XIcon /> Den er grei
+            </Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

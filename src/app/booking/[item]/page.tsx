@@ -13,6 +13,7 @@ import CreateItemMeta from "@/components/ui/create-item-meta";
 import DeleteItemMeta from "@/components/ui/delete-item-meta";
 import EditableItemDescription from "@/components/ui/editable-item-description";
 import { Separator } from "@/components/ui/separator";
+import SubmitBookingDialog from "@/components/ui/submit-booking-dialog";
 import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -130,9 +131,12 @@ async function Item({
         </Card>
         <div className="mt-5 flex w-full flex-col items-center gap-2.5 md:flex-row md:gap-5">
           <div className="flex w-full flex-col gap-1 md:w-fit md:flex-row md:gap-2.5">
-            <Button size={"lg"}>
-              <ShoppingCartIcon /> Book nå
-            </Button>
+            <SubmitBookingDialog
+              from={new Date(from ?? "")}
+              to={new Date(to ?? "")}
+              item={itemData}
+              totalPrice={600}
+            />
 
             <BookingCalendarDialog
               trigger={

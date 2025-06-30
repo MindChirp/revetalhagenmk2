@@ -207,7 +207,20 @@ function BookingForm({
               <FormItem>
                 <FormLabel>Antall personer</FormLabel>
                 <FormControl>
-                  <Input {...field} type="number" />
+                  <Input
+                    {...field}
+                    min={1}
+                    onChange={(e) => {
+                      // Refuse values below 1
+                      const value = Number(e.currentTarget.value);
+                      if (!isNaN(value) && value >= 1) {
+                        field.onChange(value);
+                      } else {
+                        field.onChange(1);
+                      }
+                    }}
+                    type="number"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

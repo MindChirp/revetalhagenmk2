@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "./dialog";
 import { Button } from "./button";
-import { Loader, PencilIcon, SaveIcon } from "lucide-react";
+import { InfoIcon, Loader, PencilIcon, SaveIcon } from "lucide-react";
 import { Input } from "./input";
 import {
   Form,
@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "./form";
-import { ItemType } from "@/lib/item-type";
+import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,7 +63,11 @@ function EditItemPriceDialog({
   const { mutateAsync, isPending } = api.booking.updateItem.useMutation();
   const [open, setOpen] = useState(false);
 
-  const [price, memberDiscount] = form.watch(["price", "memberDiscount"]);
+  const [price, memberDiscount, personPrice] = form.watch([
+    "price",
+    "memberDiscount",
+    "personPrice",
+  ]);
 
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("Form submitted with data:", data);
@@ -158,11 +162,27 @@ function EditItemPriceDialog({
               )}
             />
             <Separator />
-            <div>
-              <h2>Medlemspris</h2>
-              <span className="text-card-foreground text-2xl font-bold transition-all">
-                {((price * (100 - memberDiscount)) / 100).toFixed(2)} kr
+            <div className="flex flex-col gap-2.5">
+              <span className="text-muted-foreground flex items-center gap-1 text-sm leading-none">
+                <InfoIcon size={16} />
+                Beregnede priser ({ItemTypePriceTypeMap[type]} i én natt)
               </span>
+              <div>
+                <h2>Totalpris</h2>
+                <span className="text-card-foreground text-2xl font-bold transition-all">
+                  {(price + (personPrice ?? 0)).toFixed(2)} kr
+                </span>
+              </div>
+              <div>
+                <h2>Medlemspris</h2>
+                <span className="text-card-foreground text-2xl font-bold transition-all">
+                  {(
+                    ((price + (personPrice ?? 0)) * (100 - memberDiscount)) /
+                    100
+                  ).toFixed(2)}{" "}
+                  kr
+                </span>
+              </div>
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
