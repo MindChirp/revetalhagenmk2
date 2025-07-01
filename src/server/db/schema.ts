@@ -2,7 +2,12 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { relations, sql } from "drizzle-orm";
-import { index, pgTableCreator, type AnyPgColumn } from "drizzle-orm/pg-core";
+import {
+  index,
+  pgEnum,
+  pgTableCreator,
+  type AnyPgColumn,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 
 /**
@@ -143,12 +148,21 @@ export const itemMeta = createTable("itemMeta", (d) => ({
   item: d.integer().references(() => item.id, { onDelete: "cascade" }),
 }));
 
+export const bookingStatusEnum = pgEnum("bookingStatus", [
+  "pending",
+  "confirmed",
+  "cancelled",
+  "completed",
+  "rejected",
+]);
+
 export const booking = createTable("booking", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
   item: d.integer().references(() => item.id, { onDelete: "cascade" }),
   // user: d.text().references(() => user.id, { onDelete: "set null" }),
-  email: d.text(),
-  name: d.text().notNull(),
+  email: d.varchar({ length: 256 }),
+  name: d.varchar({ length: 256 }).notNull(),
+  personCount: d.integer(),
   phone: d.varchar({ length: 32 }),
   from: d.timestamp({ withTimezone: true }).notNull(),
   to: d.timestamp({ withTimezone: true }).notNull(),
@@ -156,6 +170,8 @@ export const booking = createTable("booking", (d) => ({
     .timestamp({ withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
+  status: bookingStatusEnum().notNull().default("pending"),
+  message: d.text(),
 }));
 
 export const itemRelations = relations(item, ({ one, many }) => ({

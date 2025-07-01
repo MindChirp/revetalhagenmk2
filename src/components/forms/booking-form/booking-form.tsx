@@ -1,8 +1,10 @@
 "use client";
 
+import BookingInformationDialog from "@/components/booking-information-dialog";
 import { PhoneInput } from "@/components/phone-input";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -24,71 +26,44 @@ import { HeroPill } from "@/components/ui/hero-pill";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import SubmitBookingDialog from "@/components/ui/submit-booking-dialog";
 import { ItemType } from "@/lib/item-type";
+import { bookingFormSchema as formSchema } from "@/lib/schemas/booking-form-schema";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/server/auth/client";
-import { booking } from "@/server/db/schema";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { intervalToDuration, startOfDay } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader, SmileIcon, TriangleAlertIcon } from "lucide-react";
+import {
+  Loader,
+  ShoppingCartIcon,
+  SmileIcon,
+  TriangleAlertIcon,
+} from "lucide-react";
 import { parseAsIsoDateTime, useQueryStates } from "nuqs";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-const formSchema = z
-  .object({
-    from: z.date({
-      message: "Fra-dato må være definert",
-    }),
-    to: z.date({
-      message: "Til-dato må være definert",
-    }),
-    itemId: z.number(),
-    userId: z.number().optional(),
-    email: z.string().email({ message: "Ugyldig epostadresse" }).optional(),
-    phone: z.string().optional(),
-    name: z.string().min(5, {
-      message: "Navn er påkrevd",
-    }),
-    message: z.string().optional(),
-    personCount: z.number().min(1).max(100).optional(),
-  })
-  .refine(
-    (data) => {
-      console.log("Refining dates: ", data.from, data.to);
-      return data.from < data.to;
-    },
-    {
-      message: "Fra-dato må være før til-dato",
-      path: ["from"],
-    },
-  )
-  .refine((data) => !!data.email || !!data.phone, {
-    message: "Du må fylle ut enten epost eller telefonnummer",
-    path: ["email", "phone"],
-  });
-
-const handleSubmit = (data: z.infer<typeof formSchema>) => {
-  console.log("Form submitted with data:", data);
-};
 
 type BookingFormProps = {
   type?: ItemType;
   basePrice: number;
   personPrice: number;
   memberPriceDiscount?: number;
-  id: number;
+  item: {
+    id: number;
+    name: string;
+  };
 };
 function BookingForm({
-  id,
+  item,
   type,
   basePrice,
   personPrice,
   memberPriceDiscount,
 }: BookingFormProps) {
+  const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
   const [showMemberPrice, setShowMemberPrice] = useState(false);
   const [queryParams] = useQueryStates({
     from: parseAsIsoDateTime,
@@ -102,24 +77,33 @@ function BookingForm({
       from: queryParams.from ?? undefined,
       to: queryParams.to ?? undefined,
       personCount: 1,
-      itemId: id,
+      itemId: item.id,
     },
     resolver: zodResolver(formSchema),
     reValidateMode: "onBlur",
   });
-  const [people, from, to] = form.watch(["personCount", "from", "to"]);
+  const [people, from, to, email, phone, name, message, itemId] = form.watch([
+    "personCount",
+    "from",
+    "to",
+    "email",
+    "phone",
+    "name",
+    "message",
+    "itemId",
+  ]);
   const {
     data: bookingAvailability,
     isLoading: isCheckingAvailability,
     isError: isAvailabilityError,
   } = api.booking.checkAvailability.useQuery({
-    itemId: id,
+    itemId: item.id,
     from: from,
     to: to,
   });
   const { data: itemBookings, isLoading: itemBookingsLoading } =
     api.booking.getItemBookings.useQuery({
-      itemId: id,
+      itemId: item.id,
       from: startOfDay(new Date()),
       // 60 days in the future
       to: startOfDay(new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)),
@@ -131,333 +115,363 @@ function BookingForm({
     });
   }, [from, to]);
 
+  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log("Form submitted with data:", data);
+    setSubmitDialogOpen(true);
+  };
+
+  const totalPrice = useMemo(() => {
+    if (type === ItemType.OVERNATTING) {
+      return ((people ?? 0) * personPrice + basePrice) * (duration.days ?? 1);
+    }
+    return basePrice * (duration.days ?? 1);
+  }, [basePrice, personPrice, people, duration, type]);
+
+  const memberPrice = useMemo(() => {
+    if (typeof memberPriceDiscount === "number") {
+      return totalPrice * ((100 - memberPriceDiscount) / 100);
+    }
+    return totalPrice;
+  }, [totalPrice, memberPriceDiscount]);
+
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col gap-5"
-      >
-        {itemBookings?.[0]?.booking.from.toISOString()}
-        {session?.user && (
-          <HeroPill
-            className="mx-auto w-fit flex-wrap items-center justify-center rounded-md text-center whitespace-break-spaces md:flex md:rounded-full md:text-start"
-            announcement={`👋 Hei ${session.user.name.split(" ")[0]}!`}
-            label="Siden du er logget inn fylte vi inn litt informasjon om deg"
-            isExternal={false}
-          />
-        )}
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fullt navn</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-row gap-5">
-          <FormField
-            control={form.control}
-            name="from"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Fra</FormLabel>
-                <FormControl>
-                  {!itemBookingsLoading && (
-                    <DateTimePicker
-                      {...field}
-                      allowTime={
-                        type !==
-                        (ItemType.OVERNATTING ||
-                          ItemType.MØTEROM ||
-                          ItemType.ARRANGEMENTSROM)
-                      }
-                      calendarDisable={
-                        itemBookingsLoading
-                          ? []
-                          : itemBookings?.map((booking) => {
-                              console.log(
-                                "Booking dates: ",
-                                booking.booking.from,
-                                booking.booking.to,
-                              );
-                              return [booking.booking.from, booking.booking.to];
-                            })
-                      }
-                      onChange={(date) => {
-                        // Set the time to 17:00 if the type is OVERNATTING
-                        if (type === ItemType.OVERNATTING && date) {
-                          date.setHours(17, 0, 0, 0);
-                        }
-                        field.onChange(date);
-                      }}
-                      value={field.value}
-                    />
-                  )}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="to"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Til</FormLabel>
-                <FormControl>
-                  <DateTimePicker
-                    {...field}
-                    allowTime={
-                      type !==
-                      (ItemType.OVERNATTING ||
-                        ItemType.MØTEROM ||
-                        ItemType.ARRANGEMENTSROM)
-                    }
-                    calendarDisable={itemBookings?.map((booking) => {
-                      return [booking.booking.from, booking.booking.to];
-                    })}
-                    onChange={(date) => {
-                      // Set the time to 12:00 if the type is OVERNATTING
-                      if (type === ItemType.OVERNATTING && date) {
-                        date.setHours(12, 0, 0, 0);
-                      }
-                      field.onChange(date);
-                    }}
-                    value={field.value}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <AnimatePresence>
-          {from && to && (
-            <motion.div
-              key="checking-availability"
-              initial={{
-                opacity: 0,
-                height: 0,
-              }}
-              animate={{
-                opacity: 1,
-                height: "auto",
-              }}
-              exit={{ opacity: 0, height: 0 }}
-            >
-              <Card className="bg-muted shadow-none">
-                <CardContent>
-                  <AnimatePresence mode="popLayout">
-                    {isCheckingAvailability && (
-                      <SlideAnimation
-                        className="flex animate-pulse items-center gap-2.5 overflow-hidden"
-                        exit={{
-                          height: 0,
-                          opacity: 0,
-                          translateY: -20,
-                        }}
-                        direction="up"
-                        key="availability-loader"
-                      >
-                        <Loader className="animate-spin" />
-                        <span>Sjekker tilgjengelighet</span>
-                      </SlideAnimation>
-                    )}
-                    {isAvailabilityError && (
-                      <SlideAnimation
-                        className="flex items-center gap-2.5 overflow-hidden"
-                        exit={{
-                          height: 0,
-                          opacity: 0,
-                          translateY: 20,
-                        }}
-                        direction="up"
-                        key="availability-error"
-                      >
-                        <TriangleAlertIcon className="text-red-500" />
-                        <span className="text-red-500">
-                          En feil oppstod, og vi kunne ikke sjekke om
-                          gjenstanden er ledig
-                        </span>
-                      </SlideAnimation>
-                    )}
-                    {bookingAvailability &&
-                      !isCheckingAvailability &&
-                      !isAvailabilityError && (
-                        <SlideAnimation
-                          className="flex items-center gap-2.5 overflow-hidden"
-                          exit={{
-                            height: 0,
-                            opacity: 0,
-                            translateY: -20,
-                          }}
-                          direction="up"
-                          key="availability-free"
-                        >
-                          <SmileIcon className="text-green-500" />
-                          <span className="text-green-500">
-                            Gjenstanden er ledig
-                          </span>
-                        </SlideAnimation>
-                      )}
-                    {!bookingAvailability && !isCheckingAvailability && (
-                      <SlideAnimation
-                        className="flex items-center gap-2.5 overflow-hidden"
-                        exit={{
-                          height: 0,
-                          opacity: 0,
-                          translateY: -20,
-                        }}
-                        direction="up"
-                        key="availability-booked"
-                      >
-                        <TriangleAlertIcon className="text-red-500" />
-                        <span className="text-red-500">
-                          Gjenstanden kan ikke bookes i dette tidsrommet, da den
-                          allerede er booket av noen andre.
-                        </span>
-                      </SlideAnimation>
-                    )}
-                  </AnimatePresence>
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <Card className="gap-2.5 shadow-none">
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className="gap-2.5">
           <CardHeader>
-            <CardDescription>Fyll ut én eller fler av følgende</CardDescription>
+            <CardDescription>Bookinginformasjon</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Epost</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="email" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefonnummer</FormLabel>
-                  <FormControl>
-                    <PhoneInput {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-        {type === ItemType.OVERNATTING && (
-          <FormField
-            control={form.control}
-            name="personCount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Antall personer</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    min={1}
-                    onChange={(e) => {
-                      // Refuse values below 1
-                      const value = Number(e.currentTarget.value);
-                      if (!isNaN(value) && value >= 1) {
-                        field.onChange(value);
-                      } else {
-                        field.onChange(1);
-                      }
-                    }}
-                    type="number"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+            {session?.user && (
+              <HeroPill
+                className="mx-auto w-fit flex-wrap items-center justify-center rounded-md text-center whitespace-break-spaces md:flex md:rounded-full md:text-start"
+                announcement={`👋 Hei ${session.user.name.split(" ")[0]}!`}
+                label="Siden du er logget inn fylte vi inn litt informasjon om deg"
+                isExternal={false}
+              />
             )}
-          />
-        )}
-        <Separator />
-        <div className="flex flex-col">
-          <span>Totalpris</span>
-          <div className="flex flex-row items-center gap-2.5">
-            <span
-              className={cn(
-                "text-card-foreground text-2xl font-bold transition-all",
-                showMemberPrice && "text-green-600",
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fullt navn</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            >
-              {type === ItemType.OVERNATTING ? (
-                <>
-                  {((people ?? 0) * personPrice + basePrice) *
-                    (duration.days ?? 1) *
-                    (showMemberPrice
-                      ? (100 - (memberPriceDiscount ?? 0)) / 100
-                      : 1)}{" "}
-                  kr
-                </>
-              ) : (
-                <>
-                  {basePrice *
-                    (duration.days ?? 1) *
-                    (showMemberPrice
-                      ? (100 - (memberPriceDiscount ?? 0)) / 100
-                      : 1)}{" "}
-                  kr
-                </>
-              )}
-            </span>
+            />
+            <div className="flex flex-row gap-5">
+              <FormField
+                control={form.control}
+                name="from"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Fra</FormLabel>
+                    <FormControl>
+                      {!itemBookingsLoading && (
+                        <DateTimePicker
+                          {...field}
+                          allowTime={
+                            type !==
+                            (ItemType.OVERNATTING ||
+                              ItemType.MØTEROM ||
+                              ItemType.ARRANGEMENTSROM)
+                          }
+                          calendarDisable={itemBookings?.map((booking) => {
+                            return {
+                              to: booking.booking.to,
+                              from: booking.booking.from,
+                            };
+                          })}
+                          onChange={(date) => {
+                            // Set the time to 17:00 if the type is OVERNATTING
+                            if (type === ItemType.OVERNATTING && date) {
+                              date.setHours(17, 0, 0, 0);
+                            }
+                            field.onChange(date);
+                          }}
+                          value={field.value}
+                        />
+                      )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="to"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Til</FormLabel>
+                    <FormControl>
+                      <DateTimePicker
+                        {...field}
+                        allowTime={
+                          type !==
+                          (ItemType.OVERNATTING ||
+                            ItemType.MØTEROM ||
+                            ItemType.ARRANGEMENTSROM)
+                        }
+                        calendarDisable={itemBookings?.map((booking) => {
+                          return {
+                            to: booking.booking.to,
+                            from: booking.booking.from,
+                          };
+                        })}
+                        onChange={(date) => {
+                          // Set the time to 12:00 if the type is OVERNATTING
+                          if (type === ItemType.OVERNATTING && date) {
+                            date.setHours(12, 0, 0, 0);
+                          }
+                          field.onChange(date);
+                        }}
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <AnimatePresence>
-              {showMemberPrice && (
-                <SlideAnimation
-                  direction="up"
-                  transition={{
-                    type: "spring",
+              {from && to && (
+                <motion.div
+                  key="checking-availability"
+                  initial={{
+                    opacity: 0,
+                    height: 0,
                   }}
+                  animate={{
+                    opacity: 1,
+                    height: "auto",
+                  }}
+                  exit={{ opacity: 0, height: 0 }}
                 >
-                  <Badge>-{memberPriceDiscount}%</Badge>
-                </SlideAnimation>
+                  <Card className="bg-muted shadow-none">
+                    <CardContent>
+                      <AnimatePresence mode="popLayout">
+                        {isCheckingAvailability && (
+                          <SlideAnimation
+                            className="flex animate-pulse items-center gap-2.5 overflow-hidden"
+                            exit={{
+                              height: 0,
+                              opacity: 0,
+                              translateY: -20,
+                            }}
+                            direction="up"
+                            key="availability-loader"
+                          >
+                            <Loader className="animate-spin" />
+                            <span>Sjekker tilgjengelighet</span>
+                          </SlideAnimation>
+                        )}
+                        {isAvailabilityError && (
+                          <SlideAnimation
+                            className="flex items-center gap-2.5 overflow-hidden"
+                            exit={{
+                              height: 0,
+                              opacity: 0,
+                              translateY: 20,
+                            }}
+                            direction="up"
+                            key="availability-error"
+                          >
+                            <TriangleAlertIcon className="text-red-500" />
+                            <span className="text-red-500">
+                              En feil oppstod, og vi kunne ikke sjekke om
+                              gjenstanden er ledig
+                            </span>
+                          </SlideAnimation>
+                        )}
+                        {bookingAvailability &&
+                          !isCheckingAvailability &&
+                          !isAvailabilityError && (
+                            <SlideAnimation
+                              className="flex items-center gap-2.5 overflow-hidden"
+                              exit={{
+                                height: 0,
+                                opacity: 0,
+                                translateY: -20,
+                              }}
+                              direction="up"
+                              key="availability-free"
+                            >
+                              <SmileIcon className="text-green-500" />
+                              <span className="text-green-500">
+                                Gjenstanden er ledig
+                              </span>
+                            </SlideAnimation>
+                          )}
+                        {!bookingAvailability && !isCheckingAvailability && (
+                          <SlideAnimation
+                            className="flex items-center gap-2.5 overflow-hidden"
+                            exit={{
+                              height: 0,
+                              opacity: 0,
+                              translateY: -20,
+                            }}
+                            direction="up"
+                            key="availability-booked"
+                          >
+                            <TriangleAlertIcon className="text-red-500" />
+                            <span className="text-red-500">
+                              Gjenstanden kan ikke bookes i dette tidsrommet, da
+                              den allerede er booket av noen andre.
+                            </span>
+                          </SlideAnimation>
+                        )}
+                      </AnimatePresence>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               )}
             </AnimatePresence>
-            <EditItemPriceDialog
-              id={id}
-              defaultValues={{
-                memberDiscount: memberPriceDiscount ?? 0,
-                price: basePrice,
-                personPrice,
+            <Card className="gap-2.5 shadow-none">
+              <CardHeader>
+                <CardDescription>
+                  Fyll ut én eller fler av følgende
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-5">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Epost</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="email" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Telefonnummer</FormLabel>
+                      <FormControl>
+                        <PhoneInput {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            {type === ItemType.OVERNATTING && (
+              <FormField
+                control={form.control}
+                name="personCount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Antall personer</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        min={1}
+                        onChange={(e) => {
+                          // Refuse values below 1
+                          const value = Number(e.currentTarget.value);
+                          if (!isNaN(value) && value >= 1) {
+                            field.onChange(value);
+                          } else {
+                            field.onChange(1);
+                          }
+                        }}
+                        type="number"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            <Separator />
+            <div className="flex flex-col">
+              <span>Totalpris</span>
+              <div className="flex flex-row items-center gap-2.5">
+                <span
+                  className={cn(
+                    "text-card-foreground text-2xl font-bold transition-all",
+                    showMemberPrice && "text-primary",
+                  )}
+                >
+                  {!showMemberPrice ? totalPrice : memberPrice} kr
+                </span>
+                <AnimatePresence>
+                  {showMemberPrice && (
+                    <SlideAnimation
+                      direction="up"
+                      transition={{
+                        type: "spring",
+                      }}
+                    >
+                      <Badge>-{memberPriceDiscount}%</Badge>
+                    </SlideAnimation>
+                  )}
+                </AnimatePresence>
+                <EditItemPriceDialog
+                  id={item.id}
+                  defaultValues={{
+                    memberDiscount: memberPriceDiscount ?? 0,
+                    price: basePrice,
+                    personPrice,
+                  }}
+                  type={type!}
+                />
+              </div>
+            </div>
+            {typeof memberPriceDiscount === "number" && (
+              <>
+                <Separator />
+                <div className="flex items-center gap-2.5">
+                  <Checkbox
+                    id="member-price"
+                    onCheckedChange={(checked) =>
+                      setShowMemberPrice(Boolean(checked.valueOf()))
+                    }
+                  />
+                  <Label htmlFor="member-price">Vis medlemspris</Label>
+                </div>
+              </>
+            )}
+          </CardContent>
+        </Card>
+
+        <div className="mt-5 flex w-full flex-col items-center gap-2.5 md:flex-row md:gap-5">
+          <div className="flex w-full flex-col gap-1 md:w-fit md:flex-row md:gap-2.5">
+            <Button size={"lg"} type="submit">
+              <ShoppingCartIcon /> Book nå
+            </Button>
+            <SubmitBookingDialog
+              booking={{
+                from: from,
+                to: to,
+                itemId: item.id,
+                email: email ?? "",
+                phone: phone ?? "",
+                name: name ?? "",
+                message: message ?? "",
               }}
-              type={type!}
+              open={submitDialogOpen}
+              onOpenChange={setSubmitDialogOpen}
+              itemName={item.name}
+              totalPrice={totalPrice}
+              memberPrice={memberPrice}
+              memberPriceDiscount={memberPriceDiscount}
             />
           </div>
+          <div className="bg-border hidden h-5 w-[1px] md:block" />
+          <BookingInformationDialog />
         </div>
-        {typeof memberPriceDiscount === "number" && (
-          <>
-            <Separator />
-            <div className="flex items-center gap-2.5">
-              <Checkbox
-                id="member-price"
-                onCheckedChange={(checked) =>
-                  setShowMemberPrice(Boolean(checked.valueOf()))
-                }
-              />
-              <Label htmlFor="member-price">Vis medlemspris</Label>
-            </div>
-          </>
-        )}
       </form>
     </Form>
   );

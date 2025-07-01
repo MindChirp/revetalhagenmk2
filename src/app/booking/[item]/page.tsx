@@ -1,30 +1,17 @@
-import BookingInformationDialog from "@/components/booking-information-dialog";
 import BookingForm from "@/components/forms/booking-form/booking-form";
 import { Badge } from "@/components/ui/badge";
-import BookingCalendarDialog from "@/components/ui/booking-calendar-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import CreateItemMeta from "@/components/ui/create-item-meta";
 import DeleteItemMeta from "@/components/ui/delete-item-meta";
 import EditableItemDescription from "@/components/ui/editable-item-description";
 import { Separator } from "@/components/ui/separator";
-import SubmitBookingDialog from "@/components/ui/submit-booking-dialog";
 import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
-import {
-  CalendarIcon,
-  CheckIcon,
-  ShoppingCartIcon,
-  TriangleAlertIcon,
-} from "lucide-react";
+import { CheckIcon, ShoppingCartIcon, TriangleAlertIcon } from "lucide-react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { headers } from "next/headers";
 import Image from "next/image";
@@ -141,41 +128,17 @@ async function Item({
             </div>
           </CardContent>
         </Card>
-        <Card className="gap-2.5">
-          <CardHeader>
-            <CardDescription>Bookinginformasjon</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <BookingForm
-              id={itemData.id}
-              memberPriceDiscount={itemData.memberDiscount}
-              type={itemData.type as ItemType}
-              basePrice={itemData.price}
-              personPrice={itemData.personPrice}
-            />
-          </CardContent>
-        </Card>
-        <div className="mt-5 flex w-full flex-col items-center gap-2.5 md:flex-row md:gap-5">
-          <div className="flex w-full flex-col gap-1 md:w-fit md:flex-row md:gap-2.5">
-            <SubmitBookingDialog
-              from={new Date(from ?? "")}
-              to={new Date(to ?? "")}
-              item={itemData}
-              totalPrice={600}
-            />
 
-            <BookingCalendarDialog
-              trigger={
-                <Button size={"lg"} variant="outline">
-                  <CalendarIcon />
-                  Se bookingkalender
-                </Button>
-              }
-            />
-          </div>
-          <div className="bg-border hidden h-5 w-[1px] md:block" />
-          <BookingInformationDialog />
-        </div>
+        <BookingForm
+          item={{
+            id: itemData.id,
+            name: itemData.name ?? "Ukjent gjenstand",
+          }}
+          memberPriceDiscount={itemData.memberDiscount}
+          type={itemData.type as ItemType}
+          basePrice={itemData.price}
+          personPrice={itemData.personPrice}
+        />
       </div>
     </div>
   );

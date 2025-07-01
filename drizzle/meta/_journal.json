@@ -120,6 +120,27 @@
       "when": 1751201480180,
       "tag": "0016_brave_power_man",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1751405735988,
+      "tag": "0017_strange_mantis",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1751407071680,
+      "tag": "0018_numerous_ink",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1751407259292,
+      "tag": "0019_wooden_nightshade",
+      "breakpoints": true
     }
   ]
 }

@@ -170,14 +170,26 @@ export const bookingRouter = createTRPCRouter({
         to,
       });
 
-      console.log("IS VALID? ", isValid);
-
       if (!isValid) {
         throw new Error("Invalid booking");
       }
 
+      const created = await ctx.db
+        .insert(booking)
+        .values({
+          item: itemId,
+          from,
+          to,
+          name: name ?? "Unknown user",
+          email: email ?? "",
+          personCount: personCount,
+          phone: phone,
+          message,
+        })
+        .returning();
+
       // Create booking
-      return undefined;
+      return created[0];
     }),
   checkAvailability: publicProcedure
     .input(
