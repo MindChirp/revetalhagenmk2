@@ -2,12 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
 import React, { useMemo, useState } from "react";
 import { Input } from "./input";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { cn } from "@/lib/utils";
+import type { Matcher } from "react-day-picker";
 
 // Function for generating time slots with a 15 minute interval between two dates
 const generateTimeSlots = (start: Date, end: Date) => {
@@ -25,12 +26,14 @@ interface DateTimePickerProps
   value?: Date;
   onChange?: (date: Date) => void;
   allowTime?: boolean;
+  calendarDisable?: Matcher | Matcher[];
 }
 function DateTimePicker({
-  value = new Date(),
+  value,
   onChange,
   className,
   allowTime = true,
+  calendarDisable,
   ...props
 }: DateTimePickerProps) {
   const today = new Date();
@@ -45,15 +48,20 @@ function DateTimePicker({
   }, []);
 
   const formatString = allowTime ? "do MMM yyyy HH:mm" : "do MMM yyyy";
+  console.log("CALENDARDISABLE ", calendarDisable);
 
   return (
     <Popover>
       <PopoverTrigger className="w-full">
         <Input
           type="text"
-          value={format(value, formatString, {
-            locale: nb,
-          })}
+          value={
+            value
+              ? format(value, formatString, {
+                  locale: nb,
+                })
+              : ""
+          }
           {...props}
           readOnly
           className={cn("cursor-pointer", className)}
@@ -74,7 +82,16 @@ function DateTimePicker({
                   }
                 }}
                 className="bg-background p-2 sm:pe-5"
-                disabled={[{ before: today }]}
+                disabled={[
+                  {
+                    before: today,
+                  },
+                  ...(Array.isArray(calendarDisable)
+                    ? calendarDisable
+                    : calendarDisable
+                      ? [calendarDisable]
+                      : []),
+                ]}
               />
               {allowTime && (
                 <div className="relative w-full max-sm:h-48 sm:w-40">
@@ -83,7 +100,7 @@ function DateTimePicker({
                       <div className="space-y-3">
                         <div className="flex h-5 shrink-0 items-center px-5">
                           <p className="text-sm font-medium">
-                            {format(value, "EEEE, d")}
+                            {value ? format(value, "EEEE, d") : "Velg dato"}
                           </p>
                         </div>
                         <div className="grid gap-1.5 px-5 max-sm:grid-cols-2">
@@ -98,10 +115,26 @@ function DateTimePicker({
                               onClick={() =>
                                 onChange?.(
                                   new Date(
-                                    value.setHours(
-                                      parseInt(timeSlot?.split(":")[0] ?? "0"),
-                                      parseInt(timeSlot?.split(":")[1] ?? "0"),
-                                    ),
+                                    value
+                                      ? value.setHours(
+                                          parseInt(
+                                            timeSlot?.split(":")[0] ?? "0",
+                                          ),
+                                          parseInt(
+                                            timeSlot?.split(":")[1] ?? "0",
+                                          ),
+                                        )
+                                      : new Date(
+                                          today.getFullYear(),
+                                          today.getMonth(),
+                                          today.getDate(),
+                                          parseInt(
+                                            timeSlot?.split(":")[0] ?? "0",
+                                          ),
+                                          parseInt(
+                                            timeSlot?.split(":")[1] ?? "0",
+                                          ),
+                                        ),
                                   ),
                                 )
                               }

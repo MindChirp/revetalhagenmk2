@@ -27,25 +27,49 @@ import { Separator } from "@/components/ui/separator";
 import { ItemType } from "@/lib/item-type";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/server/auth/client";
-import { intervalToDuration } from "date-fns";
-import { AnimatePresence } from "framer-motion";
+import { booking } from "@/server/db/schema";
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { intervalToDuration, startOfDay } from "date-fns";
+import { AnimatePresence, motion } from "framer-motion";
+import { Loader, SmileIcon, TriangleAlertIcon } from "lucide-react";
 import { parseAsIsoDateTime, useQueryStates } from "nuqs";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const formSchema = z.object({
-  from: z.date(),
-  to: z.date(),
-  itemId: z.number(),
-  userId: z.number().optional(),
-  email: z.string().email().optional(),
-  phone: z.string().optional(),
-  name: z.string().optional(),
-  message: z.string().optional(),
-  personCount: z.number().min(1).max(100).optional(),
-});
+const formSchema = z
+  .object({
+    from: z.date({
+      message: "Fra-dato må være definert",
+    }),
+    to: z.date({
+      message: "Til-dato må være definert",
+    }),
+    itemId: z.number(),
+    userId: z.number().optional(),
+    email: z.string().email({ message: "Ugyldig epostadresse" }).optional(),
+    phone: z.string().optional(),
+    name: z.string().min(5, {
+      message: "Navn er påkrevd",
+    }),
+    message: z.string().optional(),
+    personCount: z.number().min(1).max(100).optional(),
+  })
+  .refine(
+    (data) => {
+      console.log("Refining dates: ", data.from, data.to);
+      return data.from < data.to;
+    },
+    {
+      message: "Fra-dato må være før til-dato",
+      path: ["from"],
+    },
+  )
+  .refine((data) => !!data.email || !!data.phone, {
+    message: "Du må fylle ut enten epost eller telefonnummer",
+    path: ["email", "phone"],
+  });
 
 const handleSubmit = (data: z.infer<typeof formSchema>) => {
   console.log("Form submitted with data:", data);
@@ -78,11 +102,28 @@ function BookingForm({
       from: queryParams.from ?? undefined,
       to: queryParams.to ?? undefined,
       personCount: 1,
+      itemId: id,
     },
+    resolver: zodResolver(formSchema),
+    reValidateMode: "onBlur",
   });
-  const people = form.watch("personCount");
-  const from = form.watch("from");
-  const to = form.watch("to");
+  const [people, from, to] = form.watch(["personCount", "from", "to"]);
+  const {
+    data: bookingAvailability,
+    isLoading: isCheckingAvailability,
+    isError: isAvailabilityError,
+  } = api.booking.checkAvailability.useQuery({
+    itemId: id,
+    from: from,
+    to: to,
+  });
+  const { data: itemBookings, isLoading: itemBookingsLoading } =
+    api.booking.getItemBookings.useQuery({
+      itemId: id,
+      from: startOfDay(new Date()),
+      // 60 days in the future
+      to: startOfDay(new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)),
+    });
   const duration = useMemo(() => {
     return intervalToDuration({
       start: from,
@@ -96,6 +137,7 @@ function BookingForm({
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col gap-5"
       >
+        {itemBookings?.[0]?.booking.from.toISOString()}
         {session?.user && (
           <HeroPill
             className="mx-auto w-fit flex-wrap items-center justify-center rounded-md text-center whitespace-break-spaces md:flex md:rounded-full md:text-start"
@@ -125,17 +167,37 @@ function BookingForm({
               <FormItem className="flex-1">
                 <FormLabel>Fra</FormLabel>
                 <FormControl>
-                  <DateTimePicker
-                    {...field}
-                    allowTime={
-                      type !==
-                      (ItemType.OVERNATTING ||
-                        ItemType.MØTEROM ||
-                        ItemType.ARRANGEMENTSROM)
-                    }
-                    onChange={(date) => field.onChange(date)}
-                    value={field.value}
-                  />
+                  {!itemBookingsLoading && (
+                    <DateTimePicker
+                      {...field}
+                      allowTime={
+                        type !==
+                        (ItemType.OVERNATTING ||
+                          ItemType.MØTEROM ||
+                          ItemType.ARRANGEMENTSROM)
+                      }
+                      calendarDisable={
+                        itemBookingsLoading
+                          ? []
+                          : itemBookings?.map((booking) => {
+                              console.log(
+                                "Booking dates: ",
+                                booking.booking.from,
+                                booking.booking.to,
+                              );
+                              return [booking.booking.from, booking.booking.to];
+                            })
+                      }
+                      onChange={(date) => {
+                        // Set the time to 17:00 if the type is OVERNATTING
+                        if (type === ItemType.OVERNATTING && date) {
+                          date.setHours(17, 0, 0, 0);
+                        }
+                        field.onChange(date);
+                      }}
+                      value={field.value}
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -156,7 +218,16 @@ function BookingForm({
                         ItemType.MØTEROM ||
                         ItemType.ARRANGEMENTSROM)
                     }
-                    onChange={(date) => field.onChange(date)}
+                    calendarDisable={itemBookings?.map((booking) => {
+                      return [booking.booking.from, booking.booking.to];
+                    })}
+                    onChange={(date) => {
+                      // Set the time to 12:00 if the type is OVERNATTING
+                      if (type === ItemType.OVERNATTING && date) {
+                        date.setHours(12, 0, 0, 0);
+                      }
+                      field.onChange(date);
+                    }}
                     value={field.value}
                   />
                 </FormControl>
@@ -165,6 +236,99 @@ function BookingForm({
             )}
           />
         </div>
+        <AnimatePresence>
+          {from && to && (
+            <motion.div
+              key="checking-availability"
+              initial={{
+                opacity: 0,
+                height: 0,
+              }}
+              animate={{
+                opacity: 1,
+                height: "auto",
+              }}
+              exit={{ opacity: 0, height: 0 }}
+            >
+              <Card className="bg-muted shadow-none">
+                <CardContent>
+                  <AnimatePresence mode="popLayout">
+                    {isCheckingAvailability && (
+                      <SlideAnimation
+                        className="flex animate-pulse items-center gap-2.5 overflow-hidden"
+                        exit={{
+                          height: 0,
+                          opacity: 0,
+                          translateY: -20,
+                        }}
+                        direction="up"
+                        key="availability-loader"
+                      >
+                        <Loader className="animate-spin" />
+                        <span>Sjekker tilgjengelighet</span>
+                      </SlideAnimation>
+                    )}
+                    {isAvailabilityError && (
+                      <SlideAnimation
+                        className="flex items-center gap-2.5 overflow-hidden"
+                        exit={{
+                          height: 0,
+                          opacity: 0,
+                          translateY: 20,
+                        }}
+                        direction="up"
+                        key="availability-error"
+                      >
+                        <TriangleAlertIcon className="text-red-500" />
+                        <span className="text-red-500">
+                          En feil oppstod, og vi kunne ikke sjekke om
+                          gjenstanden er ledig
+                        </span>
+                      </SlideAnimation>
+                    )}
+                    {bookingAvailability &&
+                      !isCheckingAvailability &&
+                      !isAvailabilityError && (
+                        <SlideAnimation
+                          className="flex items-center gap-2.5 overflow-hidden"
+                          exit={{
+                            height: 0,
+                            opacity: 0,
+                            translateY: -20,
+                          }}
+                          direction="up"
+                          key="availability-free"
+                        >
+                          <SmileIcon className="text-green-500" />
+                          <span className="text-green-500">
+                            Gjenstanden er ledig
+                          </span>
+                        </SlideAnimation>
+                      )}
+                    {!bookingAvailability && !isCheckingAvailability && (
+                      <SlideAnimation
+                        className="flex items-center gap-2.5 overflow-hidden"
+                        exit={{
+                          height: 0,
+                          opacity: 0,
+                          translateY: -20,
+                        }}
+                        direction="up"
+                        key="availability-booked"
+                      >
+                        <TriangleAlertIcon className="text-red-500" />
+                        <span className="text-red-500">
+                          Gjenstanden kan ikke bookes i dette tidsrommet, da den
+                          allerede er booket av noen andre.
+                        </span>
+                      </SlideAnimation>
+                    )}
+                  </AnimatePresence>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <Card className="gap-2.5 shadow-none">
           <CardHeader>
             <CardDescription>Fyll ut én eller fler av følgende</CardDescription>

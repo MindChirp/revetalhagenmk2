@@ -1,6 +1,6 @@
 import { type db } from "@/server/db";
 import { booking, item } from "@/server/db/schema";
-import { eq, lte } from "drizzle-orm";
+import { and, eq, gte, lte, or } from "drizzle-orm";
 
 /**
  * THE FOLLOWING RULES APPLY TO BOOKING VALIDITY:
@@ -27,17 +27,48 @@ export const CheckBookingValidity = async ({
   to,
 }: CheckBookingValidityProps) => {
   // First check if an event is ongoing and overlapping with the times of the booking request
-  const bookings = await db.query.booking.findFirst({
-    with: {
-      item: true,
-    },
-    where: (booking, { eq, or, lte, gte, and }) => {
-      const conditions = [];
-      conditions.push(or(eq(booking.item, itemId), eq(item.type, 2)));
-      conditions.push(and(lte(booking.from, to), gte(booking.to, from)));
-      return and(...conditions);
-    },
-  });
+  const bookings = await db
+    .select()
+    .from(booking)
+    .leftJoin(item, eq(booking.item, item.id))
+    .where(
+      and(
+        or(eq(booking.item, itemId), eq(item.type, 2)),
+        lte(booking.from, to),
+        gte(booking.to, from),
+      ),
+    );
 
-  return !!bookings;
+  console.log("Bookings found:", bookings);
+
+  return bookings.length === 0;
+};
+
+type GetItemBookingsProps = {
+  db: typeof db;
+  itemId: number;
+  from: Date;
+  to: Date;
+};
+export const GetItemBookings = async ({
+  db,
+  itemId,
+  from,
+  to,
+}: GetItemBookingsProps) => {
+  const bookings = await db
+    .select()
+    .from(booking)
+    .leftJoin(item, eq(booking.item, item.id))
+    .where(
+      and(
+        or(eq(booking.item, itemId), eq(item.type, 2)),
+        lte(booking.from, to),
+        gte(booking.to, from),
+      ),
+    );
+
+  console.log(bookings);
+
+  return bookings;
 };

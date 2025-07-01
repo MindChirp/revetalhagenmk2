@@ -2,7 +2,10 @@ import { booking, item, itemMeta } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
-import { CheckBookingValidity } from "@/lib/booking/booking-validity";
+import {
+  CheckBookingValidity,
+  GetItemBookings,
+} from "@/lib/booking/booking-validity";
 
 export const bookingRouter = createTRPCRouter({
   getItemTypes: publicProcedure.query(async ({ ctx }) => {
@@ -175,5 +178,40 @@ export const bookingRouter = createTRPCRouter({
 
       // Create booking
       return undefined;
+    }),
+  checkAvailability: publicProcedure
+    .input(
+      z.object({
+        itemId: z.number(),
+        from: z.date(),
+        to: z.date(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const validity = await CheckBookingValidity({
+        db: ctx.db,
+        ...input,
+      });
+
+      return validity;
+    }),
+  getItemBookings: publicProcedure
+    .input(
+      z.object({
+        itemId: z.number(),
+        from: z.date().optional(),
+        to: z.date().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { itemId, from, to } = input;
+      const bookings = await GetItemBookings({
+        db: ctx.db,
+        itemId,
+        from: from ?? new Date(),
+        to: to ?? new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * 60), // Default to 60 day later
+      });
+
+      return bookings;
     }),
 });

@@ -69,23 +69,20 @@ function EditItemPriceDialog({
     "personPrice",
   ]);
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log("Form submitted with data:", data);
-    void mutateAsync({
-      id,
-      price: data.price,
-      memberDiscount: data.memberDiscount,
-      personPrice: data.personPrice,
-    })
-      .then(() => {
-        toast(
-          "Prisen er oppdatert! Last inn siden på nytt for å se endringene.",
-        );
-        setOpen(false);
-      })
-      .catch(() => {
-        toast("Prisen kunne ikke oppdateres");
+    try {
+      await mutateAsync({
+        id,
+        price: data.price,
+        memberDiscount: data.memberDiscount,
+        personPrice: data.personPrice,
       });
+      toast("Prisen er oppdatert! Last inn siden på nytt for å se endringene.");
+      setOpen(false);
+    } catch {
+      toast("Prisen kunne ikke oppdateres");
+    }
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -100,7 +97,10 @@ function EditItemPriceDialog({
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSubmit)}
+            onSubmit={(e) => {
+              e.stopPropagation();
+              void form.handleSubmit(handleSubmit)(e);
+            }}
             className="flex flex-col gap-5"
           >
             <FormField
@@ -165,7 +165,7 @@ function EditItemPriceDialog({
             <div className="flex flex-col gap-2.5">
               <span className="text-muted-foreground flex items-center gap-1 text-sm leading-none">
                 <InfoIcon size={16} />
-                Beregnede priser ({ItemTypePriceTypeMap[type]} i én natt)
+                Beregnede priser ({ItemTypePriceTypeMap[type]})
               </span>
               <div>
                 <h2>Totalpris</h2>

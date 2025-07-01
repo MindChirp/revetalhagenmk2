@@ -19,7 +19,12 @@ import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
-import { CalendarIcon, CheckIcon, ShoppingCartIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  CheckIcon,
+  ShoppingCartIcon,
+  TriangleAlertIcon,
+} from "lucide-react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { headers } from "next/headers";
 import Image from "next/image";
@@ -34,6 +39,14 @@ async function Item({
 }) {
   const { item } = await params;
   const { from, to } = await searchParams;
+  const availability =
+    from && to
+      ? await api.booking.checkAvailability({
+          itemId: Number(item),
+          from: new Date(from),
+          to: new Date(to),
+        })
+      : undefined;
   if (!item) {
     // Redirect to not found
     redirect("/404");
@@ -64,10 +77,23 @@ async function Item({
       </div>
       <div className="flex flex-col gap-2.5">
         <h1 className="w-fit text-5xl font-black">{itemData.name}</h1>
-        {from && to && (
+        {availability === true && from && to && (
           <Badge>
             <CheckIcon />
             Ledig fra{" "}
+            {format(from, "do LLL yyy", {
+              locale: nb,
+            })}{" "}
+            til{" "}
+            {format(to, "do LLL yyy", {
+              locale: nb,
+            })}
+          </Badge>
+        )}
+        {availability === false && from && to && (
+          <Badge variant="destructive">
+            <TriangleAlertIcon />
+            Ikke ledig fra{" "}
             {format(from, "do LLL yyy", {
               locale: nb,
             })}{" "}
