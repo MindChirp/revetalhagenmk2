@@ -44,7 +44,7 @@ import {
 import { parseAsIsoDateTime, useQueryStates } from "nuqs";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 
 type BookingFormProps = {
   type?: ItemType;
@@ -175,10 +175,9 @@ function BookingForm({
                         <DateTimePicker
                           {...field}
                           allowTime={
-                            type !==
-                            (ItemType.OVERNATTING ||
-                              ItemType.MØTEROM ||
-                              ItemType.ARRANGEMENTSROM)
+                            type !== ItemType.OVERNATTING &&
+                            type !== ItemType.MØTEROM &&
+                            type !== ItemType.ARRANGEMENTSROM
                           }
                           calendarDisable={itemBookings?.map((booking) => {
                             return {
@@ -211,10 +210,9 @@ function BookingForm({
                       <DateTimePicker
                         {...field}
                         allowTime={
-                          type !==
-                          (ItemType.OVERNATTING ||
-                            ItemType.MØTEROM ||
-                            ItemType.ARRANGEMENTSROM)
+                          type !== ItemType.OVERNATTING &&
+                          type !== ItemType.MØTEROM &&
+                          type !== ItemType.ARRANGEMENTSROM
                         }
                         calendarDisable={itemBookings?.map((booking) => {
                           return {

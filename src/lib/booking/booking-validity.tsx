@@ -27,6 +27,26 @@ export const CheckBookingValidity = async ({
   to,
 }: CheckBookingValidityProps) => {
   // First check if an event is ongoing and overlapping with the times of the booking request
+  const queriedItem = await db.query.item.findFirst({
+    where: eq(item.id, itemId),
+  });
+
+  if (!queriedItem) {
+    throw new Error("Item not found");
+  }
+
+  // Check if the item is of type "arrangement" (type 2)
+  if (queriedItem.type === 2) {
+    // Check if there are ANY bookings at all in the entire house, for all items within the selected date range
+    const overlappingBookings = await db
+      .select()
+      .from(booking)
+      .where(and(lte(booking.from, to), gte(booking.to, from)));
+
+    return overlappingBookings.length === 0;
+  }
+
+  // If item is not of type "arrangement", check if the dates are valid, and if there are any events overlapping with the booking
   const bookings = await db
     .select()
     .from(booking)
@@ -56,6 +76,28 @@ export const GetItemBookings = async ({
   from,
   to,
 }: GetItemBookingsProps) => {
+  // First check if an event is ongoing and overlapping with the times of the booking request
+  const queriedItem = await db.query.item.findFirst({
+    where: eq(item.id, itemId),
+  });
+
+  if (!queriedItem) {
+    throw new Error("Item not found");
+  }
+
+  // Check if the item is of type "arrangement" (type 2)
+  if (queriedItem.type === 2) {
+    // Check if there are ANY bookings at all in the entire house, for all items within the selected date range
+    const overlappingBookings = await db
+      .select()
+      .from(booking)
+      .leftJoin(item, eq(booking.item, item.id))
+      .where(and(lte(booking.from, to), gte(booking.to, from)));
+
+    return overlappingBookings;
+  }
+
+  // If item is not of type "arrangement", check if the dates are valid, and if there are any events overlapping with the booking
   const bookings = await db
     .select()
     .from(booking)
@@ -68,7 +110,23 @@ export const GetItemBookings = async ({
       ),
     );
 
-  console.log(bookings);
+  console.log("Bookings found:", bookings);
 
   return bookings;
+
+  // const bookings = await db
+  //   .select()
+  //   .from(booking)
+  //   .leftJoin(item, eq(booking.item, item.id))
+  //   .where(
+  //     and(
+  //       or(eq(booking.item, itemId), eq(item.type, 2)),
+  //       lte(booking.from, to),
+  //       gte(booking.to, from),
+  //     ),
+  //   );
+
+  // console.log(bookings);
+
+  // return bookings;
 };

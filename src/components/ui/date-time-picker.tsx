@@ -66,7 +66,6 @@ function DateTimePicker({
           readOnly
           className={cn("cursor-pointer", className)}
         />
-        {/* <Button className="min-w-32">{value}</Button> */}
       </PopoverTrigger>
       <PopoverContent className="w-fit">
         <div>

@@ -21,7 +21,7 @@ export const bookingFormSchema = z
   .refine(
     (data) => {
       console.log("Refining dates: ", data.from, data.to);
-      return data.from < data.to;
+      return data.from <= data.to;
     },
     {
       message: "Fra-dato må være før til-dato",

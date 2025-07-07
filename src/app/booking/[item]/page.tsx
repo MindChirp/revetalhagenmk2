@@ -1,3 +1,4 @@
+import BookingConfirmationTemplate from "emails/booking-confirmation-template";
 import BookingForm from "@/components/forms/booking-form/booking-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

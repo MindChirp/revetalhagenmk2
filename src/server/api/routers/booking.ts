@@ -6,6 +6,10 @@ import {
   CheckBookingValidity,
   GetItemBookings,
 } from "@/lib/booking/booking-validity";
+import sendBookingConfirmations, {
+  sendBookingConfirmationsToAdmin,
+} from "@/server/email/booking";
+import { CalculatePrice } from "@/lib/booking/price";
 
 export const bookingRouter = createTRPCRouter({
   getItemTypes: publicProcedure.query(async ({ ctx }) => {
@@ -188,6 +192,45 @@ export const bookingRouter = createTRPCRouter({
         })
         .returning();
 
+      const bookedItem = await ctx.db.query.item.findFirst({
+        where: eq(item?.id, itemId),
+      });
+
+      const price = await CalculatePrice({
+        db: ctx.db,
+        itemId,
+        from,
+        to,
+        people: personCount,
+      });
+
+      // Send the booking confirmation email to post@revetalhagen.no aswell
+      await sendBookingConfirmationsToAdmin({
+        from,
+        to,
+        bookingReference: created[0]?.reference,
+        item: {
+          name: bookedItem?.name ?? "Ukjent gjenstand",
+        },
+        name: name ?? "Ukjent bruker",
+        totalPrice: price.nonMemberPrice,
+      });
+
+      if (email) {
+        // Send booking confirmation email
+        await sendBookingConfirmations({
+          email,
+          from,
+          to,
+          bookingReference: created[0]?.reference,
+          item: {
+            name: bookedItem?.name ?? "Ukjent gjenstand",
+          },
+          name,
+          totalPrice: price.nonMemberPrice,
+        });
+      }
+
       // Create booking
       return created[0];
     }),
@@ -217,6 +260,10 @@ export const bookingRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { itemId, from, to } = input;
+      if (!from || !to) {
+        throw new Error("Both 'from' and 'to' dates are required");
+      }
+
       const bookings = await GetItemBookings({
         db: ctx.db,
         itemId,
@@ -225,5 +272,26 @@ export const bookingRouter = createTRPCRouter({
       });
 
       return bookings;
+    }),
+  getBookingByReference: publicProcedure
+    .input(
+      z.object({
+        reference: z.string().min(1),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { reference } = input;
+
+      const response = await ctx.db.query.booking.findFirst({
+        where: eq(booking.reference, reference),
+        columns: {
+          item: false,
+        },
+        with: {
+          item: true,
+        },
+      });
+
+      return response;
     }),
 });

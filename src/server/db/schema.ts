@@ -158,6 +158,7 @@ export const bookingStatusEnum = pgEnum("bookingStatus", [
 
 export const booking = createTable("booking", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  reference: d.uuid().defaultRandom().notNull(),
   item: d.integer().references(() => item.id, { onDelete: "cascade" }),
   // user: d.text().references(() => user.id, { onDelete: "set null" }),
   email: d.varchar({ length: 256 }),
@@ -187,6 +188,14 @@ export const itemMetaRelations = relations(itemMeta, ({ one }) => ({
   item: one(item, {
     fields: [itemMeta.item],
     references: [item.id],
+  }),
+}));
+
+export const bookingRelations = relations(booking, ({ one, many }) => ({
+  item: one(item, {
+    fields: [booking.item],
+    references: [item.id],
+    relationName: "bookingItem",
   }),
 }));
 

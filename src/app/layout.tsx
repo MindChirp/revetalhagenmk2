@@ -10,6 +10,7 @@ import { Suspense } from "react";
 import "@schedule-x/theme-shadcn/dist/index.css";
 import Footer from "@/components/screen/footer/footer";
 import { Toaster } from "@/components/ui/sonner";
+import { Loader } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Revetalhagen",
@@ -34,7 +35,15 @@ export default function RootLayout({
           <TRPCReactProvider>
             <Header />
             <div className="min-h-screen">
-              <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+              <Suspense
+                fallback={
+                  <div className="flex h-[100vh] w-full items-center justify-center">
+                    <Loader className="animate-spin" />
+                  </div>
+                }
+              >
+                {children}
+              </Suspense>
             </div>
             <Footer className="mt-20" />
             <Toaster position="top-center" />

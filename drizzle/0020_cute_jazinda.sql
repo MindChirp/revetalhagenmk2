@@ -1,0 +1,1 @@
+ALTER TABLE "revetalhagenmk2_booking" ADD COLUMN "reference" uuid DEFAULT gen_random_uuid() NOT NULL;
