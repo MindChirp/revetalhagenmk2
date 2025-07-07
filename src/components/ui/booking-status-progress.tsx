@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import type { booking } from "@/server/db/schema";
-import React from "react";
 import {
   Stepper,
   StepperDescription,

@@ -191,7 +191,7 @@ export const itemMetaRelations = relations(itemMeta, ({ one }) => ({
   }),
 }));
 
-export const bookingRelations = relations(booking, ({ one, many }) => ({
+export const bookingRelations = relations(booking, ({ one }) => ({
   item: one(item, {
     fields: [booking.item],
     references: [item.id],

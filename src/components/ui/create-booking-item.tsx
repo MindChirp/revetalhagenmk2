@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import { PlusIcon } from "lucide-react";
+import { Button } from "./button";
 import {
   Dialog,
   DialogContent,
@@ -8,11 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./dialog";
-import { Button } from "./button";
-import { PlusIcon } from "lucide-react";
 
 function CreateBookingItem() {
-  const [open, setOpen] = useState(false);
   return (
     <Dialog>
       <DialogTrigger asChild>

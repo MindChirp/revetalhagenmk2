@@ -1,5 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import {
+  createViewDay,
+  createViewMonthAgenda,
+  createViewMonthGrid,
+  createViewWeek,
+  viewMonthGrid,
+} from "@schedule-x/calendar";
+import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react";
+import { XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { Button } from "./button";
 import {
   Dialog,
   DialogClose,
@@ -10,18 +21,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./dialog";
-import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react";
-import {
-  createViewDay,
-  createViewMonthAgenda,
-  createViewMonthGrid,
-  createViewWeek,
-  viewMonthGrid,
-} from "@schedule-x/calendar";
-import { endOfWeek, startOfWeek } from "date-fns";
-import { useRouter } from "next/navigation";
-import { Button } from "./button";
-import { XIcon } from "lucide-react";
 
 interface BookingCalendarDialogProps {
   trigger: React.ReactNode;
@@ -30,8 +29,6 @@ interface BookingCalendarDialogProps {
 }
 
 function BookingCalendarDialog({ trigger }: BookingCalendarDialogProps) {
-  const [from, setFrom] = useState(startOfWeek(new Date()));
-  const [to, setTo] = useState(endOfWeek(new Date()));
   const router = useRouter();
   const calendar = useNextCalendarApp({
     views: [
@@ -42,10 +39,6 @@ function BookingCalendarDialog({ trigger }: BookingCalendarDialogProps) {
     ],
     defaultView: viewMonthGrid.name,
     callbacks: {
-      onRangeUpdate: (range) => {
-        setFrom(new Date(range.start));
-        setTo(new Date(range.end));
-      },
       onEventClick: (event) => {
         router.push(`/arrangementer/${event.id}`);
       },

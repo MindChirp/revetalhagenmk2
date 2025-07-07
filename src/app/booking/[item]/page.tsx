@@ -1,7 +1,5 @@
-import BookingConfirmationTemplate from "emails/booking-confirmation-template";
 import BookingForm from "@/components/forms/booking-form/booking-form";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import CreateItemMeta from "@/components/ui/create-item-meta";
 import DeleteItemMeta from "@/components/ui/delete-item-meta";
@@ -12,7 +10,7 @@ import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
-import { CheckIcon, ShoppingCartIcon, TriangleAlertIcon } from "lucide-react";
+import { CheckIcon, TriangleAlertIcon } from "lucide-react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { headers } from "next/headers";
 import Image from "next/image";

@@ -82,7 +82,7 @@ function BookingForm({
     resolver: zodResolver(formSchema),
     reValidateMode: "onBlur",
   });
-  const [people, from, to, email, phone, name, message, itemId] = form.watch([
+  const [people, from, to, email, phone, name, message] = form.watch([
     "personCount",
     "from",
     "to",

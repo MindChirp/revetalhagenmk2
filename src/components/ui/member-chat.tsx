@@ -4,16 +4,15 @@ import type { AppRouter } from "@/server/api/root";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { inferProcedureOutput } from "@trpc/server";
 import type { ClassValue } from "clsx";
+import { AnimatePresence } from "framer-motion";
 import { SendIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import SlideAnimation from "./animated/slide-animation";
 import { Button } from "./button";
 import { Form, FormField } from "./form";
 import { Input } from "./input";
 import MemberMessage from "./member-message";
-import { api } from "@/trpc/react";
-import SlideAnimation from "./animated/slide-animation";
-import { AnimatePresence } from "framer-motion";
 
 interface MemberChatProps {
   messages: inferProcedureOutput<AppRouter["events"]["getComments"]>;

@@ -3,12 +3,12 @@
 import { cn } from "@/lib/utils";
 import type { auth } from "@/server/auth";
 import { authClient } from "@/server/auth/client";
+import { ShieldCheckIcon, UserIcon } from "lucide-react";
 import React, { useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Badge } from "./badge";
 import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { ShieldCheckIcon, ShieldIcon, UserIcon } from "lucide-react";
-import { Badge } from "./badge";
 
 interface UserAreaProps extends React.HTMLProps<HTMLDivElement> {
   session?: Awaited<ReturnType<typeof auth.api.getSession>>;
