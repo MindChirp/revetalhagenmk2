@@ -148,13 +148,15 @@ export const itemMeta = createTable("itemMeta", (d) => ({
   item: d.integer().references(() => item.id, { onDelete: "cascade" }),
 }));
 
-export const bookingStatusEnum = pgEnum("bookingStatus", [
+export const BookingStates = [
   "pending",
   "confirmed",
   "cancelled",
   "completed",
   "rejected",
-]);
+] as const;
+
+export const bookingStatusEnum = pgEnum("bookingStatus", BookingStates);
 
 export const booking = createTable("booking", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -166,7 +168,9 @@ export const booking = createTable("booking", (d) => ({
   personCount: d.integer(),
   phone: d.varchar({ length: 32 }),
   from: d.timestamp({ withTimezone: true }).notNull(),
+  rejectionReason: d.text(),
   to: d.timestamp({ withTimezone: true }).notNull(),
+  price: d.integer().notNull().default(0),
   createdAt: d
     .timestamp({ withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

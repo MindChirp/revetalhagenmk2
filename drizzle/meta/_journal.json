@@ -148,6 +148,20 @@
       "when": 1751552471236,
       "tag": "0020_cute_jazinda",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1751904109249,
+      "tag": "0021_grey_goblin_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1752502578925,
+      "tag": "0022_unusual_master_mold",
+      "breakpoints": true
     }
   ]
 }
