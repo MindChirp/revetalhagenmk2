@@ -1,24 +1,30 @@
 "use client";
 
 import { BookingStatusMap } from "@/lib/booking-status-map";
+import { BookingStates } from "@/server/db/schema";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { PortableTextBlock } from "@portabletext/editor";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { AnimatePresence } from "framer-motion";
-import { Loader, SaveIcon } from "lucide-react";
+import { InfoIcon, Loader, SaveIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { AnimatedTabs } from "./animated-tabs";
 import GrowAnimation from "./animated/grow-animation";
 import { Button } from "./button";
-import { Card, CardContent } from "./card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./card";
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "./form";
 import TextEditor from "./portable-text/portable-text";
-import type { PortableTextBlock } from "@portabletext/editor";
-import { BookingStates } from "@/server/db/schema";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import PortableRenderer from "./portable-text/render-components/PortableRenderer";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 type StatusValue = keyof typeof BookingStatusMap;
 
@@ -77,6 +83,14 @@ function BookingStatusToggle({
 
   return (
     <Card>
+      <CardHeader>
+        <CardTitle>Administrer bookingstatus</CardTitle>
+        <CardDescription>
+          Endre status for bookingen. Når endringene lagres vil det umiddelbart
+          bli sendt ut en epost til den det gjelder, slik at de er oppdatert på
+          statusen.
+        </CardDescription>
+      </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -112,15 +126,14 @@ function BookingStatusToggle({
               />
 
               <AnimatePresence>
-                <FormField
-                  key={"rejection-reason-parent"}
-                  control={form.control}
-                  name="reason"
-                  render={({ field }) => (
-                    <>
-                      {status === "rejected" && (
+                {status === "rejected" && (
+                  <FormField
+                    control={form.control}
+                    name="reason"
+                    render={({ field }) => (
+                      <>
                         <GrowAnimation
-                          className="flex w-full flex-col gap-5"
+                          className="flex w-full flex-col"
                           key={"rejection-reason"}
                           animate={{
                             marginTop: 20,
@@ -132,13 +145,11 @@ function BookingStatusToggle({
                             marginTop: 0,
                           }}
                         >
-                          <FormLabel className="mx-auto">
-                            Årsak til avslag
-                          </FormLabel>
+                          <FormLabel>Årsak til avslag</FormLabel>
                           <FormControl>
                             {(initialValue?.reason?.length ?? 0) > 0 ? (
-                              <div className="flex flex-col items-center">
-                                <div className="mx-auto flex flex-row items-center gap-1 text-amber-500">
+                              <div className="flex flex-col items-start">
+                                <div className="mb-2.5 flex flex-row items-center gap-1 text-amber-500">
                                   <InfoCircledIcon />
                                   <span>
                                     Begrunnelse for avslag kan ikke endres etter
@@ -159,7 +170,7 @@ function BookingStatusToggle({
                             ) : (
                               <TextEditor
                                 onChange={(value) => {
-                                  field.onChange(JSON.stringify(value));
+                                  field.onChange(JSON.stringify(value ?? []));
                                 }}
                                 value={
                                   JSON.parse(
@@ -168,16 +179,13 @@ function BookingStatusToggle({
                                 }
                               />
                             )}
-
-                            {/* <Textarea {...field} className="w-full" /> */}
                           </FormControl>
-
                           <FormMessage />
                         </GrowAnimation>
-                      )}
-                    </>
-                  )}
-                />
+                      </>
+                    )}
+                  />
+                )}
                 {status != initialValue?.status && (
                   <GrowAnimation
                     className="w-full"
@@ -192,11 +200,7 @@ function BookingStatusToggle({
                       marginTop: 0,
                     }}
                   >
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={isPending}
-                    >
+                    <Button type="submit" disabled={isPending}>
                       {isPending ? (
                         <Loader className="animate-spin" />
                       ) : (
@@ -205,6 +209,25 @@ function BookingStatusToggle({
                         </>
                       )}
                     </Button>
+                  </GrowAnimation>
+                )}
+                {status === initialValue?.status && (
+                  <GrowAnimation
+                    className="w-full"
+                    key={"cannot-save-tooltip"}
+                    animate={{
+                      marginTop: 10,
+                    }}
+                    exit={{
+                      marginTop: 0,
+                    }}
+                    initial={{
+                      marginTop: 0,
+                    }}
+                  >
+                    <span className="flex flex-row items-center gap-2.5 opacity-50">
+                      <InfoIcon /> Ingen endringer å lagre
+                    </span>
                   </GrowAnimation>
                 )}
               </AnimatePresence>

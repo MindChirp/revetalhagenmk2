@@ -1,27 +1,14 @@
 "use server";
 import BookingContact from "@/components/ui/booking-contact";
+import BookingResultCard from "@/components/ui/booking-result-card";
 import BookingReviewMeta from "@/components/ui/booking-review-meta";
 import BookingStatusHero from "@/components/ui/booking-status-hero";
 import BookingStatusProgress from "@/components/ui/booking-status-progress";
 import BookingStatusToggle from "@/components/ui/booking-status-toggle";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import PortableRenderer from "@/components/ui/portable-text/render-components/PortableRenderer";
-import { Separator } from "@/components/ui/separator";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import type { PortableTextBlock } from "@portabletext/editor";
-import { endOfWeek, startOfWeek } from "date-fns";
-import { AlertTriangle, MailIcon } from "lucide-react";
 import { headers } from "next/headers";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 async function BookingStatus({
@@ -57,35 +44,14 @@ async function BookingStatus({
       />
       {session?.user.role !== "admin" && (
         <>
-          {bookingData.status === "rejected" && (
-            <Card className="my-10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2.5 text-amber-600">
-                  <AlertTriangle /> Avslag på søknad
-                </CardTitle>
-                <CardDescription>
-                  Søknaden din ble avslått. Begrunnelse for dette er oppgitt
-                  nedenfor.
-                </CardDescription>
-              </CardHeader>
-              <Separator />
-              <CardContent className="mt-0 flex flex-col gap-5">
-                <PortableRenderer
-                  value={
-                    JSON.parse(
-                      bookingData?.rejectionReason ?? "[]",
-                    ) as PortableTextBlock[]
-                  }
-                />
-
-                <Link href="mailto:post@revetalhagen.no" className="w-fit">
-                  <Button>
-                    <MailIcon /> Ta kontakt
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+          {(bookingData.status === "rejected" ||
+            bookingData.status === "confirmed") && (
+            <BookingResultCard
+              rejectionReason={bookingData?.rejectionReason ?? "[]"}
+              variant={bookingData.status}
+            />
           )}
+
           {bookingData.status !== "rejected" &&
             bookingData.status !== "cancelled" && (
               <>

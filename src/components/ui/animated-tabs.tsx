@@ -47,7 +47,7 @@ export function AnimatedTabs({
   return (
     <div
       className={cn(
-        "bg-background border-primary/10 relative mx-auto flex w-fit flex-col items-center rounded-full border px-4 py-2",
+        "bg-background border-primary/10 relative flex w-fit flex-col items-center rounded-full border px-4 py-2",
         className,
       )}
       {...props}

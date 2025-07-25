@@ -361,6 +361,6 @@ export const bookingRouter = createTRPCRouter({
         });
       }
 
-      return booking;
+      return updatedBooking;
     }),
 });
