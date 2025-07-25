@@ -1,4 +1,5 @@
 "use client";
+
 import { BookingStatusMap } from "@/lib/booking-status-map";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +25,7 @@ type StatusValue = keyof typeof BookingStatusMap;
 const formSchema = z
   .object({
     status: z.enum(BookingStates),
-    reason: z.array(z.object({})),
+    reason: z.string(),
   })
   .refine(
     (data) => {
@@ -52,7 +53,7 @@ function BookingStatusToggle({
     resolver: zodResolver(formSchema),
     defaultValues: {
       status: initialValue?.status ?? "pending",
-      reason: initialValue?.reason ?? [],
+      reason: JSON.stringify(initialValue?.reason ?? []),
     },
   });
   const router = useRouter();
@@ -61,13 +62,11 @@ function BookingStatusToggle({
     api.booking.updateBookingStatus.useMutation();
 
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    // alert("Submitting status change: " + JSON.stringify(data));
-    alert(JSON.stringify(data.reason, null, 2));
+    // console.log(data.reason);
     void mutateAsync({
       bookingId,
       status: data.status,
-      reason:
-        data.status === "rejected" ? JSON.stringify(data.reason) : undefined,
+      reason: data.status === "rejected" ? data.reason : undefined,
     }).then(() => {
       toast.success("Bookingen ble oppdatert");
       router.refresh();
@@ -114,6 +113,7 @@ function BookingStatusToggle({
 
               <AnimatePresence>
                 <FormField
+                  key={"rejection-reason-parent"}
                   control={form.control}
                   name="reason"
                   render={({ field }) => (
@@ -137,28 +137,41 @@ function BookingStatusToggle({
                           </FormLabel>
                           <FormControl>
                             {(initialValue?.reason?.length ?? 0) > 0 ? (
-                              <>
-                                <div className="mx-auto flex flex-row items-center gap-1">
-                                  <InfoCircledIcon className="text-amber-400" />
-                                  <span className="text-amber-400">
+                              <div className="flex flex-col items-center">
+                                <div className="mx-auto flex flex-row items-center gap-1 text-amber-500">
+                                  <InfoCircledIcon />
+                                  <span>
                                     Begrunnelse for avslag kan ikke endres etter
                                     den er sendt inn
                                   </span>
                                 </div>
-                                <PortableRenderer
-                                  className="px-5 md:px-10"
-                                  value={field.value as PortableTextBlock[]}
-                                />
-                              </>
+                                {field.value && (
+                                  <PortableRenderer
+                                    className="border-border w-full rounded-3xl border p-5 shadow-xs md:px-10"
+                                    value={
+                                      JSON.parse(
+                                        field.value ?? "[]",
+                                      ) as PortableTextBlock[]
+                                    }
+                                  />
+                                )}
+                              </div>
                             ) : (
                               <TextEditor
-                                {...field}
-                                value={field.value as PortableTextBlock[]}
+                                onChange={(value) => {
+                                  field.onChange(JSON.stringify(value));
+                                }}
+                                value={
+                                  JSON.parse(
+                                    field.value ?? "[]",
+                                  ) as PortableTextBlock[]
+                                }
                               />
                             )}
 
                             {/* <Textarea {...field} className="w-full" /> */}
                           </FormControl>
+
                           <FormMessage />
                         </GrowAnimation>
                       )}

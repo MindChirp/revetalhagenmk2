@@ -13,19 +13,21 @@ function PortableRenderer({
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div {...props}>
-      <PortableText
-        value={value ?? []}
-        components={{
-          block: {
-            h1: ({ children }) => <PortableH1>{children}</PortableH1>,
-            h2: ({ children }) => <PortableH2>{children}</PortableH2>,
-            h3: ({ children }) => <PortableH3>{children}</PortableH3>,
-            blockquote: ({ children }) => (
-              <PortableQuote>{children}</PortableQuote>
-            ),
-          },
-        }}
-      />
+      {value && (
+        <PortableText
+          value={value ?? []}
+          components={{
+            block: {
+              h1: ({ children }) => <PortableH1>{children}</PortableH1>,
+              h2: ({ children }) => <PortableH2>{children}</PortableH2>,
+              h3: ({ children }) => <PortableH3>{children}</PortableH3>,
+              blockquote: ({ children }) => (
+                <PortableQuote>{children}</PortableQuote>
+              ),
+            },
+          }}
+        />
+      )}
     </div>
   );
 }

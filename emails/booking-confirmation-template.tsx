@@ -41,7 +41,7 @@ function BookingConfirmationTemplate({
 
         <Section className="my-[16px]">
           <Img
-            alt="Herman Miller Chair"
+            alt="Låhnehuset"
             className="w-full rounded-[12px] object-cover"
             height="320"
             src={`https://www.revetalhagen.no/_next/image?url=%2Fimages%2Flaahnehuset.jpg&w=3840&q=75`}

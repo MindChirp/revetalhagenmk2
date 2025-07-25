@@ -26,7 +26,7 @@ function GrowAnimation({
         ...(typeof exit === "object" ? exit : {}),
       }}
       {...props}
-    ></motion.div>
+    />
   );
 }
 

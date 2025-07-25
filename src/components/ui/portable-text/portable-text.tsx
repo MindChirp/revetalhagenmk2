@@ -113,6 +113,7 @@ function TextEditor({ value, onChange }: TextEditorProps) {
         <EventListenerPlugin
           on={(event) => {
             if (event.type === "mutation") {
+              console.log("CHANGING!");
               onChange?.(event.value);
             }
           }}

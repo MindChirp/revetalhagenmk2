@@ -3,15 +3,10 @@ import {
   GetItemBookings,
 } from "@/lib/booking/booking-validity";
 import { CalculatePrice } from "@/lib/booking/price";
-import {
-  booking,
-  BookingStates,
-  bookingStatusEnum,
-  item,
-  itemMeta,
-} from "@/server/db/schema";
+import { booking, BookingStates, item, itemMeta } from "@/server/db/schema";
 import sendBookingConfirmations, {
   sendBookingConfirmationsToAdmin,
+  sendBookingStatusUpdate,
 } from "@/server/email/booking";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -353,6 +348,19 @@ export const bookingRouter = createTRPCRouter({
         .where(eq(booking.id, bookingId))
         .returning();
 
-      return updated;
+      // Send booking status update email to user
+      const updatedBooking = updated[0];
+      if (!updatedBooking) return undefined;
+
+      console.log("Sending booking status update email");
+      if (updatedBooking.email) {
+        void sendBookingStatusUpdate({
+          name: updatedBooking.name ?? "",
+          to: updatedBooking.email,
+          bookingReference: updatedBooking.reference,
+        });
+      }
+
+      return booking;
     }),
 });
