@@ -252,6 +252,48 @@ export const bookingRouter = createTRPCRouter({
 
       return validity;
     }),
+  getBookings: publicProcedure
+    .input(
+      z.object({
+        itemId: z.number().optional(),
+        to: z.date().optional(),
+        from: z.date().optional(),
+        status: z.enum(BookingStates).optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { itemId, from, to, status } = input;
+
+      const bookings = await ctx.db.query.booking.findMany({
+        columns: {
+          item: false,
+        },
+        where: (booking, { eq, gte, lte, and }) => {
+          const conditions = [];
+
+          if (itemId) {
+            conditions.push(eq(booking.item, itemId));
+          }
+          if (from) {
+            conditions.push(gte(booking.from, from));
+          } else {
+            conditions.push(gte(booking.from, new Date()));
+          }
+          if (to) {
+            conditions.push(lte(booking.to, to));
+          }
+          if (status) {
+            conditions.push(eq(booking.status, status));
+          }
+          return and(...conditions);
+        },
+        with: {
+          item: true,
+        },
+      });
+
+      return bookings;
+    }),
   getItemBookings: publicProcedure
     .input(
       z.object({

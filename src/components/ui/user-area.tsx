@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import Link from "next/link";
 
 interface UserAreaProps extends React.HTMLProps<HTMLDivElement> {
   session?: Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -53,13 +54,20 @@ function UserArea({
             </div>
             <span className="font-semibold">Hei, {session?.user.name}!</span>
           </div>
-          <Button
-            variant={"destructive"}
-            className="w-full cursor-pointer"
-            onClick={() => authClient.signOut()}
-          >
-            Logg ut
-          </Button>
+          <div className="flex w-full flex-col gap-1">
+            <Link href="/admin">
+              <Button className="w-full">
+                <ShieldCheckIcon /> Admin
+              </Button>
+            </Link>
+            <Button
+              variant={"destructive"}
+              className="w-full cursor-pointer"
+              onClick={() => authClient.signOut()}
+            >
+              Logg ut
+            </Button>
+          </div>
         </PopoverContent>
       </Popover>
     </div>

@@ -51,6 +51,7 @@ export const event = createTable("event", (d) => ({
   author: d.text().references(() => user.id, { onDelete: "set null" }),
   start: d.timestamp({ withTimezone: true }).notNull(),
   end: d.timestamp({ withTimezone: true }).notNull(),
+  preview: d.text(),
   location: d.text(),
   image: d.text(),
 }));

@@ -3,8 +3,10 @@ import type { PageProps } from ".next/types/app/arrangementer/page";
 import EventChat from "@/components/screen/event-chat";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import EventContextMenu from "@/components/ui/event-context-menu";
+import PortableRenderer from "@/components/ui/portable-text/render-components/PortableRenderer";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
+import type { PortableTextBlock } from "@portabletext/react";
 import { format, isSameDay } from "date-fns";
 import { nb } from "date-fns/locale";
 import { headers } from "next/headers";
@@ -103,11 +105,14 @@ async function Page({ params }: PageProps) {
           </div>
         </SlideAnimation>
         <SlideAnimation className="h-full w-full">
-          <div
-            className="bg-accent h-full rounded-[60px] p-10"
-            dangerouslySetInnerHTML={{ __html: data?.event.description ?? "" }}
-          >
-            {/* {data?.news.content} */}
+          <div className="bg-accent h-full rounded-[60px] p-10">
+            <PortableRenderer
+              value={
+                JSON.parse(
+                  data?.event.description ?? "[]",
+                ) as PortableTextBlock[]
+              }
+            />
           </div>
         </SlideAnimation>
       </div>
