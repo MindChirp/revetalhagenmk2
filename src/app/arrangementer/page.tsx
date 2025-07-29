@@ -2,10 +2,19 @@ import SlideAnimation from "@/components/ui/animated/slide-animation";
 import EventDialog from "@/components/ui/event-dialog";
 import EventCalendar from "@/components/ui/event-calendar";
 import EventList from "@/components/ui/event-list";
+import DynamicBreadcrumbs from "@/components/dynamic-breadcrumbs";
+import { HomeIcon } from "lucide-react";
 
 async function Page() {
   return (
     <div className="relative flex flex-col items-center justify-center gap-5 pt-24 md:pt-36">
+      <DynamicBreadcrumbs
+        className="mt-5 px-5 md:px-10"
+        items={[
+          { href: "/", label: "Hjem", icon: <HomeIcon size={16} /> },
+          { href: "/arrangementer", label: "Arrangementer" },
+        ]}
+      />
       <h1 className="text-foreground flex w-fit flex-row flex-wrap justify-center gap-x-2 text-center text-4xl leading-12 md:gap-5 md:pl-20 md:text-6xl md:leading-20">
         Hva
         <SlideAnimation

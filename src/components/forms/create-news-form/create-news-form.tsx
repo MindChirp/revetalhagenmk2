@@ -1,13 +1,15 @@
 "use client";
 
-import { Form, FormField } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import TextEditor from "@/components/ui/portable-text/portable-text";
+import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { PortableTextBlock } from "@portabletext/editor";
+import "quill/dist/quill.snow.css";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useQuill } from "react-quilljs";
 import { z } from "zod";
-import "quill/dist/quill.snow.css";
 
 const formSchema = z.object({
   title: z.string().min(1, "Tittel er påkrevd"),
@@ -27,18 +29,11 @@ function CreateNewsForm({ children, onSubmit }: CreateNewsFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      content: "",
+      content: "[]",
       image: "",
     },
   });
 
-  const { quill, quillRef, editor } = useQuill();
-
-  editor?.on("text-change", () => {
-    form.setValue("content", quill?.getSemanticHTML() ?? "");
-    console.log(quill?.getText(0, 100));
-    form.setValue("preview", editor.getText(0, 100));
-  });
   return (
     <div>
       <Form {...form}>
@@ -56,9 +51,28 @@ function CreateNewsForm({ children, onSubmit }: CreateNewsFormProps) {
           <FormField
             name="content"
             control={form.control}
-            render={({}) => (
+            render={({ field }) => (
               <div className="flex flex-col">
-                <div ref={quillRef} />
+                <TextEditor
+                  onChange={(value) => {
+                    field.onChange(JSON.stringify(value ?? []));
+                  }}
+                  value={JSON.parse(field.value ?? "[]") as PortableTextBlock[]}
+                />
+              </div>
+            )}
+          />
+          <FormField
+            name="preview"
+            control={form.control}
+            render={({ field }) => (
+              <div className="flex flex-col gap-1">
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    placeholder="Kort oppsummering av innholdet"
+                  />
+                </FormControl>
               </div>
             )}
           />

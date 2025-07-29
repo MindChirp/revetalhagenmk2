@@ -46,7 +46,7 @@ function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
                   <CardDescription>
                     <div className="flex flex-col gap-2">
                       <span className="line-clamp-3">
-                        {event.description ?? "Ingen beskrivelse tilgjengelig"}
+                        {event.preview ?? "Ingen oppsummering tilgjengelig"}
                       </span>
                       <div>
                         {format(event.start, "dd.MM.yyyy")} -{" "}

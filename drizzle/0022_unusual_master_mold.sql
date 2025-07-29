@@ -1,0 +1,1 @@
+ALTER TABLE "revetalhagenmk2_booking" ADD COLUMN "rejectionReason" text;

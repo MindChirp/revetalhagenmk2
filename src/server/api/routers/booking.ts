@@ -1,15 +1,16 @@
-import { booking, item, itemMeta } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
-import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import {
   CheckBookingValidity,
   GetItemBookings,
 } from "@/lib/booking/booking-validity";
+import { CalculatePrice } from "@/lib/booking/price";
+import { booking, BookingStates, item, itemMeta } from "@/server/db/schema";
 import sendBookingConfirmations, {
   sendBookingConfirmationsToAdmin,
+  sendBookingStatusUpdate,
 } from "@/server/email/booking";
-import { CalculatePrice } from "@/lib/booking/price";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 
 export const bookingRouter = createTRPCRouter({
   getItemTypes: publicProcedure.query(async ({ ctx }) => {
@@ -178,6 +179,14 @@ export const bookingRouter = createTRPCRouter({
         throw new Error("Invalid booking");
       }
 
+      const price = await CalculatePrice({
+        db: ctx.db,
+        itemId,
+        from,
+        to,
+        people: personCount,
+      });
+
       const created = await ctx.db
         .insert(booking)
         .values({
@@ -189,19 +198,12 @@ export const bookingRouter = createTRPCRouter({
           personCount: personCount,
           phone: phone,
           message,
+          price: price.nonMemberPrice,
         })
         .returning();
 
       const bookedItem = await ctx.db.query.item.findFirst({
         where: eq(item?.id, itemId),
-      });
-
-      const price = await CalculatePrice({
-        db: ctx.db,
-        itemId,
-        from,
-        to,
-        people: personCount,
       });
 
       // Send the booking confirmation email to post@revetalhagen.no aswell
@@ -250,6 +252,48 @@ export const bookingRouter = createTRPCRouter({
 
       return validity;
     }),
+  getBookings: publicProcedure
+    .input(
+      z.object({
+        itemId: z.number().optional(),
+        to: z.date().optional(),
+        from: z.date().optional(),
+        status: z.enum(BookingStates).optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { itemId, from, to, status } = input;
+
+      const bookings = await ctx.db.query.booking.findMany({
+        columns: {
+          item: false,
+        },
+        where: (booking, { eq, gte, lte, and }) => {
+          const conditions = [];
+
+          if (itemId) {
+            conditions.push(eq(booking.item, itemId));
+          }
+          if (from) {
+            conditions.push(gte(booking.from, from));
+          } else {
+            conditions.push(gte(booking.from, new Date()));
+          }
+          if (to) {
+            conditions.push(lte(booking.to, to));
+          }
+          if (status) {
+            conditions.push(eq(booking.status, status));
+          }
+          return and(...conditions);
+        },
+        with: {
+          item: true,
+        },
+      });
+
+      return bookings;
+    }),
   getItemBookings: publicProcedure
     .input(
       z.object({
@@ -293,5 +337,72 @@ export const bookingRouter = createTRPCRouter({
       });
 
       return response;
+    }),
+  getOverlappingBookings: publicProcedure
+    .input(
+      z.object({
+        itemId: z.number(),
+        from: z.date(),
+        to: z.date(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { itemId, from, to } = input;
+
+      const bookings = GetItemBookings({
+        db: ctx.db,
+        itemId,
+        from,
+        to,
+      });
+
+      return bookings;
+    }),
+  updateBookingStatus: adminProcedure
+    .input(
+      z
+        .object({
+          status: z.enum(BookingStates),
+          bookingId: z.number(),
+          reason: z.string().optional(),
+        })
+        .refine(
+          (data) => {
+            if (data.status === "rejected") {
+              return !!data.reason;
+            }
+            return true;
+          },
+          {
+            path: ["reason"],
+            message:
+              "Begrunnelse må være definert dersom forespørselen skal avslås",
+          },
+        ),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { status, reason, bookingId } = input;
+
+      // Update the booking status in the database
+      const updated = await ctx.db
+        .update(booking)
+        .set({ status, rejectionReason: reason })
+        .where(eq(booking.id, bookingId))
+        .returning();
+
+      // Send booking status update email to user
+      const updatedBooking = updated[0];
+      if (!updatedBooking) return undefined;
+
+      console.log("Sending booking status update email");
+      if (updatedBooking.email) {
+        void sendBookingStatusUpdate({
+          name: updatedBooking.name ?? "",
+          to: updatedBooking.email,
+          bookingReference: updatedBooking.reference,
+        });
+      }
+
+      return updatedBooking;
     }),
 });

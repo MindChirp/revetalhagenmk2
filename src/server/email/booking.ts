@@ -1,6 +1,7 @@
 "use server";
 import BookingConfirmationAdminTemplate from "emails/booking-confirmation-admin-template";
 import BookingConfirmationTemplate from "emails/booking-confirmation-template";
+import BookingStatusTemplate from "emails/booking-status-template";
 
 import { Resend } from "resend";
 
@@ -65,6 +66,32 @@ export const sendBookingConfirmationsToAdmin = async ({
       name,
       to,
       totalPrice,
+      bookingReference,
+    }),
+  });
+
+  if (error) {
+    return error;
+  }
+
+  return data;
+};
+
+export const sendBookingStatusUpdate = async ({
+  name = "John Doe",
+  to,
+  bookingReference = "test-reference",
+}: {
+  name: string;
+  to: string;
+  bookingReference: string;
+}) => {
+  const { data, error } = await resend.emails.send({
+    from: "Revetalhagen (booking) <booking@revetalhagen.no>",
+    to: [to],
+    subject: "Ny bookingforespørsel",
+    react: BookingStatusTemplate({
+      name,
       bookingReference,
     }),
   });

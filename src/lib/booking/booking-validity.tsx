@@ -113,20 +113,4 @@ export const GetItemBookings = async ({
   console.log("Bookings found:", bookings);
 
   return bookings;
-
-  // const bookings = await db
-  //   .select()
-  //   .from(booking)
-  //   .leftJoin(item, eq(booking.item, item.id))
-  //   .where(
-  //     and(
-  //       or(eq(booking.item, itemId), eq(item.type, 2)),
-  //       lte(booking.from, to),
-  //       gte(booking.to, from),
-  //     ),
-  //   );
-
-  // console.log(bookings);
-
-  // return bookings;
 };

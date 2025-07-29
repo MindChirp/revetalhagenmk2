@@ -1,19 +1,20 @@
 "use client";
 import { api } from "@/trpc/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BadgeInfoIcon, Loader } from "lucide-react";
+import { ArrowRightIcon, BadgeInfoIcon, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { parseAsIsoDate, parseAsString, useQueryStates } from "nuqs";
-import SlideAnimation from "../ui/animated/slide-animation";
-import { Button } from "../ui/button";
+import SlideAnimation from "../../ui/animated/slide-animation";
+import { Button } from "../../ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../ui/card";
 import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
+import BookingItemCard from "./booking-item-card";
 
 function BookingItemList() {
   const [filterQueries] = useQueryStates({
@@ -88,38 +89,11 @@ function BookingItemList() {
                 y: 0,
               }}
             >
-              <div className="border-border bg-card flex h-full flex-col overflow-hidden rounded-lg border shadow-xs md:w-80">
-                {item.image && (
-                  <Image
-                    src={item.image}
-                    alt={item.name ?? "Booking-gjenstand"}
-                    width={1000}
-                    height={500}
-                    className="h-48 w-full rounded-t-lg rounded-b-md object-cover shadow-xs"
-                  />
-                )}
-                <div className="flex grow flex-col gap-2.5 py-5">
-                  <CardHeader className="grow">
-                    <CardTitle>{item.name}</CardTitle>
-                    <CardDescription className="line-clamp-3">
-                      {item.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex flex-row items-center gap-2.5">
-                    <Link
-                      href={`/booking/${item.id}?from=${filterQueries.from?.toISOString() ?? ""}&to=${filterQueries.to?.toISOString() ?? ""}`}
-                    >
-                      <Button>
-                        <BadgeInfoIcon />
-                        Mer info
-                      </Button>
-                    </Link>
-                    <span className="text-primary leading-none font-semibold">
-                      {`${item.price} ${item.type === ItemType.OVERNATTING ? `+ ${item.personPrice}` : ""} ${ItemTypePriceTypeMap[item.type as ItemType]}`}
-                    </span>
-                  </CardContent>
-                </div>
-              </div>
+              <BookingItemCard
+                item={item}
+                withPrice
+                href={`/booking/${item.id}?from=${filterQueries.from?.toISOString() ?? ""}&to=${filterQueries.to?.toISOString() ?? ""}`}
+              />
             </motion.div>
           ))}
         </div>

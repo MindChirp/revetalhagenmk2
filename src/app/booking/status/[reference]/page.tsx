@@ -1,9 +1,15 @@
+"use server";
 import BookingContact from "@/components/ui/booking-contact";
+import BookingResultCard from "@/components/ui/booking-result-card";
+import BookingReviewMeta from "@/components/ui/booking-review-meta";
 import BookingStatusHero from "@/components/ui/booking-status-hero";
 import BookingStatusProgress from "@/components/ui/booking-status-progress";
+import BookingStatusToggle from "@/components/ui/booking-status-toggle";
+import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
+import type { PortableTextBlock } from "@portabletext/editor";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import React from "react";
 
 async function BookingStatus({
   params,
@@ -17,9 +23,18 @@ async function BookingStatus({
     reference,
   });
 
-  if (!bookingData?.item) {
-    redirect("/404");
-  }
+  if (!bookingData?.item) return redirect("/404");
+
+  // const otherBookings = await api.booking.getOverlappingBookings({
+  //   from: startOfWeek(bookingData?.from),
+  //   to: endOfWeek(bookingData?.to),
+  //   itemId: bookingData?.item?.id,
+  // });
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-5 pt-20 pb-10 md:px-10">
       <BookingStatusHero
@@ -27,8 +42,66 @@ async function BookingStatus({
         from={bookingData?.from}
         to={bookingData?.to}
       />
-      <BookingStatusProgress status={bookingData?.status} />
-      <BookingContact className="mt-5" />
+      {session?.user.role !== "admin" && (
+        <>
+          {(bookingData.status === "rejected" ||
+            bookingData.status === "confirmed") && (
+            <BookingResultCard
+              rejectionReason={bookingData?.rejectionReason ?? "[]"}
+              variant={bookingData.status}
+            />
+          )}
+
+          {bookingData.status !== "rejected" &&
+            bookingData.status !== "cancelled" && (
+              <>
+                <BookingStatusProgress status={bookingData?.status} />
+                <BookingContact className="mt-5" />
+              </>
+            )}
+        </>
+      )}
+
+      {session?.user.role === "admin" && (
+        <>
+          <BookingReviewMeta
+            booking={{
+              ...bookingData,
+              item: bookingData.item.id,
+            }}
+          />
+          {/* <BookingCalendarDialog
+            bookings={[
+              ...otherBookings.map((b) => ({
+                ...b.booking,
+                item: Number(b.item?.id),
+              })),
+              {
+                ...bookingData,
+                item: bookingData.item.id,
+              },
+            ]}
+            trigger={
+              <Button className="w-fit">
+                <CalendarIcon />
+                Se bookingkalender
+              </Button>
+            }
+          /> */}
+        </>
+      )}
+
+      {session?.user?.role === "admin" && (
+        <BookingStatusToggle
+          bookingId={bookingData?.id}
+          initialValue={{
+            status: bookingData?.status,
+            reason: JSON.parse(
+              bookingData?.rejectionReason ?? "[]",
+            ) as PortableTextBlock[],
+          }}
+        />
+      )}
     </div>
   );
 }
