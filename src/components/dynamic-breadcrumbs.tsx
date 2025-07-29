@@ -1,5 +1,5 @@
 import { SlashIcon } from "lucide-react";
-import React from "react";
+import React, { type ComponentProps } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,13 +7,12 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "./ui/breadcrumb";
-
 type DynamicBreadcrumbsProps = {
   items: { label: string; href: string; icon?: React.ReactNode }[];
-};
-const DynamicBreadcrumbs = ({ items }: DynamicBreadcrumbsProps) => {
+} & Omit<ComponentProps<typeof Breadcrumb>, "children">;
+const DynamicBreadcrumbs = ({ items, ...props }: DynamicBreadcrumbsProps) => {
   return (
-    <Breadcrumb>
+    <Breadcrumb {...props}>
       <BreadcrumbList>
         {items.map((item, index) => (
           <React.Fragment key={item.href}>
