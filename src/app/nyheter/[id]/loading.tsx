@@ -1,3 +1,4 @@
+"use client";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import { Loader } from "lucide-react";
 

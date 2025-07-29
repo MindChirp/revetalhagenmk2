@@ -1,0 +1,1 @@
+ALTER TABLE "revetalhagenmk2_event" ADD COLUMN "preview" text;

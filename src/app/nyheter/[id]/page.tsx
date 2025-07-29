@@ -1,6 +1,8 @@
 import type { PageProps } from ".next/types/app/nyheter/[id]/page";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
+import PortableRenderer from "@/components/ui/portable-text/render-components/PortableRenderer";
 import { api } from "@/trpc/server";
+import type { PortableTextBlock } from "@portabletext/editor";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
 import Image from "next/image";
@@ -98,11 +100,12 @@ async function Page({ params }: PageProps) {
       </div>
 
       <SlideAnimation>
-        <div
-          className="bg-accent max-w-screen overflow-hidden rounded-[60px] p-10 text-wrap"
-          dangerouslySetInnerHTML={{ __html: data?.news.content ?? "" }}
-        >
-          {/* {data?.news.content} */}
+        <div className="bg-accent max-w-screen overflow-hidden rounded-[60px] p-10 text-wrap">
+          <PortableRenderer
+            value={
+              JSON.parse(data?.news.content ?? "[]") as PortableTextBlock[]
+            }
+          />
         </div>
       </SlideAnimation>
     </SlideAnimation>

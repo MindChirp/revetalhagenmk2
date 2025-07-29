@@ -1,5 +1,6 @@
 "use client";
 
+import DynamicBreadcrumbs from "@/components/dynamic-breadcrumbs";
 import NewsFilters from "@/components/screen/news-filters";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import NewsList from "@/components/ui/news-list";

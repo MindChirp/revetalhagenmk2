@@ -44,6 +44,7 @@ export const eventsRouter = createTRPCRouter({
         end: z.date(),
         image: z.string().optional(),
         location: z.string().optional(),
+        preview: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -56,6 +57,7 @@ export const eventsRouter = createTRPCRouter({
         location: input.location,
         image: input.image,
         description: input.content,
+        preview: input.preview,
       });
 
       return created;
@@ -83,6 +85,7 @@ export const eventsRouter = createTRPCRouter({
         start: z.date(),
         end: z.date(),
         image: z.string().optional(),
+        preview: z.string().optional(),
         location: z.string().optional(),
       }),
     )
@@ -97,6 +100,7 @@ export const eventsRouter = createTRPCRouter({
           location: input.location,
           image: input.image,
           description: input.content,
+          preview: input.preview,
         })
         .where(eq(event.id, input.id));
 

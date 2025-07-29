@@ -2,15 +2,17 @@
 
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import type { event } from "@/server/db/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { PortableTextBlock } from "@portabletext/editor";
 import "quill/dist/quill.snow.css";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DateTimePicker } from "../ui/date-time-picker";
 import { Label } from "../ui/label";
+import TextEditor from "../ui/portable-text/portable-text";
 import { Textarea } from "../ui/textarea";
-import type { event } from "@/server/db/schema";
 
 const formSchema = z.object({
   title: z.string().min(1, "Tittel er påkrevd"),
@@ -23,6 +25,7 @@ const formSchema = z.object({
   }),
   image: z.string().optional(),
   location: z.string().optional(),
+  preview: z.string().optional(),
 });
 type ChildType = {
   canSubmit: boolean;
@@ -42,11 +45,12 @@ function CreateEventForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: defaultValues?.title ?? "",
-      content: defaultValues?.description ?? "",
+      content: defaultValues?.description ?? "[]",
       start: defaultValues?.start ?? new Date(),
       end: defaultValues?.end ?? new Date(),
       image: defaultValues?.image ?? "",
       location: defaultValues?.location ?? "",
+      preview: defaultValues?.preview ?? "",
     },
   });
 
@@ -74,10 +78,22 @@ function CreateEventForm({
             render={({ field }) => (
               <div className="flex w-full flex-col gap-1">
                 <Label>Beskrivelse</Label>
-                <Textarea
-                  {...field}
-                  placeholder="Bli med på en hyggelig og spennende kveld med..."
+                <TextEditor
+                  onChange={(value) => {
+                    field.onChange(JSON.stringify(value ?? []));
+                  }}
+                  value={JSON.parse(field.value ?? "[]") as PortableTextBlock[]}
                 />
+              </div>
+            )}
+          />
+          <FormField
+            name="preview"
+            control={form.control}
+            render={({ field }) => (
+              <div className="flex w-full flex-col gap-1">
+                <Label>Kort oppsummering av beskrivelse</Label>
+                <Textarea {...field} />
               </div>
             )}
           />
