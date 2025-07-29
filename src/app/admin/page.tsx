@@ -10,9 +10,11 @@ import React from "react";
 
 const Admin = () => {
   return (
-    <div className="w-full">
-      <h1 className="text-6xl font-black">Admin</h1>
-      <span>Hva vil du gjøre?</span>
+    <div className="flex w-full flex-col gap-5">
+      <div>
+        <h1 className="text-6xl font-black">Admin</h1>
+        <span>Hva vil du gjøre?</span>
+      </div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Link href="/admin/booking">
           <Card>

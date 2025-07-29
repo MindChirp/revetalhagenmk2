@@ -19,9 +19,6 @@ const AdminSidebar = () => {
         >
           <BedIcon /> Booking
         </SidebarButton>
-        <SidebarButton href="/admin/other" selected={path === "/admin/other"}>
-          <BedIcon /> Annen ting
-        </SidebarButton>
       </CardContent>
     </Card>
   );
