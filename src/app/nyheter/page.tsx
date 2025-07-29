@@ -4,10 +4,18 @@ import NewsFilters from "@/components/screen/news-filters";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import NewsList from "@/components/ui/news-list";
 import { motion } from "framer-motion";
+import { HomeIcon } from "lucide-react";
 
 function Page() {
   return (
     <div className="flex min-h-screen w-full flex-col gap-2.5 pt-36 md:px-10">
+      <DynamicBreadcrumbs
+        className="mt-5 px-5 md:px-20"
+        items={[
+          { href: "/", label: "Hjem", icon: <HomeIcon size={16} /> },
+          { href: "/nyheter", label: "Nyheter" },
+        ]}
+      />
       <motion.div
         className="col-start-2 row-start-1 w-fit"
         initial={{ opacity: 0, x: -50 }}
