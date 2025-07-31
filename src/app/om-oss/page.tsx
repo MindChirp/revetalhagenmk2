@@ -9,7 +9,7 @@ const About = async () => {
   });
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-2.5 pt-36 md:px-10">
+    <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-2.5 px-5 pt-36 md:px-10">
       <HybridParagraph
         initialData={data?.[0]?.content.content}
         slug={"about"}

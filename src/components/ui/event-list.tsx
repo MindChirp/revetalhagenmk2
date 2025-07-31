@@ -4,11 +4,12 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader } from "lucide-react";
+import { Loader, Terminal, TriangleAlert } from "lucide-react";
 import { useMemo, type ComponentProps } from "react";
 import { Card, CardDescription, CardHeader, CardTitle } from "./card";
 import SlideAnimation from "./animated/slide-animation";
 import Link from "next/link";
+import { Alert, AlertDescription, AlertTitle } from "./alert";
 
 function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
   const dateToday = useMemo(() => new Date(), []);
@@ -72,14 +73,13 @@ function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
             duration: 0.5,
           }}
         >
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>Det er ingen kommende arrangementer</CardTitle>
-              <CardDescription>
-                Men sjekk igjen seinere for oppdateringer!
-              </CardDescription>
-            </CardHeader>
-          </Card>
+          <Alert>
+            <TriangleAlert />
+            <AlertTitle>Oisann</AlertTitle>
+            <AlertDescription>
+              Det er ingen kommende arrangementer. Sjekk igjen seinere.
+            </AlertDescription>
+          </Alert>
         </motion.div>
       )}
     </AnimatePresence>
