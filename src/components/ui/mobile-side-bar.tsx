@@ -11,6 +11,7 @@ import {
   BedIcon,
   CalendarIcon,
   HomeIcon,
+  LightbulbIcon,
   MenuIcon,
   Newspaper,
 } from "lucide-react";
@@ -62,6 +63,9 @@ function MobileSideBar({ onOpenChange, open }: MobileSideBarProps) {
           </HeaderNavigationButton>
           <HeaderNavigationButton icon={<Newspaper />} href="/nyheter">
             Nyheter
+          </HeaderNavigationButton>
+          <HeaderNavigationButton icon={<LightbulbIcon />} href="/om-oss">
+            Om oss
           </HeaderNavigationButton>
         </div>
         <div className="flex flex-1 justify-end"></div>

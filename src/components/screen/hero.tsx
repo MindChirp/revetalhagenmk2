@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { authClient } from "@/server/auth/client";
 import { api } from "@/trpc/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { ArrowRightIcon, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import EditableParagraph from "../editable-paragraph";
@@ -12,6 +12,8 @@ import { Card, CardContent } from "../ui/card";
 import Quadrants from "../ui/quadrants";
 import SquigglyCircle from "../ui/squiggly-circle";
 import SlideAnimation from "../ui/animated/slide-animation";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
   const { data: session } = authClient.useSession();
@@ -117,7 +119,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
                 className="md:absolute md:bottom-0 md:ml-40 md:translate-y-2/3"
               >
                 <Card className="bg-card/60 w-fit gap-0 shadow-none backdrop-blur-sm">
-                  <CardContent className="mx-auto w-fit max-w-3/4 md:max-w-xl">
+                  <CardContent className="mx-auto flex w-fit max-w-3/4 flex-col gap-2.5 md:max-w-xl">
                     <EditableParagraph
                       className="line-clamp-[7]"
                       content={paragraph?.[0]?.content.content}
@@ -134,6 +136,11 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
                         });
                       }}
                     />
+                    <Link href="/om-oss">
+                      <Button className="w-fit">
+                        Les mer <ArrowRightIcon />
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </SlideAnimation>

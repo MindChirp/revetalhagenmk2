@@ -11,11 +11,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Form, FormField } from "./ui/form";
 import { Textarea } from "./ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import TextEditor from "./ui/portable-text/portable-text";
+import type { PortableTextBlock } from "@portabletext/editor";
+import PortableRenderer from "./ui/portable-text/render-components/PortableRenderer";
 
 interface EditableParagraphProps
   extends Omit<React.HTMLProps<HTMLSpanElement>, "onChange"> {
   content?: string;
   admin?: boolean;
+  type?: "default" | "rich";
   buttonVariant?: ComponentProps<typeof Button>["variant"];
   onChange?: (content: string) => void;
   loading?: boolean;
@@ -31,6 +35,7 @@ function EditableParagraph({
   buttonVariant = "default",
   onChange,
   loading,
+  type = "default",
   ...props
 }: EditableParagraphProps) {
   const [edit, setEdit] = useState(false);
@@ -50,7 +55,15 @@ function EditableParagraph({
 
   return (
     <>
-      <span {...props}>{content}</span>
+      {type === "rich" && content ? (
+        <>
+          <PortableRenderer
+            value={JSON.parse(content ?? "[]") as PortableTextBlock[]}
+          />
+        </>
+      ) : (
+        <span {...props}>{content}</span>
+      )}
       <AnimatePresence>
         {admin && (
           <motion.div
@@ -107,7 +120,22 @@ function EditableParagraph({
               <FormField
                 control={form.control}
                 name="content"
-                render={({ field }) => <Textarea {...field} />}
+                render={({ field }) => {
+                  return type === "rich" ? (
+                    <TextEditor
+                      onChange={(value) => {
+                        field.onChange(JSON.stringify(value ?? []));
+                      }}
+                      value={
+                        JSON.parse(
+                          field.value.length > 0 ? field.value : "[]",
+                        ) as PortableTextBlock[]
+                      }
+                    />
+                  ) : (
+                    <Textarea {...field} />
+                  );
+                }}
               />
 
               <Button className="w-fit" type="submit">

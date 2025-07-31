@@ -12,6 +12,7 @@ import {
   BedIcon,
   CalendarIcon,
   HomeIcon,
+  LightbulbIcon,
   Loader,
   Newspaper,
 } from "lucide-react";
@@ -71,6 +72,9 @@ function Header() {
         </HeaderNavigationButton>
         <HeaderNavigationButton icon={<Newspaper />} href="/nyheter">
           Nyheter
+        </HeaderNavigationButton>
+        <HeaderNavigationButton icon={<LightbulbIcon />} href="/om-oss">
+          Om oss
         </HeaderNavigationButton>
       </div>
       <div className="absolute top-1/2 right-10 hidden w-fit -translate-y-1/2 md:block">
