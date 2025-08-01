@@ -58,7 +58,7 @@ const NewsletterSubscription = () => {
           <CardDescription>
             {(count ?? 0) > 0
               ? count === 1
-                ? "Kanskje du også skal bli med?"
+                ? "Kanskje du også skal gjøre det samme?"
                 : "Kanskje du skal bli en av dem?"
               : "Bli den første til å få nyheter fra Revetalhagen!"}
           </CardDescription>
