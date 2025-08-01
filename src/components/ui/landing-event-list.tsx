@@ -37,24 +37,28 @@ const LandingEventList = ({
       )}
       {...props}
     >
-      <div className="flex flex-row items-center justify-center gap-2.5">
+      <div className="flex flex-row items-start justify-center gap-2.5 md:items-center">
         <CalendarIcon />
         <h2 className="w-fit text-2xl leading-none font-black">
           Kommende arrangementer
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {events.map((event) => (
-          <Link href={`/arrangementer/${event.id}`} key={event.id}>
-            <Card className="max-w-lg">
+          <Link
+            href={`/arrangementer/${event.id}`}
+            key={event.id}
+            className="h-auto"
+          >
+            <Card className="h-full w-full">
               <CardHeader>
                 <CardTitle>{event.title}</CardTitle>
                 <CardDescription className="line-clamp-2">
                   {event.preview}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col gap-2.5">
+              <CardContent className="flex h-full flex-col gap-2.5">
                 <p className="flex items-center gap-1">
                   <ClockIcon />
                   {isSameDay(event.start, event.end)
@@ -74,7 +78,7 @@ const LandingEventList = ({
                 <p className="flex items-center gap-1">
                   <MapPinIcon /> {event.location}
                 </p>
-                <CardAction className="mt-2.5 justify-self-start">
+                <CardAction className="mt-2.5 flex h-full items-end justify-self-start">
                   <Button variant="secondary">
                     Se mer <ArrowRightIcon />
                   </Button>
