@@ -19,7 +19,7 @@ const About = async () => {
             {
               href: "/",
               label: "Hjem",
-              icon: <HomeIcon />,
+              icon: <HomeIcon size={16} />,
             },
             {
               href: "/om-oss",

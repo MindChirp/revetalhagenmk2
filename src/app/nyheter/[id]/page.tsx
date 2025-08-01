@@ -35,7 +35,7 @@ async function Page({ params }: PageProps) {
     >
       <DynamicBreadcrumbs
         items={[
-          { href: "/", label: "Hjem", icon: <HomeIcon /> },
+          { href: "/", label: "Hjem", icon: <HomeIcon size={16} /> },
           {
             href: "/nyheter",
             label: "Nyheter",

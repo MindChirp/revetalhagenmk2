@@ -412,15 +412,17 @@ const BookingForm = React.memo<BookingFormProps>(
                       </SlideAnimation>
                     )}
                   </AnimatePresence>
-                  <EditItemPriceDialog
-                    id={item.id}
-                    defaultValues={{
-                      memberDiscount: memberPriceDiscount ?? 0,
-                      price: basePrice,
-                      personPrice,
-                    }}
-                    type={type!}
-                  />
+                  {session?.user?.role === "admin" && (
+                    <EditItemPriceDialog
+                      id={item.id}
+                      defaultValues={{
+                        memberDiscount: memberPriceDiscount ?? 0,
+                        price: basePrice,
+                        personPrice,
+                      }}
+                      type={type!}
+                    />
+                  )}
                 </div>
               </div>
               {typeof memberPriceDiscount === "number" && (
