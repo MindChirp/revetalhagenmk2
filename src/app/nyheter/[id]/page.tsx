@@ -15,7 +15,7 @@ async function Page({ params }: PageProps) {
   const data = await api.news.getById({ id: Number(id) });
   return (
     <SlideAnimation
-      className="mx-auto flex max-w-[90rem] flex-col gap-5 px-5 pt-24 pb-10 md:pt-32"
+      className="mx-auto flex max-w-6xl flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-32"
       direction="up"
       transition={{
         delay: 0.2,
