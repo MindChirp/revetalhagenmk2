@@ -1,7 +1,7 @@
 import { newsletterSubscription } from "@/server/db/schema";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { count } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 
 export const newsletterRouter = createTRPCRouter({
   subscribe: publicProcedure
@@ -36,4 +36,21 @@ export const newsletterRouter = createTRPCRouter({
 
     return subscribers[0]?.count ?? 0;
   }),
+  unsubscribe: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email("Ugyldig epostadresse"),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const deleted = await ctx.db
+        .delete(newsletterSubscription)
+        .where(eq(newsletterSubscription.email, input.email))
+        .returning();
+
+      if (deleted.length === 0)
+        throw new Error("Eposten er ikke abonnert fra før");
+
+      return deleted[0];
+    }),
 });

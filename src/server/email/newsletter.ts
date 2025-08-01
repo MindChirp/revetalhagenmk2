@@ -1,7 +1,4 @@
 "use server";
-import BookingConfirmationAdminTemplate from "emails/booking-confirmation-admin-template";
-import BookingConfirmationTemplate from "emails/booking-confirmation-template";
-import BookingStatusTemplate from "emails/booking-status-template";
 import NewsUpdateTemplate from "emails/news-update-template";
 
 import { Resend } from "resend";
