@@ -22,15 +22,18 @@ type ChildType = {
 };
 interface CreateNewsFormProps {
   children?: (props: ChildType) => React.ReactNode;
+  defaultValues?: z.infer<typeof formSchema>;
   onSubmit?: (data: z.infer<typeof formSchema>) => void;
 }
-function CreateNewsForm({ children, onSubmit }: CreateNewsFormProps) {
+function CreateNewsForm({
+  children,
+  onSubmit,
+  defaultValues,
+}: CreateNewsFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      content: "[]",
-      image: "",
+      ...defaultValues,
     },
   });
 

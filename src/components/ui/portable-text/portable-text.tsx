@@ -1,5 +1,7 @@
 import type {
   PortableTextBlock,
+  RenderAnnotationFunction,
+  RenderBlockFunction,
   RenderDecoratorFunction,
   RenderStyleFunction,
 } from "@portabletext/editor";
@@ -17,18 +19,21 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  ImageIcon,
   Italic,
+  LinkIcon,
   Quote,
   RemoveFormatting,
   Underline,
 } from "lucide-react";
-import { useState } from "react";
 import { Button } from "../button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
 import PortableH1 from "./render-components/h1";
 import PortableH2 from "./render-components/h2";
 import PortableH3 from "./render-components/h3";
 import PortableQuote from "./render-components/quote";
+import PortableLink from "./render-components/link";
+import { toast } from "sonner";
 
 // ...
 const schemaDefinition = defineSchema({
@@ -59,7 +64,24 @@ const schemaDefinition = defineSchema({
   // See the rendering guide to learn more about each type.
 
   // Annotations are more complex marks that can hold data (for example, hyperlinks).
-  annotations: [],
+  annotations: [
+    {
+      name: "link",
+      title: "Lenke",
+      icon: <LinkIcon />,
+      type: {
+        name: "link",
+        type: "object",
+        fields: [
+          {
+            name: "href",
+            type: "string",
+            title: "URL",
+          },
+        ],
+      },
+    },
+  ],
   // Lists apply to entire text blocks as well (for example, bullet, numbered).
   lists: [],
   // Inline objects hold arbitrary data that can be inserted into the text (for example, custom emoji).
@@ -97,6 +119,18 @@ const renderDecorator: RenderDecoratorFunction = (props) => {
   return <>{props.children}</>;
 };
 
+const renderAnnotation: RenderAnnotationFunction = (props) => {
+  if (props.schemaType.name === "link") {
+    return (
+      <PortableLink href={props.value.href as string}>
+        {props.children}
+      </PortableLink>
+    );
+  }
+
+  return <>{props.children}</>;
+};
+
 type TextEditorProps = {
   value?: Array<PortableTextBlock>;
   onChange?: (value?: Array<PortableTextBlock>) => void;
@@ -125,7 +159,7 @@ function TextEditor({ value, onChange }: TextEditorProps) {
             className="border-border rounded-xl border p-5"
             renderStyle={renderStyle}
             renderDecorator={renderDecorator}
-            renderBlock={(props) => <div>{props.children}</div>}
+            renderAnnotation={renderAnnotation}
             renderListItem={(props) => <>{props.children}</>}
           />
         </div>
@@ -184,11 +218,46 @@ function Toolbar() {
       <TooltipContent>{decorator.title}</TooltipContent>
     </Tooltip>
   ));
+
+  const annotationButtons = schemaDefinition.annotations.map((annotation) => (
+    <Tooltip key={annotation.name}>
+      <TooltipTrigger asChild>
+        <Button
+          variant="outline"
+          onClick={() => {
+            // const href = prompt("Skriv inn URL");
+            toast.error(
+              "Denne funksjonen er ikke implementert enda. Prøv igjen seinere.",
+            );
+            // Send annotation toggle event
+            // editor.send({
+            //   type: "annotation.add",
+            //   annotation: {
+            //     type: "link",
+            //     value: {
+            //       href,
+            //     },
+            //   },
+            // });
+            // editor.send({
+            //   type: "focus",
+            // });
+          }}
+        >
+          {annotation.icon}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{annotation.title}</TooltipContent>
+    </Tooltip>
+  ));
+
   return (
     <div className="flex w-full flex-wrap items-center gap-2.5">
       {styleButtons}
       <div className="bg-border h-5 w-0.5" />
       {decoratorButtons}
+      <div className="bg-border h-5 w-0.5" />
+      {annotationButtons}
     </div>
   );
 }

@@ -9,9 +9,9 @@ import { HomeIcon } from "lucide-react";
 
 function Page() {
   return (
-    <div className="flex min-h-screen w-full flex-col gap-2.5 pt-36 md:px-10">
+    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-2.5 px-5 pt-24 md:pt-36">
       <DynamicBreadcrumbs
-        className="mt-5 px-5 md:px-20"
+        className="mt-5 px-5 md:pl-20"
         items={[
           { href: "/", label: "Hjem", icon: <HomeIcon size={16} /> },
           { href: "/nyheter", label: "Nyheter" },
@@ -28,7 +28,7 @@ function Page() {
           duration: 0.5,
         }}
       >
-        <h1 className="text-foreground flex w-fit flex-row flex-wrap justify-center gap-x-2 text-center text-4xl leading-12 md:gap-5 md:pl-20 md:text-6xl md:leading-20">
+        <h1 className="text-foreground flex w-fit flex-row flex-wrap justify-start gap-x-2 pl-5 text-center text-4xl leading-12 md:gap-5 md:pl-20 md:text-6xl md:leading-20">
           Hva er siste
           <motion.div
             className="text-secondary-foreground bg-secondary overflow-hidden rounded-3xl px-2"

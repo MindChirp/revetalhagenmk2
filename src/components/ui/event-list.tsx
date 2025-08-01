@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader, Terminal, TriangleAlert } from "lucide-react";
-import { useMemo, type ComponentProps } from "react";
-import { Card, CardDescription, CardHeader, CardTitle } from "./card";
-import SlideAnimation from "./animated/slide-animation";
+import { Loader, TriangleAlert } from "lucide-react";
 import Link from "next/link";
+import { useMemo, type ComponentProps } from "react";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
+import SlideAnimation from "./animated/slide-animation";
+import { Card, CardDescription, CardHeader, CardTitle } from "./card";
 
 function EventList({ className, ...props }: ComponentProps<typeof motion.div>) {
   const dateToday = useMemo(() => new Date(), []);

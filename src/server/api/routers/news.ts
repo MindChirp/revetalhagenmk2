@@ -103,4 +103,49 @@ export const newsRouter = createTRPCRouter({
 
       return obj;
     }),
+  delete: adminProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const deleted = await ctx.db
+        .delete(news)
+        .where(eq(news.id, input.id))
+        .returning();
+      if (deleted.length === 0) {
+        throw new Error("News not found");
+      }
+
+      return deleted[0];
+    }),
+
+  update: adminProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        title: z.string().min(1, "Tittel er påkrevd"),
+        content: z.string().min(1, "Innhold er påkrevd"),
+        image: z.string().optional(),
+        preview: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const updated = await ctx.db
+        .update(news)
+        .set({
+          name: input.title,
+          content: input.content,
+          preview: input.preview,
+        })
+        .where(eq(news.id, input.id))
+        .returning();
+
+      if (updated.length === 0) {
+        throw new Error("News not found");
+      }
+
+      return updated[0];
+    }),
 });

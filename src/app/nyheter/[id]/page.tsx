@@ -1,10 +1,15 @@
 import type { PageProps } from ".next/types/app/nyheter/[id]/page";
+import DynamicBreadcrumbs from "@/components/dynamic-breadcrumbs";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
+import NewsContextMenu from "@/components/ui/news-context-menu";
 import PortableRenderer from "@/components/ui/portable-text/render-components/PortableRenderer";
+import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import type { PortableTextBlock } from "@portabletext/editor";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
+import { HomeIcon } from "lucide-react";
+import { headers } from "next/headers";
 import Image from "next/image";
 
 import "quill/dist/quill.snow.css";
@@ -13,9 +18,13 @@ async function Page({ params }: PageProps) {
   // Fetch the news article using the ID from params
   const { id } = (await params) as { id: string };
   const data = await api.news.getById({ id: Number(id) });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return (
     <SlideAnimation
-      className="mx-auto flex max-w-[90rem] flex-col gap-5 px-5 pt-24 pb-10 md:pt-32"
+      className="mx-auto flex max-w-6xl flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-36"
       direction="up"
       transition={{
         delay: 0.2,
@@ -24,17 +33,35 @@ async function Page({ params }: PageProps) {
         damping: 10,
       }}
     >
-      <SlideAnimation
-        direction="up"
-        transition={{
-          delay: 0.6,
-          duration: 0.3,
-        }}
-      >
-        <h1 className="text-foreground flex w-full flex-row gap-5 text-4xl leading-12 md:pl-10 md:text-6xl md:leading-20">
-          {data?.news.name}
-        </h1>
-      </SlideAnimation>
+      <DynamicBreadcrumbs
+        items={[
+          { href: "/", label: "Hjem", icon: <HomeIcon /> },
+          {
+            href: "/nyheter",
+            label: "Nyheter",
+          },
+          {
+            href: `/nyheter/${data?.news.id}`,
+            label: data?.news.name ?? "Nyhetsartikkel",
+          },
+        ]}
+      />
+      <div className="flex flex-row items-center gap-5">
+        <SlideAnimation
+          direction="up"
+          transition={{
+            delay: 0.6,
+            duration: 0.3,
+          }}
+        >
+          <h1 className="text-foreground w-fit flex-row gap-5 text-4xl leading-12 md:text-6xl md:leading-20">
+            {data?.news.name}
+          </h1>
+        </SlideAnimation>
+        {session?.user?.role === "admin" && data && (
+          <NewsContextMenu news={data.news} />
+        )}
+      </div>
       <div className="flex h-fit w-full flex-col gap-5 md:h-96 md:flex-row">
         <SlideAnimation
           className="h-full w-full"
