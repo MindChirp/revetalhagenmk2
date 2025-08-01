@@ -169,6 +169,13 @@
       "when": 1753479382472,
       "tag": "0023_complete_wildside",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1754077331804,
+      "tag": "0024_cloudy_captain_cross",
+      "breakpoints": true
     }
   ]
 }
