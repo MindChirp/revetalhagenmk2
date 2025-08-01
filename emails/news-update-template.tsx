@@ -3,9 +3,12 @@ import {
   Font,
   Heading,
   Html,
+  Section,
   Tailwind,
   Text,
 } from "@react-email/components";
+
+const UNSUBSCRIBE_URL = "/api/newsletter/unsubscribe?email=";
 
 type NewsUpdateTemplateProps = {
   title: string;
@@ -13,6 +16,7 @@ type NewsUpdateTemplateProps = {
   // authorName: string;
   // authorImage: string;
   articleId: string;
+  email: string;
 };
 function NewsUpdateTemplate({
   articleId,
@@ -20,6 +24,7 @@ function NewsUpdateTemplate({
   // authorName = "Ukjent forfatter",
   preview = "Ukjent innhold",
   title = "Ukjent artikkel",
+  email = "bob@doe.com",
 }: NewsUpdateTemplateProps) {
   const isDev = process.env.NODE_ENV === "development";
   return (
@@ -66,6 +71,21 @@ function NewsUpdateTemplate({
             </tr>
           </tbody>
         </table>
+        <Section className="flex flex-col items-center gap-2.5">
+          <Text>
+            Du mottar denne e-posten fordi du har abonnert på vårt nyhetsbrev.
+          </Text>
+          <Button
+            className="mx-auto w-fit"
+            href={
+              isDev
+                ? `http://localhost:3000${UNSUBSCRIBE_URL}${email}`
+                : `https://www.revetalhagen.no${UNSUBSCRIBE_URL}${email}`
+            }
+          >
+            Meld meg av nyhetsbrevet
+          </Button>
+        </Section>
       </Tailwind>
     </Html>
   );

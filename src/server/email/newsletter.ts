@@ -17,16 +17,19 @@ export const sendNewsletter = async ({
   preview,
   title,
 }: SendNewsletterProps) => {
-  const { data, error } = await resend.emails.send({
-    from: "Revetalhagen (post) <post@revetalhagen.no>",
-    to: recipients,
-    subject: "Ny artikkel på Revetalhagen",
-    react: NewsUpdateTemplate({
-      articleId,
-      preview,
-      title,
-    }),
-  });
+  const { data, error } = await resend.batch.send(
+    recipients.map((email) => ({
+      from: "Revetalhagen (post) <post@revetalhagen.no>",
+      to: email,
+      subject: "Ny artikkel på Revetalhagen",
+      react: NewsUpdateTemplate({
+        articleId,
+        preview,
+        title,
+        email,
+      }),
+    })),
+  );
 
   if (error) {
     return error;
