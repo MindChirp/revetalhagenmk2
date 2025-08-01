@@ -1,5 +1,6 @@
 import type {
   PortableTextBlock,
+  RenderBlockFunction,
   RenderDecoratorFunction,
   RenderStyleFunction,
 } from "@portabletext/editor";
@@ -17,12 +18,12 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  ImageIcon,
   Italic,
   Quote,
   RemoveFormatting,
   Underline,
 } from "lucide-react";
-import { useState } from "react";
 import { Button } from "../button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
 import PortableH1 from "./render-components/h1";
@@ -125,7 +126,6 @@ function TextEditor({ value, onChange }: TextEditorProps) {
             className="border-border rounded-xl border p-5"
             renderStyle={renderStyle}
             renderDecorator={renderDecorator}
-            renderBlock={(props) => <div>{props.children}</div>}
             renderListItem={(props) => <>{props.children}</>}
           />
         </div>
@@ -184,6 +184,7 @@ function Toolbar() {
       <TooltipContent>{decorator.title}</TooltipContent>
     </Tooltip>
   ));
+
   return (
     <div className="flex w-full flex-wrap items-center gap-2.5">
       {styleButtons}

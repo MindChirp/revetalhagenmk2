@@ -29,7 +29,7 @@ async function Page({ params }: PageProps) {
 
   return (
     <SlideAnimation
-      className="flex flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-32"
+      className="mx-auto flex max-w-6xl flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-32"
       direction="up"
       transition={{
         delay: 0.2,
@@ -46,14 +46,14 @@ async function Page({ params }: PageProps) {
           duration: 0.3,
         }}
       >
-        <h1 className="text-foreground flex w-fit flex-row gap-5 text-4xl leading-12 md:pl-10 md:text-6xl md:leading-20">
+        <h1 className="text-foreground flex w-fit flex-row gap-5 text-4xl leading-12 md:text-6xl md:leading-20">
           {data?.event.title}
         </h1>
         {session?.user.role === "admin" && (
           <EventContextMenu event={data?.event} />
         )}
       </SlideAnimation>
-      <div className="flex h-fit w-full flex-col gap-5 md:h-96 md:flex-row">
+      <div className="flex h-fit w-full flex-col gap-5 md:h-fit md:min-h-full md:flex-row">
         <SlideAnimation
           direction="up"
           className="h-fit w-full md:w-96"
@@ -62,28 +62,27 @@ async function Page({ params }: PageProps) {
             duration: 0.5,
           }}
         >
-          <div className="flex h-fit w-full flex-col gap-5 md:h-full">
+          <div className="flex h-fit w-full flex-col gap-5 md:min-h-full">
             <div className="bg-secondary flex h-full w-full flex-col gap-2.5 rounded-[60px] p-10 md:h-full">
               <div>
                 <h3 className="font-semibold">Dato</h3>
                 <h4>
                   {isSameDay(data?.event.start, data?.event.end)
-                    ? format(data?.event.start, "do LLL yyy", { locale: nb })
-                    : format(data?.event.start, "do LLL yyy", { locale: nb }) +
+                    ? format(data?.event.start, "do LLL yyy HH:mm", {
+                        locale: nb,
+                      }) +
+                      " - " +
+                      format(data?.event.end, "HH:mm", {
+                        locale: nb,
+                      })
+                    : format(data?.event.start, "do LLL yyy HH:mm", {
+                        locale: nb,
+                      }) +
                       " - " +
                       format(data?.event.end, "do LLL yyy", { locale: nb })}
                 </h4>
               </div>
-              {data?.event.createdAt && (
-                <div>
-                  <h3 className="font-semibold">Tidspunkt </h3>
-                  <h4>
-                    {format(data.event.start, "HH:mm", { locale: nb }) +
-                      " - " +
-                      format(data.event.end, "HH:mm", { locale: nb })}
-                  </h4>
-                </div>
-              )}
+
               {data?.event.updatedAt && (
                 <div>
                   <h3 className="font-semibold">Sted</h3>
@@ -104,7 +103,7 @@ async function Page({ params }: PageProps) {
             </div>
           </div>
         </SlideAnimation>
-        <SlideAnimation className="h-full w-full">
+        <SlideAnimation className="h-fit min-h-full w-full">
           <div className="bg-accent h-full rounded-[60px] p-10">
             <PortableRenderer
               value={
@@ -116,12 +115,12 @@ async function Page({ params }: PageProps) {
           </div>
         </SlideAnimation>
       </div>
-      {session && (
+      {/* {session && (
         <EventChat
           className="max-h-full w-full md:w-fit"
           eventId={Number(id)}
         />
-      )}
+      )} */}
     </SlideAnimation>
   );
 }

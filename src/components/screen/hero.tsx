@@ -50,7 +50,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
             duration: 0.5,
           }}
         >
-          <h1 className="text-foreground text-center align-top text-4xl leading-14 md:pl-40 md:text-6xl md:leading-20">
+          <h1 className="text-foreground text-center align-top text-4xl leading-14 md:pl-24 md:text-6xl md:leading-20 2xl:pl-40">
             Velkommen til{" "}
             <motion.span
               className="text-secondary-foreground bg-secondary inline-flex items-center overflow-hidden rounded-3xl px-2"

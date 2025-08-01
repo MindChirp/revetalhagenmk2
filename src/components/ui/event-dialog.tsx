@@ -90,7 +90,11 @@ function EventDialog({ defaultEvent, ...props }: EventDialogProps) {
                 )}
               </CreateEventForm>
             </BottomDialog>
-            <Button onClick={() => setOpen(true)} className="w-full">
+            <Button
+              onClick={() => setOpen(true)}
+              className="w-full"
+              variant={defaultEvent ? "outline" : "default"}
+            >
               {!defaultEvent && (
                 <>
                   <PlusIcon /> Opprett

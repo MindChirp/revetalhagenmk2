@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import TextEditor from "./ui/portable-text/portable-text";
 import type { PortableTextBlock } from "@portabletext/editor";
 import PortableRenderer from "./ui/portable-text/render-components/PortableRenderer";
+import BottomDialog from "./ui/bottom-dialog";
 
 interface EditableParagraphProps
   extends Omit<React.HTMLProps<HTMLSpanElement>, "onChange"> {
@@ -39,18 +40,9 @@ function EditableParagraph({
   ...props
 }: EditableParagraphProps) {
   const [edit, setEdit] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      content: content ?? "",
-    },
-  });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    if (onChange) {
-      onChange(values.content);
-    }
+  const handleChange = (content: string) => {
     setEdit(false);
+    onChange?.(content ?? "");
   };
 
   return (
@@ -107,47 +99,85 @@ function EditableParagraph({
           </motion.div>
         )}
       </AnimatePresence>
-      <Dialog open={edit} onOpenChange={setEdit}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Rediger innhold</DialogTitle>
-          </DialogHeader>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-5"
-            >
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => {
-                  return type === "rich" ? (
-                    <TextEditor
-                      onChange={(value) => {
-                        field.onChange(JSON.stringify(value ?? []));
-                      }}
-                      value={
-                        JSON.parse(
-                          field.value.length > 0 ? field.value : "[]",
-                        ) as PortableTextBlock[]
-                      }
-                    />
-                  ) : (
-                    <Textarea {...field} />
-                  );
-                }}
-              />
-
-              <Button className="w-fit" type="submit">
-                <SaveIcon />
-                Lagre
-              </Button>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+      {type === "default" && (
+        <Dialog open={edit} onOpenChange={setEdit}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Rediger innhold</DialogTitle>
+            </DialogHeader>
+            <ParagraphForm
+              content={content}
+              type={type}
+              onChange={handleChange}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+      {type === "rich" && (
+        <BottomDialog open={edit} onOpenChange={setEdit}>
+          <ParagraphForm
+            content={content}
+            type={type}
+            onChange={handleChange}
+          />
+        </BottomDialog>
+      )}
     </>
   );
 }
+
+type ParagraphFormProps = {
+  content?: string;
+  type?: "default" | "rich";
+  onChange?: (content: string) => void;
+};
+const ParagraphForm = ({ content, type, onChange }: ParagraphFormProps) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      content: content ?? "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    if (onChange) {
+      onChange(values.content);
+    }
+  };
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-5"
+      >
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => {
+            return type === "rich" ? (
+              <TextEditor
+                onChange={(value) => {
+                  field.onChange(JSON.stringify(value ?? []));
+                }}
+                value={
+                  JSON.parse(
+                    field.value.length > 0 ? field.value : "[]",
+                  ) as PortableTextBlock[]
+                }
+              />
+            ) : (
+              <Textarea {...field} />
+            );
+          }}
+        />
+
+        <Button className="w-fit" type="submit">
+          <SaveIcon />
+          Lagre
+        </Button>
+      </form>
+    </Form>
+  );
+};
 
 export default EditableParagraph;
