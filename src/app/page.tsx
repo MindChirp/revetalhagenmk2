@@ -14,7 +14,7 @@ export default async function Home() {
     <HydrateClient>
       <div className="min-h-full w-full">
         <Hero className="relative z-10" />
-        <LandingEventList events={events} />
+        <LandingEventList className="my-20" events={events} />
         {/* <AboutUs /> */}
       </div>
     </HydrateClient>

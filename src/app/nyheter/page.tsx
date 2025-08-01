@@ -9,9 +9,9 @@ import { HomeIcon } from "lucide-react";
 
 function Page() {
   return (
-    <div className="flex min-h-screen w-full flex-col gap-2.5 pt-36 md:px-10">
+    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-2.5 px-5 pt-36">
       <DynamicBreadcrumbs
-        className="mt-5 px-5 md:px-20"
+        className="mt-5 px-5 md:pl-20"
         items={[
           { href: "/", label: "Hjem", icon: <HomeIcon size={16} /> },
           { href: "/nyheter", label: "Nyheter" },

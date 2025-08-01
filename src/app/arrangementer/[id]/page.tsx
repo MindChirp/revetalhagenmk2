@@ -1,6 +1,6 @@
 "use server";
 import type { PageProps } from ".next/types/app/arrangementer/page";
-import EventChat from "@/components/screen/event-chat";
+import DynamicBreadcrumbs from "@/components/dynamic-breadcrumbs";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import EventContextMenu from "@/components/ui/event-context-menu";
 import PortableRenderer from "@/components/ui/portable-text/render-components/PortableRenderer";
@@ -9,6 +9,7 @@ import { api } from "@/trpc/server";
 import type { PortableTextBlock } from "@portabletext/react";
 import { format, isSameDay } from "date-fns";
 import { nb } from "date-fns/locale";
+import { HomeIcon } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -38,6 +39,23 @@ async function Page({ params }: PageProps) {
         damping: 10,
       }}
     >
+      <DynamicBreadcrumbs
+        items={[
+          {
+            href: "/",
+            label: "Hjem",
+            icon: <HomeIcon />,
+          },
+          {
+            href: "/arrangementer",
+            label: "Arrangementer",
+          },
+          {
+            href: `/arrangementer/${id}`,
+            label: data?.event.title ?? "Arrangement",
+          },
+        ]}
+      />
       <SlideAnimation
         direction="up"
         className="flex flex-row items-center gap-5"

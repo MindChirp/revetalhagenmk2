@@ -7,9 +7,9 @@ import { HomeIcon } from "lucide-react";
 
 async function Page() {
   return (
-    <div className="relative flex flex-col items-center justify-center gap-5 pt-24 md:pt-36">
+    <div className="relative mx-auto flex max-w-7xl flex-col items-start justify-center gap-5 px-5 pt-24 md:pt-36">
       <DynamicBreadcrumbs
-        className="mt-5 px-5 md:px-10"
+        className="mt-5 px-5 md:px-10 md:pl-20"
         items={[
           { href: "/", label: "Hjem", icon: <HomeIcon size={16} /> },
           { href: "/arrangementer", label: "Arrangementer" },
