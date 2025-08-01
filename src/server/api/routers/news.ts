@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
-import { news, user } from "@/server/db/schema";
+import { news, newsletterSubscription, user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { sendNewsletter } from "@/server/email/newsletter";
 
 export const newsRouter = createTRPCRouter({
   getAllInfinite: publicProcedure
@@ -94,12 +95,29 @@ export const newsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const obj = await ctx.db.insert(news).values({
-        content: input.content,
-        name: input.title,
-        author: ctx.session.user.id,
-        preview: input.preview,
-      });
+      const obj = await ctx.db
+        .insert(news)
+        .values({
+          content: input.content,
+          name: input.title,
+          author: ctx.session.user.id,
+          preview: input.preview,
+        })
+        .returning();
+
+      // Get all rows from newsletterSubscription table
+      const allSubscriptions = await ctx.db
+        .select()
+        .from(newsletterSubscription);
+
+      if (allSubscriptions.length > 0 && obj.length > 0) {
+        void sendNewsletter({
+          recipients: allSubscriptions.map((sub) => sub.email),
+          articleId: obj[0]?.id.toString() ?? "",
+          title: input.title,
+          preview: input.preview ?? "Ukjent innhold",
+        });
+      }
 
       return obj;
     }),

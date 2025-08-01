@@ -180,6 +180,13 @@ export const booking = createTable("booking", (d) => ({
   message: d.text(),
 }));
 
+export const newsletterSubscription = createTable(
+  "newsletterSubscription",
+  (d) => ({
+    email: d.varchar({ length: 256 }).primaryKey(),
+  }),
+);
+
 export const itemRelations = relations(item, ({ one, many }) => ({
   bookings: one(booking, {
     fields: [item.id],

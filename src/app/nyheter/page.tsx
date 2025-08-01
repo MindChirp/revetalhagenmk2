@@ -2,6 +2,7 @@
 
 import DynamicBreadcrumbs from "@/components/dynamic-breadcrumbs";
 import NewsFilters from "@/components/screen/news-filters";
+import NewsletterSubscription from "@/components/screen/newsletter-subscription/newsletter-subscription";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import NewsList from "@/components/ui/news-list";
 import { motion } from "framer-motion";
@@ -61,6 +62,7 @@ function Page() {
         <NewsFilters />
         <NewsList />
       </div>
+      <NewsletterSubscription />
     </div>
   );
 }
