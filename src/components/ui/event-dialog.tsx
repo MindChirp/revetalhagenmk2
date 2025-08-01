@@ -73,7 +73,11 @@ function EventDialog({ defaultEvent, ...props }: EventDialogProps) {
                       <XIcon />
                       Avbryt
                     </Button>
-                    <Button disabled={!canSubmit} type="submit">
+                    <Button
+                      disabled={!canSubmit}
+                      type="submit"
+                      className="w-full md:w-fit"
+                    >
                       {!isPending && !defaultEvent && (
                         <>
                           <PlusIcon /> Opprett
@@ -92,7 +96,7 @@ function EventDialog({ defaultEvent, ...props }: EventDialogProps) {
             </BottomDialog>
             <Button
               onClick={() => setOpen(true)}
-              className="w-full"
+              className="w-full md:w-fit"
               variant={defaultEvent ? "outline" : "default"}
             >
               {!defaultEvent && (

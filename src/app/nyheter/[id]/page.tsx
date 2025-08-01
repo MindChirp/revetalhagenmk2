@@ -1,4 +1,5 @@
 import type { PageProps } from ".next/types/app/nyheter/[id]/page";
+import DynamicBreadcrumbs from "@/components/dynamic-breadcrumbs";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import NewsContextMenu from "@/components/ui/news-context-menu";
 import PortableRenderer from "@/components/ui/portable-text/render-components/PortableRenderer";
@@ -7,6 +8,7 @@ import { api } from "@/trpc/server";
 import type { PortableTextBlock } from "@portabletext/editor";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
+import { HomeIcon } from "lucide-react";
 import { headers } from "next/headers";
 import Image from "next/image";
 
@@ -22,7 +24,7 @@ async function Page({ params }: PageProps) {
 
   return (
     <SlideAnimation
-      className="mx-auto flex max-w-6xl flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-32"
+      className="mx-auto flex max-w-6xl flex-col gap-5 px-5 pt-24 pb-10 md:px-10 md:pt-36"
       direction="up"
       transition={{
         delay: 0.2,
@@ -31,6 +33,19 @@ async function Page({ params }: PageProps) {
         damping: 10,
       }}
     >
+      <DynamicBreadcrumbs
+        items={[
+          { href: "/", label: "Hjem", icon: <HomeIcon /> },
+          {
+            href: "/nyheter",
+            label: "Nyheter",
+          },
+          {
+            href: `/nyheter/${data?.news.id}`,
+            label: data?.news.name ?? "Nyhetsartikkel",
+          },
+        ]}
+      />
       <div className="flex flex-row items-center gap-5">
         <SlideAnimation
           direction="up"
