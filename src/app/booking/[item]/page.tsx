@@ -56,6 +56,8 @@ async function Item({
         </span>
       </div>
     );
+
+  const price = `Fra ${itemData.type === ItemType.OVERNATTING ? itemData.price + itemData.personPrice : itemData.price} kroner`;
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-5 pt-32 pb-10 md:px-10">
       <div className="relative h-56 w-full overflow-hidden rounded-3xl md:h-96">
@@ -133,7 +135,7 @@ async function Item({
               {itemData.type && (
                 <span className="flex items-center gap-2.5">
                   <DynamicIcon name="banknote" />
-                  {`${itemData.price} ${(itemData.type as ItemType) === ItemType.OVERNATTING ? `+ ${itemData.personPrice}` : ""} ${ItemTypePriceTypeMap[itemData.type as ItemType]}`}
+                  {price}
                 </span>
               )}
             </Badge>

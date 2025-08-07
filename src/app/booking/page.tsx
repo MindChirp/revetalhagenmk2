@@ -24,12 +24,13 @@ async function Booking() {
       />
       <BookingWizard />
 
-      <HeroPill
-        className="mx-auto w-fit"
-        isExternal
-        label="Alle soverom er dobbeltrom med tilgang til et fellesbad, kjøkken og stue."
-        announcement="⚠️ Viktig informasjon"
-      />
+      <div className="px-5 md:px-10">
+        <HeroPill
+          className="mx-auto w-fit flex-wrap items-center justify-center rounded-md text-center whitespace-break-spaces md:flex md:rounded-full md:text-start"
+          label="Alle soverom er dobbeltrom med tilgang til et fellesbad, kjøkken og stue."
+          announcement="⚠️ Viktig informasjon"
+        />
+      </div>
       <BookingItemList />
       {session?.user.role === "admin" && <CreateBookingItem />}
     </div>
