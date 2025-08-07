@@ -44,7 +44,7 @@ async function Page({ params }: PageProps) {
           {
             href: "/",
             label: "Hjem",
-            icon: <HomeIcon />,
+            icon: <HomeIcon size={16} />,
           },
           {
             href: "/arrangementer",

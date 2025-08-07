@@ -8,7 +8,7 @@ import {
 import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
 import { cn } from "@/lib/utils";
 import type { item } from "@/server/db/schema";
-import { BadgeInfoIcon } from "lucide-react";
+import { BadgeInfoIcon, ShoppingCartIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -31,6 +31,11 @@ const BookingItemCard = ({
   className,
   ...props
 }: BookingItemCardProps) => {
+  const price = `Fra ${
+    item.type === ItemType.OVERNATTING
+      ? item.price + item.personPrice
+      : item.price
+  } kroner`;
   return (
     <div
       className={cn(
@@ -60,15 +65,15 @@ const BookingItemCard = ({
             {buttonContent ?? (
               <>
                 <Button>
-                  <BadgeInfoIcon />
-                  Mer info
+                  <ShoppingCartIcon />
+                  Bestill
                 </Button>
               </>
             )}
           </Link>
           {withPrice && (
             <span className="text-primary leading-none font-semibold">
-              {`${item.price} ${item.type === ItemType.OVERNATTING ? `+ ${item.personPrice}` : ""} ${ItemTypePriceTypeMap[item.type as ItemType]}`}
+              {price}
             </span>
           )}
         </CardContent>
