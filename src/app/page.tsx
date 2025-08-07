@@ -12,10 +12,12 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <div className="min-h-full w-full">
-        <Hero className="relative z-10" />
-        <LandingEventList className="my-20" events={events} />
-        {/* <AboutUs /> */}
+      <div className="h-fit w-full overflow-x-hidden">
+        <div className="mx-auto min-h-full w-full max-w-[90rem] px-5">
+          <Hero className="relative z-10" />
+          <LandingEventList className="my-20" events={events} />
+          {/* <AboutUs /> */}
+        </div>
       </div>
     </HydrateClient>
   );

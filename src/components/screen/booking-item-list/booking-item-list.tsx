@@ -1,19 +1,9 @@
 "use client";
 import { api } from "@/trpc/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRightIcon, BadgeInfoIcon, Loader } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Loader } from "lucide-react";
 import { parseAsIsoDate, parseAsString, useQueryStates } from "nuqs";
 import SlideAnimation from "../../ui/animated/slide-animation";
-import { Button } from "../../ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../../ui/card";
-import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
 import BookingItemCard from "./booking-item-card";
 
 function BookingItemList() {

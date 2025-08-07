@@ -31,7 +31,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
   });
 
   return (
-    <div className="relative flex min-h-screen w-full max-w-screen items-center overflow-x-hidden overflow-y-hidden pt-20 pb-5">
+    <div className="relative flex min-h-screen w-full max-w-screen items-center pt-20 pb-5">
       <div
         className={cn(
           "mx-auto flex w-[95vw] grid-cols-[min-content_1fr] grid-rows-[min-content_min-content_1fr] flex-col justify-start gap-10 md:grid md:w-full md:justify-center md:pr-10",
@@ -147,7 +147,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
             )}
           </AnimatePresence>
         </motion.div>
-        <button className="bg-secondary/50 border-secondary text-secondary-foreground col-start-1 row-start-2 flex h-auto w-full cursor-pointer flex-col items-center justify-evenly border border-l-0 p-5 backdrop-blur-md transition-all hover:pl-10 max-sm:rounded-full md:w-fit md:rounded-r-[60px]">
+        <button className="bg-secondary/50 border-secondary text-secondary-foreground col-start-1 row-start-2 flex h-auto w-full cursor-pointer flex-col items-center justify-evenly border border-l-0 p-5 backdrop-blur-md transition-all hover:pl-10 max-sm:rounded-full md:w-fit md:rounded-[60px]">
           <div className="flex flex-row items-center gap-2.5 text-nowrap">
             <p>Bli medlem</p>
 

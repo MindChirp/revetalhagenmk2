@@ -60,7 +60,7 @@ const NewsletterSubscription = () => {
               ? count === 1
                 ? "Kanskje du også skal gjøre det samme?"
                 : "Kanskje du skal bli en av dem?"
-              : "Bli den første til å få nyheter fra Revetalhagen!"}
+              : "Bli den første til å få nyheter fra oss!"}
           </CardDescription>
         </CardHeader>
         <CardContent>
