@@ -5,6 +5,7 @@ import MembershipForm from "@/components/forms/membership-form/membership-form";
 import HeroImage from "@/components/hero-image";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import MembershipBenefit from "@/components/ui/membership-benefit";
 import { authClient } from "@/server/auth/client";
 import { api } from "@/trpc/react";
 import {
@@ -123,35 +124,6 @@ const Page = () => {
         </Card>
       </SlideAnimation>
     </div>
-  );
-};
-
-type MembershipBenefitProps = {
-  title: string;
-  description: string;
-  Icon: ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-  >;
-};
-
-const MembershipBenefit = ({
-  title,
-  description,
-  Icon,
-}: MembershipBenefitProps) => {
-  return (
-    <Card className="gap-1">
-      <CardHeader>
-        <CardTitle className="flex justify-center">
-          <Icon size={40} fill={"currentColor"} className="text-secondary" />
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent className="flex flex-col items-center gap-1">
-        <h3 className="font-semibold">{title}</h3>
-        <p className="text-center">{description}</p>
-      </CardContent>
-    </Card>
   );
 };
 
