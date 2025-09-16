@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -5,10 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
+import { ItemType } from "@/lib/item-type";
 import { cn } from "@/lib/utils";
 import type { item } from "@/server/db/schema";
-import { BadgeInfoIcon, ShoppingCartIcon } from "lucide-react";
+import { ShoppingCartIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -55,6 +56,11 @@ const BookingItemCard = ({
       )}
       <div className="flex grow flex-col gap-2.5 py-5">
         <CardHeader className="grow">
+          {item.type && (
+            <Badge className="mb-2.5 capitalize">
+              {ItemType[item.type]?.toLowerCase()}
+            </Badge>
+          )}
           <CardTitle>{item.name}</CardTitle>
           <CardDescription className="line-clamp-3">
             {description}
