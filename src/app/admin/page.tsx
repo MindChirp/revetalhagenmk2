@@ -4,9 +4,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BedIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { BedIcon, User } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { type ComponentProps } from "react";
 
 const Admin = () => {
   return (
@@ -17,20 +18,45 @@ const Admin = () => {
       </div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Link href="/admin/booking">
-          <Card>
-            <CardHeader className="flex flex-row items-center gap-2.5">
-              <BedIcon size={32} className="w-20" />
-              <div className="flex flex-col gap-1.5">
-                <CardTitle>Bookinger</CardTitle>
-                <CardDescription>
-                  Behandle bookingforespørsler og se detaljer om bookinger.
-                </CardDescription>
-              </div>
-            </CardHeader>
-          </Card>
+          <AdminAction
+            icon={<BedIcon size={32} className="w-20" />}
+            title="Bookinger"
+            description="Behandle bookingforespørsler og se detaljer om bookinger."
+          />
+        </Link>
+        <Link href="/admin/medlemskap">
+          <AdminAction
+            icon={<User size={32} className="w-20" />}
+            title="Medlemskap"
+            description="Se og administrer medlemskapssøknader."
+          />
         </Link>
       </div>
     </div>
+  );
+};
+
+const AdminAction = ({
+  icon,
+  className,
+  title,
+  description,
+  ...props
+}: ComponentProps<typeof Card> & {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}) => {
+  return (
+    <Card className={cn("h-full", className)} {...props}>
+      <CardHeader className="flex h-full flex-row items-center gap-2.5">
+        {icon}
+        <div className="flex h-full flex-col gap-1.5">
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </div>
+      </CardHeader>
+    </Card>
   );
 };
 

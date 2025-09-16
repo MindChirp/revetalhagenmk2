@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { BedIcon } from "lucide-react";
+import { BedIcon, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { type ComponentProps } from "react";
@@ -18,6 +18,12 @@ const AdminSidebar = () => {
           selected={path === "/admin/booking"}
         >
           <BedIcon /> Booking
+        </SidebarButton>
+        <SidebarButton
+          href="/admin/medlemskap"
+          selected={path === "/admin/medlemskap"}
+        >
+          <User /> Medlemskap
         </SidebarButton>
       </CardContent>
     </Card>

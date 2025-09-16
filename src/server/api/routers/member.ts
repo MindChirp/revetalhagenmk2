@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { membershipApplication } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -27,5 +27,22 @@ export const memberRouter = createTRPCRouter({
       });
 
       return;
+    }),
+
+  getApplications: adminProcedure.query(async ({ ctx }) => {
+    const applications = await ctx.db.query.membershipApplication.findMany();
+    return applications;
+  }),
+  approveApplication: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const application = await ctx.db
+        .delete(membershipApplication)
+        .where(eq(membershipApplication.id, input.id))
+        .returning();
+      if (application.length === 0) {
+        throw new Error("Fant ikke søknad");
+      }
+      return application[0];
     }),
 });
