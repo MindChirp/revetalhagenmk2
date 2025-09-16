@@ -59,7 +59,7 @@ const ApplicationCard = ({
           <Button disabled={status === "pending"} onClick={handleApprove}>
             {status === "idle" && (
               <>
-                <Check /> Godkjenn
+                <Check /> Behandlet
               </>
             )}
             {status === "error" && (
@@ -69,7 +69,7 @@ const ApplicationCard = ({
             )}
             {status === "success" && (
               <>
-                <Check /> Godkjent
+                <Check /> Behandlet
               </>
             )}
             {status === "pending" && <Loader className="animate-spin" />}

@@ -4,7 +4,6 @@ import EditableParagraph from "@/components/editable-paragraph";
 import MembershipForm from "@/components/forms/membership-form/membership-form";
 import HeroImage from "@/components/hero-image";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authClient } from "@/server/auth/client";
 import { api } from "@/trpc/react";
@@ -135,7 +134,7 @@ type MembershipBenefitProps = {
   >;
 };
 
-export const MembershipBenefit = ({
+const MembershipBenefit = ({
   title,
   description,
   Icon,
