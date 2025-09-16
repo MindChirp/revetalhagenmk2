@@ -1,0 +1,1 @@
+ALTER TABLE "revetalhagenmk2_itemImage" ALTER COLUMN "item" SET NOT NULL;

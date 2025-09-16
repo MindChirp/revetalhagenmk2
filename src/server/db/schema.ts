@@ -142,6 +142,15 @@ export const item = createTable("item", (d) => ({
   image: d.text(),
 }));
 
+export const itemImage = createTable("itemImage", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  item: d
+    .integer()
+    .references(() => item.id, { onDelete: "cascade" })
+    .notNull(),
+  url: d.text().notNull(),
+}));
+
 export const itemMeta = createTable("itemMeta", (d) => ({
   id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
   icon: d.text(),
@@ -194,11 +203,19 @@ export const itemRelations = relations(item, ({ one, many }) => ({
     relationName: "itemBookings",
   }),
   itemMeta: many(itemMeta),
+  itemImage: many(itemImage),
 }));
 
 export const itemMetaRelations = relations(itemMeta, ({ one }) => ({
   item: one(item, {
     fields: [itemMeta.item],
+    references: [item.id],
+  }),
+}));
+
+export const itemImageRelations = relations(itemImage, ({ one }) => ({
+  item: one(item, {
+    fields: [itemImage.item],
     references: [item.id],
   }),
 }));

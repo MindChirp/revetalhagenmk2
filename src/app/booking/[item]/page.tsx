@@ -12,7 +12,7 @@ import CreateItemMeta from "@/components/ui/create-item-meta";
 import DeleteItemMeta from "@/components/ui/delete-item-meta";
 import EditableItemDescription from "@/components/ui/editable-item-description";
 import { Separator } from "@/components/ui/separator";
-import { ItemType, ItemTypePriceTypeMap } from "@/lib/item-type";
+import { ItemType } from "@/lib/item-type";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
@@ -20,6 +20,7 @@ import { nb } from "date-fns/locale";
 import { CheckIcon, TriangleAlertIcon } from "lucide-react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { headers } from "next/headers";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 
 async function Item({
@@ -60,35 +61,25 @@ async function Item({
   const price = `Fra ${itemData.type === ItemType.OVERNATTING ? itemData.price + itemData.personPrice : itemData.price} kroner`;
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-5 pt-32 pb-10 md:px-10">
-      <div className="relative h-56 w-full overflow-hidden rounded-3xl md:h-96">
+      <div className="relative h-56 w-full rounded-3xl md:h-96">
         <Carousel
-          className="mx-auto h-96 w-[calc(100%_-_10rem)] max-w-3xl"
+          className="h-56 w-full max-w-none md:h-96"
           opts={{
-            align: "start",
+            align: "center",
           }}
         >
           <CarouselContent className="h-full w-full flex-1">
-            <CarouselItem className="basis-1/3">
-              <div className="border-border h-96 w-full rounded-lg border bg-gray-400" />
-            </CarouselItem>
-            <CarouselItem className="basis-1/3">
-              <div className="border-border h-96 w-full rounded-lg border bg-gray-400" />
-            </CarouselItem>
-            <CarouselItem className="basis-1/3">
-              <div className="border-border h-96 w-full rounded-lg border bg-gray-400" />
-            </CarouselItem>
-            <CarouselItem className="basis-1/3">
-              <div className="border-border h-96 w-full rounded-lg border bg-gray-400" />
-            </CarouselItem>
-            <CarouselItem className="basis-1/3">
-              <div className="border-border h-96 w-full rounded-lg border bg-gray-400" />
-            </CarouselItem>
-            <CarouselItem className="basis-1/3">
-              <div className="border-border h-96 w-full rounded-lg border bg-gray-400" />
-            </CarouselItem>
-            <CarouselItem className="basis-1/3">
-              <div className="border-border h-96 w-full rounded-lg border bg-gray-400" />
-            </CarouselItem>
+            {itemData.itemImage?.map((image) => (
+              <CarouselItem className="h-96 basis-1/3" key={image.id + "image"}>
+                <Image
+                  src={image.url}
+                  alt={"Bilde av gjenstanden"}
+                  className="h-56 w-full rounded-3xl object-cover md:h-96"
+                  width={1000}
+                  height={1000}
+                />
+              </CarouselItem>
+            ))}
           </CarouselContent>
           <CarouselNext />
           <CarouselPrevious />
@@ -101,7 +92,7 @@ async function Item({
           className="absolute top-0 left-0 h-full w-full object-cover"
         /> */}
       </div>
-      <div className="flex flex-col gap-2.5">
+      <div className="mt-5 flex flex-col gap-2.5">
         <h1 className="w-fit text-5xl font-black">{itemData.name}</h1>
         {availability === true && from && to && (
           <Badge>

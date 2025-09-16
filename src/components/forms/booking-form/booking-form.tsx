@@ -92,11 +92,16 @@ const BookingForm = React.memo<BookingFormProps>(
       data: bookingAvailability,
       isLoading: isCheckingAvailability,
       isError: isAvailabilityError,
-    } = api.booking.checkAvailability.useQuery({
-      itemId: item.id,
-      from: from,
-      to: to,
-    });
+    } = api.booking.checkAvailability.useQuery(
+      {
+        itemId: item.id,
+        from: from,
+        to: to,
+      },
+      {
+        enabled: !!from && !!to,
+      },
+    );
     const { data: itemBookings, isLoading: itemBookingsLoading } =
       api.booking.getItemBookings.useQuery({
         itemId: item.id,

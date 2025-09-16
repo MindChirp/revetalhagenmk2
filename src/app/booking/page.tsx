@@ -3,7 +3,6 @@ import BookingItemList from "@/components/screen/booking-item-list/booking-item-
 import BookingWizard from "@/components/screen/booking-wizard";
 import CreateBookingItem from "@/components/ui/create-booking-item";
 import { HeroPill } from "@/components/ui/hero-pill";
-import SignInCard from "@/components/ui/sign-in-card";
 import { auth } from "@/server/auth";
 import { HomeIcon } from "lucide-react";
 import { headers } from "next/headers";
