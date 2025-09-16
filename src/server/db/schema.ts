@@ -196,6 +196,16 @@ export const newsletterSubscription = createTable(
   }),
 );
 
+export const membershipApplication = createTable(
+  "membership-application",
+  (d) => ({
+    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+    name: d.varchar({ length: 256 }).notNull(),
+    email: d.varchar({ length: 256 }).notNull().unique(),
+    phone: d.varchar({ length: 32 }).notNull(),
+  }),
+);
+
 export const itemRelations = relations(item, ({ one, many }) => ({
   bookings: one(booking, {
     fields: [item.id],

@@ -10,9 +10,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightIcon } from "lucide-react";
+import { AlertTriangle, ArrowRightIcon, CheckIcon, Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -27,8 +29,15 @@ const MembershipForm = () => {
     resolver: zodResolver(formSchema),
   });
 
+  const { mutate, isPending, isSuccess, status } =
+    api.member.registerInterest.useMutation();
+
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    return;
+    mutate(data, {
+      onError: (error) => {
+        toast.error(error.message ?? "Noe gikk galt");
+      },
+    });
   };
 
   return (
@@ -77,8 +86,27 @@ const MembershipForm = () => {
             </FormItem>
           )}
         />
-        <Button className="w-fit" type="submit">
-          Meld interesse <ArrowRightIcon />
+        <Button
+          className="w-fit"
+          type="submit"
+          disabled={status === "pending" || status === "success"}
+        >
+          {status === "pending" && <Loader className="animate-spin" />}
+          {status === "idle" && (
+            <>
+              Meld interesse <ArrowRightIcon />
+            </>
+          )}
+          {status === "success" && (
+            <>
+              <CheckIcon /> Takk for din interesse!
+            </>
+          )}
+          {status === "error" && (
+            <>
+              <AlertTriangle /> Noe gikk galt
+            </>
+          )}
         </Button>
       </form>
     </Form>
