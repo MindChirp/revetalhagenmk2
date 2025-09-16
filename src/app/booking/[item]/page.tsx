@@ -12,6 +12,7 @@ import CreateItemMeta from "@/components/ui/create-item-meta";
 import DeleteItemMeta from "@/components/ui/delete-item-meta";
 import EditableItemDescription from "@/components/ui/editable-item-description";
 import { Separator } from "@/components/ui/separator";
+import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { ItemType } from "@/lib/item-type";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -63,7 +64,7 @@ async function Item({
     <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-5 pt-32 pb-10 md:px-10">
       <div className="relative h-56 w-full rounded-3xl md:h-96">
         <Carousel
-          className="h-56 w-full max-w-none md:h-96"
+          className="h-56 w-full max-w-[100%_-_10rem] md:h-96"
           opts={{
             align: "center",
           }}
@@ -71,13 +72,16 @@ async function Item({
           <CarouselContent className="h-full w-full flex-1">
             {itemData.itemImage?.map((image) => (
               <CarouselItem className="h-96 basis-1/3" key={image.id + "image"}>
-                <Image
-                  src={image.url}
-                  alt={"Bilde av gjenstanden"}
-                  className="h-56 w-full rounded-3xl object-cover md:h-96"
-                  width={1000}
-                  height={1000}
-                />
+                <ImageZoom>
+                  <Image
+                    src={image.url}
+                    alt={"Bilde av gjenstanden"}
+                    className="h-56 w-full rounded-3xl object-cover md:h-96"
+                    width={1000}
+                    unoptimized
+                    height={1000}
+                  />
+                </ImageZoom>
               </CarouselItem>
             ))}
           </CarouselContent>
