@@ -75,9 +75,11 @@ const LandingEventList = ({
                       " - " +
                       format(event.end, "do LLL yyy", { locale: nb })}
                 </p>
-                <p className="flex items-center gap-1">
-                  <MapPinIcon /> {event.location}
-                </p>
+                {event.location && (
+                  <p className="flex items-center gap-1">
+                    <MapPinIcon /> {event.location}
+                  </p>
+                )}
                 <CardAction className="mt-2.5 flex h-full items-end justify-self-start">
                   <Button variant="secondary">
                     Se mer <ArrowRightIcon />

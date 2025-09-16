@@ -20,7 +20,7 @@ export const eventsRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const events = await ctx.db.query.event.findMany({
-        orderBy: (event, { desc }) => [desc(event.start)],
+        orderBy: (event, { asc }) => [asc(event.start)],
         where: (event, { and, gte, lte }) =>
           input.from && input.to
             ? and(gte(event.start, input.from), lte(event.end, input.to))
