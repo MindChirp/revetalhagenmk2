@@ -97,6 +97,11 @@ async function Item({
         /> */}
       </div>
       <div className="mt-5 flex flex-col gap-2.5">
+        {itemData.type && (
+          <Badge className="capitalize">
+            {ItemType[itemData.type]?.toLowerCase()}
+          </Badge>
+        )}
         <h1 className="w-fit text-5xl font-black">{itemData.name}</h1>
         {availability === true && from && to && (
           <Badge>

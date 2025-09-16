@@ -329,42 +329,35 @@ const BookingForm = React.memo<BookingFormProps>(
                   </motion.div>
                 )}
               </AnimatePresence>
-              <Card className="gap-2.5 shadow-none">
-                <CardHeader>
-                  <CardDescription>
-                    Fyll ut én eller fler av følgende
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-5">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Epost</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="email" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Telefonnummer</FormLabel>
-                        <FormControl>
-                          <PhoneInput {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-              </Card>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Epost</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="email" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telefonnummer</FormLabel>
+                    <FormControl>
+                      <PhoneInput {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {type === ItemType.OVERNATTING && (
                 <FormField
                   control={form.control}

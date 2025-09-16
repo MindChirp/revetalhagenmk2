@@ -57,7 +57,7 @@ const BookingItemCard = ({
       <div className="flex grow flex-col gap-2.5 py-5">
         <CardHeader className="grow">
           {item.type && (
-            <Badge className="mb-2.5 capitalize">
+            <Badge className="mb-2.5 capitalize" variant="secondary">
               {ItemType[item.type]?.toLowerCase()}
             </Badge>
           )}
