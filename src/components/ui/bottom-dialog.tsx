@@ -1,6 +1,12 @@
 "use client";
+
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, type ComponentProps, type ReactNode } from "react";
+import {
+  useEffect,
+  useState,
+  type ComponentProps,
+  type ReactNode,
+} from "react";
 import {
   Card,
   CardContent,
@@ -26,10 +32,17 @@ function BottomDialog({
   onOpenChange,
   ...props
 }: BottomDialogProps) {
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "auto";
   }, [open]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // avoid SSR crash
 
   return createPortal(
     <>

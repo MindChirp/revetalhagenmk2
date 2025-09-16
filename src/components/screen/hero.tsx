@@ -3,17 +3,16 @@
 import { cn } from "@/lib/utils";
 import { authClient } from "@/server/auth/client";
 import { api } from "@/trpc/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRightIcon, ExternalLink } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import EditableParagraph from "../editable-paragraph";
-import { Card, CardContent } from "../ui/card";
+import HeroImage from "../hero-image";
+import { Button } from "../ui/button";
 import Quadrants from "../ui/quadrants";
 import SquigglyCircle from "../ui/squiggly-circle";
-import SlideAnimation from "../ui/animated/slide-animation";
-import { Button } from "../ui/button";
-import Link from "next/link";
 
 function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
   const { data: session } = authClient.useSession();
@@ -88,80 +87,56 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
             </motion.span>
           </h1>
         </motion.div>
+        <HeroImage
+          src="/images/laahnehuset.jpg"
+          cardContent={
+            <>
+              <EditableParagraph
+                className="line-clamp-[7]"
+                content={paragraph?.[0]?.content.content}
+                admin={session?.user?.role === "admin"}
+                onChange={(content) => {
+                  if (!paragraph?.[0]?.id) return;
+                  mutate({
+                    id: paragraph?.[0]?.id,
+                    content: {
+                      content,
+                      title: "",
+                    },
+                    slug: "hero-description",
+                  });
+                }}
+              />
+              <Link href="/om-oss">
+                <Button className="w-fit">
+                  Les mer <ArrowRightIcon />
+                </Button>
+              </Link>
+            </>
+          }
+          cardContentLoading={paragraphLoading}
+        />
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 50,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            type: "spring",
-            duration: 0.5,
-            damping: 20,
-          }}
-          className="relative col-start-2 row-start-2 flex w-full flex-col gap-5"
+        <Link
+          href="/bli-medlem"
+          className="col-start-1 row-start-2 flex h-auto w-full md:w-fit"
         >
-          <Image
-            className="mx-auto h-96 w-full rounded-[60px] object-cover md:mx-0"
-            src="/images/laahnehuset.jpg"
-            alt="Lånehuset"
-            height={2000}
-            width={2000}
-          />
-          <AnimatePresence>
-            {!paragraphLoading && (
-              <SlideAnimation
-                direction="up"
-                className="md:absolute md:bottom-0 md:ml-40 md:translate-y-2/3"
-              >
-                <Card className="bg-card/60 w-fit gap-0 shadow-none backdrop-blur-sm">
-                  <CardContent className="mx-auto flex w-fit max-w-3/4 flex-col gap-2.5 md:max-w-xl">
-                    <EditableParagraph
-                      className="line-clamp-[7]"
-                      content={paragraph?.[0]?.content.content}
-                      admin={session?.user?.role === "admin"}
-                      onChange={(content) => {
-                        if (!paragraph?.[0]?.id) return;
-                        mutate({
-                          id: paragraph?.[0]?.id,
-                          content: {
-                            content,
-                            title: "",
-                          },
-                          slug: "hero-description",
-                        });
-                      }}
-                    />
-                    <Link href="/om-oss">
-                      <Button className="w-fit">
-                        Les mer <ArrowRightIcon />
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              </SlideAnimation>
-            )}
-          </AnimatePresence>
-        </motion.div>
-        <button className="bg-secondary/50 border-secondary text-secondary-foreground col-start-1 row-start-2 flex h-auto w-full cursor-pointer flex-col items-center justify-evenly border border-l-0 p-5 backdrop-blur-md transition-all hover:pl-10 max-sm:rounded-full md:w-fit md:rounded-[60px]">
-          <div className="flex flex-row items-center gap-2.5 text-nowrap">
-            <p>Bli medlem</p>
+          <button className="bg-secondary/50 border-secondary text-secondary-foreground flex h-auto w-full cursor-pointer flex-col items-center justify-evenly border border-l-0 p-5 backdrop-blur-md transition-all hover:pl-10 max-sm:rounded-full md:w-fit md:rounded-[60px]">
+            <div className="flex flex-row items-center gap-2.5 text-nowrap">
+              <p>Bli medlem</p>
 
-            <ExternalLink size={16} />
-          </div>
+              <ExternalLink size={16} />
+            </div>
 
-          <Image
-            className="aspect-square w-10"
-            src="/images/nakuhel-logo.webp"
-            alt="Nakuhel logo"
-            height={500}
-            width={500}
-          />
-        </button>
+            <Image
+              className="aspect-square w-10"
+              src="/images/nakuhel-logo.webp"
+              alt="Nakuhel logo"
+              height={500}
+              width={500}
+            />
+          </button>
+        </Link>
       </div>
       {/* <button
         className="border-secondary text-foreground hover:bg-secondary/30 bg-background absolute bottom-5 left-1/2 flex -translate-x-1/2 animate-bounce cursor-pointer flex-row items-center gap-2.5 rounded-full border-2 p-5 transition-colors"

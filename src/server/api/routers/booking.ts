@@ -72,6 +72,7 @@ export const bookingRouter = createTRPCRouter({
         where: (item, { eq }) => eq(item.id, input.id),
         with: {
           itemMeta: true,
+          itemImage: true,
         },
       });
       return item;

@@ -51,14 +51,15 @@ function Header() {
     >
       <div className="flex w-fit flex-row items-center gap-5">
         <MobileSideBar open={sheetOpen} onOpenChange={setSheetOpen} />
-        <Image
-          className="aspect-square w-10"
-          src="/images/nakuhel-logo.webp"
-          alt="Nakuhel logo"
-          height={500}
-          width={500}
-        />
-        <p className="font-normal">Nakuhel</p>
+        <Link href="/">
+          <Image
+            className="h-auto w-52"
+            src="/images/revetalhagen-logo.svg"
+            alt="Nakuhel logo"
+            height={500}
+            width={500}
+          />
+        </Link>
       </div>
       <div className="hidden w-full items-center justify-center gap-5 md:flex">
         <HeaderNavigationButton icon={<HomeIcon />} href="/">

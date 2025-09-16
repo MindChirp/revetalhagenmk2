@@ -5,6 +5,7 @@ import { eventsRouter } from "./routers/events";
 import { cmsRouter } from "./routers/cms";
 import { bookingRouter } from "./routers/booking";
 import { newsletterRouter } from "./routers/newsletter";
+import { memberRouter } from "./routers/member";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   cms: cmsRouter,
   booking: bookingRouter,
   newsletter: newsletterRouter,
+  member: memberRouter,
 });
 
 // export type definition of API
