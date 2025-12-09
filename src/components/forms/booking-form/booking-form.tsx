@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 import { authClient } from "@/server/auth/client";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { differenceInCalendarDays, startOfDay } from "date-fns";
+import { addDays, differenceInCalendarDays, startOfDay } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Loader,
@@ -102,12 +102,19 @@ const BookingForm = React.memo<BookingFormProps>(
         enabled: !!from && !!to,
       },
     );
+
+    const bookingWindow = useMemo(() => {
+      const start = startOfDay(new Date());
+      const end = startOfDay(addDays(start, 60));
+      return { start, end };
+    }, []);
+
     const { data: itemBookings, isLoading: itemBookingsLoading } =
       api.booking.getItemBookings.useQuery({
         itemId: item.id,
-        from: startOfDay(new Date()),
+        from: bookingWindow.start,
         // 60 days in the future
-        to: startOfDay(new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)),
+        to: bookingWindow.end,
       });
     const rentalDays = useMemo(() => {
       if (!from || !to) {
