@@ -1,7 +1,7 @@
 // Calculate the price of a booking based on the item type (and the price stored in the database) and duration
 
 import type { db } from "@/server/db";
-import { intervalToDuration } from "date-fns";
+import { differenceInCalendarDays, startOfDay } from "date-fns";
 
 type CalculatePriceProps = {
   db: typeof db;
@@ -22,13 +22,11 @@ export const CalculatePrice = async ({
     where: (item, { eq }) => eq(item.id, itemId),
   });
 
-  // Calculate the duration in days
-  const duration = intervalToDuration({ start: from, end: to });
-
-  const days =
-    (duration?.days ?? 1) +
-    (duration?.months ?? 0) * 30 +
-    (duration?.years ?? 0) * 365;
+  // Calculate the duration in full calendar days to ensure nights are counted correctly
+  const days = Math.max(
+    1,
+    differenceInCalendarDays(startOfDay(to), startOfDay(from)),
+  );
 
   if (!item) {
     throw new Error("Item not found");
@@ -37,8 +35,12 @@ export const CalculatePrice = async ({
   // If the item is of type "overnatting", return the price per day multiplied by the number of days + number of people
   let price;
 
-  if (item.type === 1 && people) {
-    price = item.price * days + item.personPrice * people;
+  if (item.type === 1) {
+    const headCount = people ?? 0;
+    console.log("ITEM: ", item);
+    // Overnight stays: base price + per-person price for each night
+    price = (item.price + item.personPrice * headCount) * days;
+    console.log("THIS IS A SLEEP RESERVATION: ", people, price);
   } else {
     price = item.price * days;
   }

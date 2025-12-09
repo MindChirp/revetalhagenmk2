@@ -56,6 +56,11 @@ export const sendBookingConfirmationsToAdmin = async ({
   totalPrice = 600,
   bookingReference = "test-reference",
 }: Omit<SendBookingConfirmationsProps, "email">) => {
+  // Only send to admin emails if in production
+  if (process.env.NODE_ENV !== "production") {
+    return;
+  }
+
   const { data, error } = await resend.emails.send({
     from: "Revetalhagen (booking) <booking@revetalhagen.no>",
     to: ["booking@revetalhagen.no", "post@revetalhagen.no"],

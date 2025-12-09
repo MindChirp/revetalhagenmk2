@@ -188,6 +188,8 @@ export const bookingRouter = createTRPCRouter({
         people: personCount,
       });
 
+      console.log("Calculated price: (return) ", price);
+
       const created = await ctx.db
         .insert(booking)
         .values({

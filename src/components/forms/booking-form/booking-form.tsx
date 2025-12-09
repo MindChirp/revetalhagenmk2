@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 import { authClient } from "@/server/auth/client";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { intervalToDuration, startOfDay } from "date-fns";
+import { differenceInCalendarDays, startOfDay } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Loader,
@@ -109,11 +109,13 @@ const BookingForm = React.memo<BookingFormProps>(
         // 60 days in the future
         to: startOfDay(new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)),
       });
-    const duration = useMemo(() => {
-      return intervalToDuration({
-        start: from,
-        end: to,
-      });
+    const rentalDays = useMemo(() => {
+      if (!from || !to) {
+        return 1;
+      }
+      // Count full calendar days so overnight stays include the last night
+      const days = differenceInCalendarDays(startOfDay(to), startOfDay(from));
+      return days > 0 ? days : 1;
     }, [from, to]);
 
     const handleSubmit = (data: z.infer<typeof formSchema>) => {
@@ -123,10 +125,10 @@ const BookingForm = React.memo<BookingFormProps>(
 
     const totalPrice = useMemo(() => {
       if (type === ItemType.OVERNATTING) {
-        return ((people ?? 0) * personPrice + basePrice) * (duration.days ?? 1);
+        return ((people ?? 0) * personPrice + basePrice) * rentalDays;
       }
-      return basePrice * (duration.days ?? 1);
-    }, [basePrice, personPrice, people, duration, type]);
+      return basePrice * rentalDays;
+    }, [basePrice, personPrice, people, rentalDays, type]);
 
     const memberPrice = useMemo(() => {
       if (typeof memberPriceDiscount === "number") {
@@ -454,6 +456,7 @@ const BookingForm = React.memo<BookingFormProps>(
                   phone: phone ?? "",
                   name: name ?? "",
                   message: message ?? "",
+                  personCount: people,
                 }}
                 open={submitDialogOpen}
                 onOpenChange={setSubmitDialogOpen}
