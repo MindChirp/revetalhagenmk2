@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import BookingInformationDialog from "@/components/booking-information-dialog";
 import { PhoneInput } from "@/components/phone-input";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
@@ -43,7 +42,7 @@ import {
   TriangleAlertIcon,
 } from "lucide-react";
 import { parseAsIsoDateTime, useQueryStates } from "nuqs";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 
@@ -116,17 +115,25 @@ const BookingForm = React.memo<BookingFormProps>(
         // 60 days in the future
         to: bookingWindow.end,
       });
+
     const rentalDays = useMemo(() => {
       if (!from || !to) {
         return 1;
       }
-      // Count full calendar days so overnight stays include the last night
-      const days = differenceInCalendarDays(startOfDay(to), startOfDay(from));
-      return days > 0 ? days : 1;
-    }, [from, to]);
 
-    const handleSubmit = (data: z.infer<typeof formSchema>) => {
-      console.log("Form submitted with data:", data);
+      let days: number;
+
+      if (type === ItemType.ARRANGEMENTSROM || type === ItemType.MØTEROM) {
+        days = differenceInCalendarDays(startOfDay(to), startOfDay(from)) + 1;
+      } else {
+        days = differenceInCalendarDays(startOfDay(to), startOfDay(from));
+      }
+
+      // Count full calendar days so overnight stays include the last night
+      return days > 0 ? days : 1;
+    }, [from, to, type]);
+
+    const handleSubmit = () => {
       setSubmitDialogOpen(true);
     };
 
@@ -134,6 +141,7 @@ const BookingForm = React.memo<BookingFormProps>(
       if (type === ItemType.OVERNATTING) {
         return ((people ?? 0) * personPrice + basePrice) * rentalDays;
       }
+
       return basePrice * rentalDays;
     }, [basePrice, personPrice, people, rentalDays, type]);
 
@@ -419,7 +427,9 @@ const BookingForm = React.memo<BookingFormProps>(
                       </SlideAnimation>
                     )}
                   </AnimatePresence>
-                  {session?.user?.role === "admin" && (
+                </div>
+                {session?.user?.role === "admin" && (
+                  <div className="mt-1">
                     <EditItemPriceDialog
                       id={item.id}
                       defaultValues={{
@@ -429,8 +439,8 @@ const BookingForm = React.memo<BookingFormProps>(
                       }}
                       type={type!}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               {typeof memberPriceDiscount === "number" && (
                 <>

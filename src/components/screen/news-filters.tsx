@@ -1,12 +1,11 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpAZIcon, ArrowUpZAIcon, PlusIcon } from "lucide-react";
+import { authClient } from "@/server/auth/client";
+import { PlusIcon } from "lucide-react";
 import { parseAsString, parseAsStringEnum, useQueryStates } from "nuqs";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { authClient } from "@/server/auth/client";
 import NewsDialog from "../ui/news-dialog";
-import { useState } from "react";
 
 export enum TimeDirection {
   NEWEST = "nyeste",
@@ -23,7 +22,7 @@ function NewsFilters() {
   const { data: session } = authClient.useSession();
   return (
     <div className="flex flex-row gap-5">
-      <Button
+      {/* <Button
         className="overflow-hidden"
         variant={"outline"}
         onClick={() => {
@@ -84,7 +83,7 @@ function NewsFilters() {
             </motion.div>
           )}
         </AnimatePresence>
-      </Button>
+      </Button> */}
       <Input
         placeholder="Søk..."
         className="w-56"

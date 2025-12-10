@@ -10,6 +10,7 @@ type CalculatePriceProps = {
   to: Date;
   people?: number;
 };
+
 export const CalculatePrice = async ({
   db,
   from,
@@ -22,28 +23,23 @@ export const CalculatePrice = async ({
     where: (item, { eq }) => eq(item.id, itemId),
   });
 
-  // Calculate the duration in full calendar days to ensure nights are counted correctly
-  const days = Math.max(
-    1,
-    differenceInCalendarDays(startOfDay(to), startOfDay(from)),
-  );
-
   if (!item) {
     throw new Error("Item not found");
   }
 
-  // If the item is of type "overnatting", return the price per day multiplied by the number of days + number of people
-  let price;
+  const dayDifference = differenceInCalendarDays(
+    startOfDay(to),
+    startOfDay(from),
+  );
+  const days =
+    item.type === 2 || item.type === 4
+      ? Math.max(1, dayDifference + 1)
+      : Math.max(1, dayDifference);
 
-  if (item.type === 1) {
-    const headCount = people ?? 0;
-    console.log("ITEM: ", item);
-    // Overnight stays: base price + per-person price for each night
-    price = (item.price + item.personPrice * headCount) * days;
-    console.log("THIS IS A SLEEP RESERVATION: ", people, price);
-  } else {
-    price = item.price * days;
-  }
+  const price =
+    item.type === 1
+      ? ((people ?? 0) * item.personPrice + item.price) * days
+      : item.price * days;
 
   return {
     nonMemberPrice: price,
