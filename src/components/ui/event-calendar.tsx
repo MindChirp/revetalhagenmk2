@@ -1,64 +1,83 @@
 "use client";
 import { api } from "@/trpc/react";
-import {
-  createViewDay,
-  createViewMonthAgenda,
-  createViewMonthGrid,
-  createViewWeek,
-  viewMonthGrid,
-} from "@schedule-x/calendar";
-import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react";
-import { endOfWeek, format, startOfWeek } from "date-fns";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { format, isSameDay, startOfWeek } from "date-fns";
+import { nb } from "date-fns/locale";
+import { ArrowRight, ClockIcon, MapPin } from "lucide-react";
+import { useState } from "react";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
+import EventDialog from "./event-dialog";
+import { Separator } from "./separator";
+import Link from "next/link";
+import { Button } from "./button";
 
 function EventCalendar() {
   const [from, setFrom] = useState(startOfWeek(new Date()));
-  const [to, setTo] = useState(endOfWeek(new Date()));
-  const router = useRouter();
   const { data: events } = api.events.getEvents.useQuery({
     from: from,
-    to: to,
   });
 
-  useEffect(() => {
-    calendar?.events.set(
-      events?.map((e) => ({
-        id: e.id,
-        title: e.title ?? "Ukjent",
-        start: format(new Date(e.start), "yyyy-MM-dd HH:mm"),
-        end: format(new Date(e.end), "yyyy-MM-dd HH:mm"),
-        description: e.description ?? "Test",
-        location: e.location ?? "Sted",
-      })) ?? [],
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events]);
+  type EventItem = NonNullable<typeof events>[number];
+  const groupedEvents =
+    events
+      ?.slice()
+      .sort((a, b) => a.start.getTime() - b.start.getTime())
+      .reduce<Record<string, EventItem[]>>((acc, event) => {
+        const key = `${event.start.getFullYear()}-${event.start.getMonth()}`;
+        (acc[key] ??= []).push(event);
+        return acc;
+      }, {}) ?? {};
 
-  const calendar = useNextCalendarApp({
-    views: [
-      createViewDay(),
-      createViewWeek(),
-      createViewMonthAgenda(),
-      createViewMonthGrid(),
-    ],
-    defaultView: viewMonthGrid.name,
-    callbacks: {
-      onRangeUpdate: (range) => {
-        setFrom(new Date(range.start));
-        setTo(new Date(range.end));
-      },
-      onEventClick: (event) => {
-        router.push(`/arrangementer/${event.id}`);
-      },
-    },
-
-    showWeekNumbers: true,
-    locale: "nb-NO",
-    theme: "shadcn",
-  });
-
-  return <ScheduleXCalendar calendarApp={calendar} />;
+  return (
+    <div className="flex w-full flex-col gap-5">
+      <EventDialog />
+      {Object.entries(groupedEvents).map(([key, monthEvents]) => (
+        <div key={key} className="flex w-full flex-col gap-2">
+          {monthEvents[0]?.start && (
+            <div className="flex w-full flex-col">
+              <h3 className="text-lg font-semibold capitalize">
+                {format(monthEvents[0]?.start, "LLLL yyyy", {
+                  locale: nb,
+                })}
+              </h3>
+              <Separator orientation="horizontal" className="w-full" />
+            </div>
+          )}
+          {monthEvents.map((e) => (
+            <Link href={`/arrangementer/${e.id}`} key={e.id}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    <h2>{e.title}</h2>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <span className="flex flex-row items-center gap-1">
+                    <ClockIcon size={16} />
+                    {isSameDay(e.start, e.end)
+                      ? `${format(e.start, "PPPP p", { locale: nb })} - ${format(e.end, "p", { locale: nb })}`
+                      : `${format(e.start, "PPPP p", { locale: nb })} - ${format(e.end, "do LLLL p", { locale: nb })}`}
+                  </span>
+                  <div className="bg-card">
+                    {e.location && (
+                      <span className="flex flex-row items-center gap-1">
+                        <MapPin size={16} />
+                        {e.location}
+                      </span>
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button variant={"secondary"}>
+                    <ArrowRight /> Les mer
+                  </Button>
+                </CardFooter>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default EventCalendar;

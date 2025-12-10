@@ -19,6 +19,7 @@ import BottomDialog from "./ui/bottom-dialog";
 interface EditableParagraphProps
   extends Omit<React.HTMLProps<HTMLSpanElement>, "onChange"> {
   content?: string;
+  customLabel?: string;
   admin?: boolean;
   type?: "default" | "rich";
   buttonVariant?: ComponentProps<typeof Button>["variant"];
@@ -32,6 +33,7 @@ const formSchema = z.object({
 
 function EditableParagraph({
   content,
+  customLabel,
   admin,
   buttonVariant = "default",
   onChange,
@@ -87,7 +89,7 @@ function EditableParagraph({
                   {!loading ? (
                     <>
                       <PencilIcon />
-                      Rediger
+                      {customLabel ?? "Rediger"}
                     </>
                   ) : (
                     <Loader className="animate-spin" />

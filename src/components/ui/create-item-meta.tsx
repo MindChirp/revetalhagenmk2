@@ -66,14 +66,19 @@ function CreateItemMeta({ itemId }: { itemId: number }) {
           <TooltipTrigger asChild>
             <Button variant="outline" onClick={() => setOpen(true)}>
               <PlusIcon />
+              Legg til informasjon
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Opprett ny informasjonsbrikke</TooltipContent>
+          <TooltipContent>
+            Legg til mer nøkkelinformasjon på gjenstanden
+          </TooltipContent>
         </Tooltip>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Opprett ny informasjonsbrikke</DialogTitle>
+          <DialogTitle>
+            Legg til mer nøkkelinformasjon på gjenstanden
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form

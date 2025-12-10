@@ -34,6 +34,7 @@ function EditableItemDescription({
   return (
     <EditableParagraph
       loading={isPending}
+      customLabel="Rediger beskrivelse"
       buttonVariant={"outline"}
       onChange={handleChange}
       content={description ?? ""}

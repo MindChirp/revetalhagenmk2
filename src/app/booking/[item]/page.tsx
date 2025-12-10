@@ -61,17 +61,18 @@ async function Item({
 
   const price = `Fra ${itemData.type === ItemType.OVERNATTING ? itemData.price + itemData.personPrice : itemData.price} kroner`;
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-5 pt-32 pb-10 md:px-10">
+    <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-5 px-5 pt-32 pb-10 md:px-10">
       <div className="relative h-56 w-full rounded-3xl md:h-96">
         <Carousel
           className="h-56 w-full max-w-[100%_-_10rem] md:h-96"
           opts={{
-            align: "center",
+            align: "start",
+            loop: true,
           }}
         >
           <CarouselContent className="h-full w-full flex-1">
             {itemData.itemImage?.map((image) => (
-              <CarouselItem className="h-96 basis-1/3" key={image.id + "image"}>
+              <CarouselItem className="md:basis-1/3" key={image.id + "image"}>
                 <ImageZoom>
                   <Image
                     src={image.url}
@@ -85,8 +86,6 @@ async function Item({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselNext />
-          <CarouselPrevious />
         </Carousel>
         {/* <Image
           src={itemData?.image ?? ""}
@@ -102,7 +101,9 @@ async function Item({
             {ItemType[itemData.type]?.toLowerCase()}
           </Badge>
         )}
-        <h1 className="w-fit text-5xl font-black">{itemData.name}</h1>
+        <h1 className="w-fit text-3xl font-black md:text-5xl">
+          {itemData.name}
+        </h1>
         {availability === true && from && to && (
           <Badge>
             <CheckIcon />

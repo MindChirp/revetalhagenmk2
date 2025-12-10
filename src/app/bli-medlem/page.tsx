@@ -13,9 +13,7 @@ import {
   MessageCircleIcon,
   ThumbsUpIcon,
   UsersIcon,
-  type LucideProps,
 } from "lucide-react";
-import type { ForwardRefExoticComponent, RefAttributes } from "react";
 import { toast } from "sonner";
 
 const Page = () => {

@@ -1,13 +1,11 @@
-import SlideAnimation from "@/components/ui/animated/slide-animation";
-import EventDialog from "@/components/ui/event-dialog";
-import EventCalendar from "@/components/ui/event-calendar";
-import EventList from "@/components/ui/event-list";
 import DynamicBreadcrumbs from "@/components/dynamic-breadcrumbs";
+import SlideAnimation from "@/components/ui/animated/slide-animation";
+import EventCalendar from "@/components/ui/event-calendar";
 import { HomeIcon } from "lucide-react";
 
 async function Page() {
   return (
-    <div className="relative mx-auto flex max-w-7xl flex-col items-start justify-center gap-5 px-5 pt-24 md:pt-36">
+    <div className="relative mx-auto flex max-w-5xl flex-col items-start justify-center gap-5 px-5 pt-24 md:pt-36">
       <DynamicBreadcrumbs
         className="mt-5 px-5 md:px-10 md:pl-20"
         items={[
@@ -38,13 +36,12 @@ async function Page() {
         i Revetalhagen?
       </h1>
       <div className="relative flex w-full flex-0 flex-col items-center justify-center gap-5 px-5 pb-10 md:flex-row md:items-start md:px-20">
-        <div className="flex w-full flex-1 flex-col items-start gap-2.5">
+        {/* <div className="flex w-full flex-1 flex-col items-start gap-2.5">
           <h2 className="font-semibold">Kommende arrangementer</h2>
           <EventList className="w-full" />
           <EventDialog className="mx-auto w-full md:mx-0" />
-        </div>
+        </div> */}
         <div className="flex w-full flex-2 flex-col items-start justify-center gap-2.5 md:items-start">
-          <h2 className="w-fit font-semibold">Arrangementskalender</h2>
           <EventCalendar />
         </div>
       </div>
