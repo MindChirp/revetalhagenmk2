@@ -35,30 +35,63 @@ function EventCalendar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events]);
 
-  const calendar = useNextCalendarApp({
-    views: [
-      createViewDay(),
-      createViewWeek(),
-      createViewMonthAgenda(),
-      createViewMonthGrid(),
-    ],
-    defaultView: viewMonthGrid.name,
-    callbacks: {
-      onRangeUpdate: (range) => {
-        setFrom(new Date(range.start));
-        setTo(new Date(range.end));
-      },
-      onEventClick: (event) => {
-        router.push(`/arrangementer/${event.id}`);
-      },
-    },
+  return (
+    <div className="flex w-full flex-col gap-5">
+      <EventDialog />
+      {Object.entries(groupedEvents).map(([key, monthEvents]) => (
+        <div key={key} className="flex w-full flex-col gap-2">
+          {monthEvents[0]?.start && (
+            <div className="flex w-full flex-col">
+              <h3 className="text-lg font-semibold capitalize">
+                {format(monthEvents[0]?.start, "LLLL yyyy", {
+                  locale: nb,
+                })}
+              </h3>
+              <Separator orientation="horizontal" className="w-full" />
+            </div>
+          )}
+          {monthEvents.map((e) => (
+            <Link href={`/arrangementer/${e.id}`} key={e.id}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    <h2>{e.title}</h2>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-1">
+                  <span className="flex flex-row items-center gap-2">
+                    <ClockIcon size={16} className="flex-shrink-0" />
+                    {isSameDay(e.start, e.end)
+                      ? `${format(e.start, "PPPP p", { locale: nb })} - ${format(e.end, "p", { locale: nb })}`
+                      : `${format(e.start, "EEEE Pp", { locale: nb })} - ${format(e.end, "EEEE Pp", { locale: nb })}`}
+                  </span>
+                  <div className="bg-card">
+                    {e.location && (
+                      <span className="flex flex-row items-center gap-2">
+                        <MapPin size={16} className="flex-shrink-0" />
+                        {e.location}
+                      </span>
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button variant={"secondary"}>
+                    <ArrowRight /> Les mer
+                  </Button>
+                </CardFooter>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      ))}
 
-    showWeekNumbers: true,
-    locale: "nb-NO",
-    theme: "shadcn",
-  });
-
-  return <ScheduleXCalendar calendarApp={calendar} />;
+      {(events?.length ?? 0) === 0 && (
+        <div>
+          <h2>Ops! Det er ingen kommende arrangementer akkurat nå</h2>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default EventCalendar;
