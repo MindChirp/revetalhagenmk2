@@ -78,6 +78,7 @@ function NewsList() {
                         name: article.author?.name ?? "Ukjent",
                         email: article.author?.email ?? "",
                       }}
+                      date={article.createdAt}
                     />
                   </Link>
                 ));

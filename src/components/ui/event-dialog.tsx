@@ -101,12 +101,12 @@ function EventDialog({ defaultEvent, ...props }: EventDialogProps) {
             >
               {!defaultEvent && (
                 <>
-                  <PlusIcon /> Opprett
+                  <PlusIcon /> Opprett arrangement
                 </>
               )}
               {defaultEvent && (
                 <>
-                  <PencilIcon /> Rediger
+                  <PencilIcon /> Rediger arrangement
                 </>
               )}
             </Button>

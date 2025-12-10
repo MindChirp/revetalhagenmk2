@@ -89,6 +89,7 @@ function EditItemPriceDialog({
       <DialogTrigger asChild>
         <Button variant="outline" className="w-fit">
           <PencilIcon />
+          Rediger pris
         </Button>
       </DialogTrigger>
       <DialogContent>

@@ -1,39 +1,31 @@
 "use client";
 import { api } from "@/trpc/react";
-import {
-  createViewDay,
-  createViewMonthAgenda,
-  createViewMonthGrid,
-  createViewWeek,
-  viewMonthGrid,
-} from "@schedule-x/calendar";
-import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react";
-import { endOfWeek, format, startOfWeek } from "date-fns";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { format, isSameDay, startOfWeek } from "date-fns";
+import { nb } from "date-fns/locale";
+import { ArrowRight, ClockIcon, MapPin } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { Button } from "./button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
+import EventDialog from "./event-dialog";
+import { Separator } from "./separator";
 
 function EventCalendar() {
   const [from, setFrom] = useState(startOfWeek(new Date()));
-  const [to, setTo] = useState(endOfWeek(new Date()));
-  const router = useRouter();
   const { data: events } = api.events.getEvents.useQuery({
     from: from,
-    to: to,
   });
 
-  useEffect(() => {
-    calendar?.events.set(
-      events?.map((e) => ({
-        id: e.id,
-        title: e.title ?? "Ukjent",
-        start: format(new Date(e.start), "yyyy-MM-dd HH:mm"),
-        end: format(new Date(e.end), "yyyy-MM-dd HH:mm"),
-        description: e.description ?? "Test",
-        location: e.location ?? "Sted",
-      })) ?? [],
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events]);
+  type EventItem = NonNullable<typeof events>[number];
+  const groupedEvents =
+    events
+      ?.slice()
+      .sort((a, b) => a.start.getTime() - b.start.getTime())
+      .reduce<Record<string, EventItem[]>>((acc, event) => {
+        const key = `${event.start.getFullYear()}-${event.start.getMonth()}`;
+        (acc[key] ??= []).push(event);
+        return acc;
+      }, {}) ?? {};
 
   return (
     <div className="flex w-full flex-col gap-5">

@@ -156,17 +156,8 @@ export const bookingRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const {
-        itemId,
-        from,
-        to,
-        userId,
-        email,
-        phone,
-        name,
-        message,
-        personCount,
-      } = input;
+      const { itemId, from, to, email, phone, name, message, personCount } =
+        input;
 
       // Check booking validity
       const isValid = await CheckBookingValidity({

@@ -126,10 +126,6 @@ function SubmitBookingDialog({
                   </>
                 )}
               </Button>
-
-              <Button variant="outline">
-                <HelpCircleIcon /> Hva er medlemspris?
-              </Button>
             </div>
           </>
         )}

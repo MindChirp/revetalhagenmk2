@@ -18,12 +18,11 @@ export const newsRouter = createTRPCRouter({
       const limit = input.limit ?? 10;
       const { cursor } = input;
 
-      // Get list of news, including the author object
       const items = await ctx.db.query.news.findMany({
-        orderBy: (news, { asc }) => [asc(news.id)],
-        where: (news, { gt, like, and }) =>
+        orderBy: (news, { desc }) => [desc(news.id)],
+        where: (news, { lt, like, and }) =>
           and(
-            cursor ? gt(news.id, cursor) : undefined,
+            cursor ? lt(news.id, cursor) : undefined,
             like(news.name, `%${input.query ?? ""}%`),
           ),
         columns: {
@@ -111,12 +110,14 @@ export const newsRouter = createTRPCRouter({
         .from(newsletterSubscription);
 
       if (allSubscriptions.length > 0 && obj.length > 0) {
-        void sendNewsletter({
-          recipients: allSubscriptions.map((sub) => sub.email),
-          articleId: obj[0]?.id.toString() ?? "",
-          title: input.title,
-          preview: input.preview ?? "Ukjent innhold",
-        });
+        if (process.env.NODE_ENV == "production") {
+          void sendNewsletter({
+            recipients: allSubscriptions.map((sub) => sub.email),
+            articleId: obj[0]?.id.toString() ?? "",
+            title: input.title,
+            preview: input.preview ?? "Ukjent innhold",
+          });
+        }
       }
 
       return obj;

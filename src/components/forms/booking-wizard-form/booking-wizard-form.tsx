@@ -1,12 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -16,13 +10,11 @@ import {
 } from "@/components/ui/select";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { SearchIcon, XIcon } from "lucide-react";
-import { parseAsIsoDateTime, parseAsString, useQueryStates } from "nuqs";
+import { parseAsString, useQueryStates } from "nuqs";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { motion } from "framer-motion";
-import { DateTimePicker } from "@/components/ui/date-time-picker";
 
 const formSchema = z.object({
   itemType: z.string().min(1, "Gjenstandstype er påkrevd"),
@@ -33,15 +25,11 @@ function BookingWizardForm() {
   const { data: itemTypes } = api.booking.getItemTypes.useQuery();
   const [queries, setQueries] = useQueryStates({
     type: parseAsString,
-    from: parseAsIsoDateTime,
-    to: parseAsIsoDateTime,
   });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       itemType: queries.type ?? undefined,
-      from: new Date(),
-      to: new Date(),
     },
   });
 
@@ -49,8 +37,6 @@ function BookingWizardForm() {
     console.log(data);
     void setQueries({
       type: data.itemType,
-      from: data.from ?? undefined,
-      to: data.to ?? undefined,
     });
 
     // Scroll
@@ -97,32 +83,6 @@ function BookingWizardForm() {
             </FormItem>
           )}
         />
-        <div className="flex flex-row gap-2.5">
-          <FormField
-            control={form.control}
-            name="from"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fra</FormLabel>
-                <FormControl>
-                  <DateTimePicker {...field} className="bg-card/50" />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="to"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Til</FormLabel>
-                <FormControl>
-                  <DateTimePicker {...field} className="bg-card/50" />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
         <div className="flex flex-row">
           <Button className="flex-1" type="submit">
             <SearchIcon />
