@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { format } from "date-fns";
 import { Button } from "./button";
+import { nb } from "date-fns/locale";
 
 interface NewsCardProps {
   author: {
@@ -79,7 +80,7 @@ function NewsCard({ author, title, description, date }: NewsCardProps) {
         <CardHeader className="w-full px-1">
           <CardTitle>{title}</CardTitle>
           <CardDescription className="line-clamp-3">
-            {format(date, "Pp")}
+            {format(date, "Pp", { locale: nb })}
           </CardDescription>
         </CardHeader>
       </div>
