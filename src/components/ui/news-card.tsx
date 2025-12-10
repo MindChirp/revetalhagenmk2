@@ -1,11 +1,20 @@
-import { ShieldCheckIcon } from "lucide-react";
+import { ArrowRight, ShieldCheckIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Badge } from "./badge";
-import { Card, CardDescription, CardHeader, CardTitle } from "./card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./card";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
+import { format } from "date-fns";
+import { Button } from "./button";
 
 interface NewsCardProps {
   author: {
@@ -16,12 +25,13 @@ interface NewsCardProps {
   };
   title: string;
   description: string;
+  date: Date;
 }
-function NewsCard({ author, title, description }: NewsCardProps) {
+function NewsCard({ author, title, description, date }: NewsCardProps) {
   const [open, setOpen] = useState(false);
   return (
-    <Card className="h-full">
-      <div className="flex w-auto items-start gap-5 px-10">
+    <Card className="h-full gap-5">
+      <div className="flex w-auto items-center gap-2.5 px-6">
         <div
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}
@@ -69,10 +79,19 @@ function NewsCard({ author, title, description }: NewsCardProps) {
         <CardHeader className="w-full px-1">
           <CardTitle>{title}</CardTitle>
           <CardDescription className="line-clamp-3">
-            {description}
+            {format(date, "Pp")}
           </CardDescription>
         </CardHeader>
       </div>
+
+      <CardContent>
+        <p className="text-sm">{description}</p>
+      </CardContent>
+      <CardFooter className="flex flex-1 items-end">
+        <Button variant="secondary">
+          <ArrowRight /> Les hele
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

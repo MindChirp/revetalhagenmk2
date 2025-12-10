@@ -3,12 +3,12 @@ import { api } from "@/trpc/react";
 import { format, isSameDay, startOfWeek } from "date-fns";
 import { nb } from "date-fns/locale";
 import { ArrowRight, ClockIcon, MapPin } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
+import { Button } from "./button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./card";
 import EventDialog from "./event-dialog";
 import { Separator } from "./separator";
-import Link from "next/link";
-import { Button } from "./button";
 
 function EventCalendar() {
   const [from, setFrom] = useState(startOfWeek(new Date()));
@@ -50,17 +50,17 @@ function EventCalendar() {
                     <h2>{e.title}</h2>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <span className="flex flex-row items-center gap-1">
-                    <ClockIcon size={16} />
+                <CardContent className="flex flex-col gap-1">
+                  <span className="flex flex-row items-center gap-2">
+                    <ClockIcon size={16} className="flex-shrink-0" />
                     {isSameDay(e.start, e.end)
                       ? `${format(e.start, "PPPP p", { locale: nb })} - ${format(e.end, "p", { locale: nb })}`
-                      : `${format(e.start, "PPPP p", { locale: nb })} - ${format(e.end, "do LLLL p", { locale: nb })}`}
+                      : `${format(e.start, "EEEE Pp", { locale: nb })} - ${format(e.end, "EEEE Pp", { locale: nb })}`}
                   </span>
                   <div className="bg-card">
                     {e.location && (
-                      <span className="flex flex-row items-center gap-1">
-                        <MapPin size={16} />
+                      <span className="flex flex-row items-center gap-2">
+                        <MapPin size={16} className="flex-shrink-0" />
                         {e.location}
                       </span>
                     )}
