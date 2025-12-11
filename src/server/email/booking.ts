@@ -63,7 +63,7 @@ export const sendBookingConfirmationsToAdmin = async ({
 
   const { data, error } = await resend.emails.send({
     from: "Revetalhagen (booking) <booking@revetalhagen.no>",
-    to: ["booking@revetalhagen.no", "post@revetalhagen.no"],
+    to: ["post@revetalhagen.no"],
     subject: "Ny bookingforespørsel",
     react: BookingConfirmationAdminTemplate({
       from,
