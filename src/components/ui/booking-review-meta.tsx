@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import type { booking } from "@/server/db/schema";
 import { format } from "date-fns";
-import { BanknoteIcon, ClockIcon } from "lucide-react";
+import { BanknoteIcon, ClockIcon, Mail, Phone, UserIcon } from "lucide-react";
 import { nb } from "date-fns/locale";
 
 type BookingReviewMetaProps = {
@@ -29,6 +29,20 @@ function BookingReviewMeta({ booking }: BookingReviewMetaProps) {
             <strong>{booking.price} kr</strong>
           </span>
         </span>
+        <span className="flex items-center gap-2.5">
+          <UserIcon />
+          {booking.name}
+        </span>
+        <span className="flex items-center gap-2.5">
+          <Mail />
+          {booking.email}
+        </span>
+        {booking.phone && (
+          <span className="flex items-center gap-2.5">
+            <Phone />
+            {booking.phone}
+          </span>
+        )}
       </CardContent>
     </Card>
   );
