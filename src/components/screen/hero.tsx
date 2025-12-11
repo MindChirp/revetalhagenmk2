@@ -11,8 +11,6 @@ import React from "react";
 import EditableParagraph from "../editable-paragraph";
 import HeroImage from "../hero-image";
 import { Button } from "../ui/button";
-import Quadrants from "../ui/quadrants";
-import SquigglyCircle from "../ui/squiggly-circle";
 
 function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
   const { data: session } = authClient.useSession();
@@ -30,7 +28,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
   });
 
   return (
-    <div className="relative flex min-h-screen w-full max-w-screen items-center pt-20 pb-5">
+    <div className="relative flex min-h-screen w-full max-w-screen items-center pt-40 pb-5 md:pt-20">
       <div
         className={cn(
           "mx-auto flex w-[95vw] grid-cols-[min-content_1fr] grid-rows-[min-content_min-content_1fr] flex-col justify-start gap-10 md:grid md:w-full md:justify-center md:pr-10",
@@ -92,7 +90,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
           cardContent={
             <>
               <EditableParagraph
-                className="line-clamp-[7]"
+                className="line-clamp-[7] w-full md:w-fit"
                 content={paragraph?.[0]?.content.content}
                 admin={session?.user?.role === "admin"}
                 onChange={(content) => {
@@ -147,7 +145,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
         <ArrowDown />
         <p>Bla ned</p>
       </button> */}
-      <SquigglyCircle
+      {/* <SquigglyCircle
         className="absolute top-0 right-0 w-[400] translate-x-1/3 -translate-y-1/2 animate-spin opacity-50 md:w-[800] md:opacity-30"
         style={{
           animationDuration: "50s",
@@ -159,7 +157,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
         className="absolute -bottom-10 left-0 w-[300] opacity-70 md:bottom-10 md:left-10 md:w-[500] md:opacity-50"
         width={500}
         height={500}
-      />
+      /> */}
     </div>
   );
 }
