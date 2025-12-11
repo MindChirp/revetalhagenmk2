@@ -108,7 +108,7 @@ function CreateEventForm({
                   <DatetimePicker
                     {...field}
                     format={[
-                      ["months", "days", "years"],
+                      ["days", "months", "years"],
                       ["hours", "minutes"],
                     ]}
                   />
@@ -126,7 +126,7 @@ function CreateEventForm({
                   <DatetimePicker
                     {...field}
                     format={[
-                      ["months", "days", "years"],
+                      ["days", "months", "years"],
                       ["hours", "minutes"],
                     ]}
                   />
