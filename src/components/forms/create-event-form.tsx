@@ -9,7 +9,7 @@ import "quill/dist/quill.snow.css";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { DateTimePicker } from "../ui/date-time-picker";
+import { DatetimePicker } from "../ui/datetime-picker";
 import { Label } from "../ui/label";
 import TextEditor from "../ui/portable-text/portable-text";
 import { Textarea } from "../ui/textarea";
@@ -98,14 +98,21 @@ function CreateEventForm({
             )}
           />
 
-          <div className="flex w-full flex-row flex-nowrap gap-2.5">
+          <div className="flex w-fit flex-row flex-nowrap gap-5">
             <FormField
               name="start"
               control={form.control}
               render={({ field }) => (
                 <div className="flex w-full flex-col gap-1">
-                  <Label>Starttidspunkt</Label>
-                  <DateTimePicker className="col-start-1 w-full" {...field} />
+                  <Label>Start</Label>
+                  <DatetimePicker
+                    {...field}
+                    format={[
+                      ["months", "days", "years"],
+                      ["hours", "minutes"],
+                    ]}
+                  />
+                  {/* <DateTimePicker className="col-start-1 w-full" {...field} /> */}
                 </div>
               )}
             />
@@ -114,9 +121,15 @@ function CreateEventForm({
               control={form.control}
               render={({ field }) => (
                 <div className="flex w-full flex-col gap-1">
-                  <Label>Slutttidspunkt</Label>
-                  <DateTimePicker className="w-full" {...field} />
-                  {form.formState.isValid}
+                  <Label>Slutt</Label>
+                  {/* <DateTimePicker className="w-full" {...field} /> */}
+                  <DatetimePicker
+                    {...field}
+                    format={[
+                      ["months", "days", "years"],
+                      ["hours", "minutes"],
+                    ]}
+                  />
                 </div>
               )}
             />

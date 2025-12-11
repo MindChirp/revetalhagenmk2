@@ -61,10 +61,10 @@ importers:
         version: 0.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@schedule-x/calendar':
         specifier: ^2.28.0
-        version: 2.28.0(@preact/signals@2.0.3(preact@10.26.5))(preact@10.26.5)
+        version: 2.28.0(preact@10.26.5)
       '@schedule-x/react':
         specifier: ^2.27.1
-        version: 2.27.1(@schedule-x/calendar@2.28.0(@preact/signals@2.0.3(preact@10.26.5))(preact@10.26.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 2.27.1(@schedule-x/calendar@2.28.0(preact@10.26.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@schedule-x/theme-shadcn':
         specifier: ^2.28.0
         version: 2.28.0
@@ -170,6 +170,9 @@ importers:
       tailwind-merge:
         specifier: ^3.2.0
         version: 3.2.0
+      timescape:
+        specifier: ^0.8.0
+        version: 0.8.0(preact@10.26.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       tw-animate-css:
         specifier: ^1.2.5
         version: 1.2.5
@@ -1244,14 +1247,6 @@ packages:
   '@portabletext/types@2.0.13':
     resolution: {integrity: sha512-5xk5MSyQU9CrDho3Rsguj38jhijhD36Mk8S6mZo3huv6PM+t4M/5kJN2KFIxgvt4ONpvOEs1pVIZAV0cL0Vi+Q==}
     engines: {node: ^14.13.1 || >=16.0.0 || >=18.0.0}
-
-  '@preact/signals-core@1.8.0':
-    resolution: {integrity: sha512-OBvUsRZqNmjzCZXWLxkZfhcgT+Fk8DDcT/8vD6a1xhDemodyy87UJRJfASMuSD8FaAIeGgGm85ydXhm7lr4fyA==}
-
-  '@preact/signals@2.0.3':
-    resolution: {integrity: sha512-ZdC6w8+LdCMeALEoJgzwEAGw2YahqWGCQLfzRCRvRGC411SzcJOiti5gEqrSN+tKtGqMgicHtQ/eUUxWGTBw0A==}
-    peerDependencies:
-      preact: 10.x
 
   '@radix-ui/number@1.1.1':
     resolution: {integrity: sha512-MkKCwxlXTgz6CFoJx3pCwn07GKp36+aZyu/u2Ln2VrA5DcdyCZkASEDBTd8x5whTQQL5CiYf4prXKLcgQdv29g==}
@@ -4328,6 +4323,32 @@ packages:
   through2@4.0.2:
     resolution: {integrity: sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw==}
 
+  timescape@0.8.0:
+    resolution: {integrity: sha512-nNYAnZY1BPHSfnnpx3V9wWdxb9z4tB7zksRx0/mRFpZ8gK3fqEMZQ43hHqUDgJICVTb33hmfkeAYaKGkN7Q3Nw==}
+    peerDependencies:
+      '@preact/signals': 1.x
+      preact: 10.x
+      react: '>=17'
+      react-dom: '>=17'
+      solid-js: '>=1'
+      svelte: 3.x
+      vue: 3.x
+    peerDependenciesMeta:
+      '@preact/signals':
+        optional: true
+      preact:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      solid-js:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+
   tiny-invariant@1.3.1:
     resolution: {integrity: sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw==}
 
@@ -5283,13 +5304,6 @@ snapshots:
 
   '@portabletext/types@2.0.13': {}
 
-  '@preact/signals-core@1.8.0': {}
-
-  '@preact/signals@2.0.3(preact@10.26.5)':
-    dependencies:
-      '@preact/signals-core': 1.8.0
-      preact: 10.26.5
-
   '@radix-ui/number@1.1.1': {}
 
   '@radix-ui/primitive@1.1.2': {}
@@ -5976,14 +5990,13 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@schedule-x/calendar@2.28.0(@preact/signals@2.0.3(preact@10.26.5))(preact@10.26.5)':
+  '@schedule-x/calendar@2.28.0(preact@10.26.5)':
     dependencies:
-      '@preact/signals': 2.0.3(preact@10.26.5)
       preact: 10.26.5
 
-  '@schedule-x/react@2.27.1(@schedule-x/calendar@2.28.0(@preact/signals@2.0.3(preact@10.26.5))(preact@10.26.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@schedule-x/react@2.27.1(@schedule-x/calendar@2.28.0(preact@10.26.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@schedule-x/calendar': 2.28.0(@preact/signals@2.0.3(preact@10.26.5))(preact@10.26.5)
+      '@schedule-x/calendar': 2.28.0(preact@10.26.5)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
@@ -8495,6 +8508,12 @@ snapshots:
   through2@4.0.2:
     dependencies:
       readable-stream: 3.6.2
+
+  timescape@0.8.0(preact@10.26.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+    optionalDependencies:
+      preact: 10.26.5
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   tiny-invariant@1.3.1: {}
 
