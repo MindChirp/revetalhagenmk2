@@ -1,12 +1,11 @@
 "use client";
+import type { bookingFormSchema } from "@/lib/schemas/booking-form-schema";
+import { api } from "@/trpc/react";
 import { format } from "date-fns";
-import {
-  BedDouble,
-  ClockIcon,
-  HelpCircleIcon,
-  Loader,
-  ShoppingCartIcon,
-} from "lucide-react";
+import { BedDouble, ClockIcon, Loader, ShoppingCartIcon } from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
+import type { z } from "zod";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import {
@@ -18,11 +17,6 @@ import {
   DialogTitle,
 } from "./dialog";
 import { Separator } from "./separator";
-import { api } from "@/trpc/react";
-import type { z } from "zod";
-import type { bookingFormSchema } from "@/lib/schemas/booking-form-schema";
-import { toast } from "sonner";
-import Link from "next/link";
 
 type SubmitBookingDialogProps = {
   booking: z.infer<typeof bookingFormSchema>;
