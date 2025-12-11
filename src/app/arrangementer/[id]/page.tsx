@@ -7,11 +7,10 @@ import PortableRenderer from "@/components/ui/portable-text/render-components/Po
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import type { PortableTextBlock } from "@portabletext/react";
-import { format, isSameDay } from "date-fns";
-import { nb } from "date-fns/locale";
 import { HomeIcon } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { formatEventDateRange } from "@/lib/event-date-format";
 
 import "quill/dist/quill.snow.css";
 
@@ -85,19 +84,7 @@ async function Page({ params }: PageProps) {
               <div>
                 <h3 className="font-semibold">Dato</h3>
                 <h4>
-                  {isSameDay(data?.event.start, data?.event.end)
-                    ? format(data?.event.start, "do LLL yyy HH:mm", {
-                        locale: nb,
-                      }) +
-                      " - " +
-                      format(data?.event.end, "HH:mm", {
-                        locale: nb,
-                      })
-                    : format(data?.event.start, "do LLL yyy HH:mm", {
-                        locale: nb,
-                      }) +
-                      " - " +
-                      format(data?.event.end, "do LLL yyy", { locale: nb })}
+                  {formatEventDateRange(data.event.start, data.event.end)}
                 </h4>
               </div>
 
@@ -110,12 +97,6 @@ async function Page({ params }: PageProps) {
                       ? data?.event.location
                       : "Ikke spesifisert"}
                   </h4>
-                </div>
-              )}
-              {data?.event.author && (
-                <div>
-                  <h3 className="font-semibold">Arrangør</h3>
-                  <h4>{data?.user?.name}</h4>
                 </div>
               )}
             </div>

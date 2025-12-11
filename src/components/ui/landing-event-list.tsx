@@ -1,6 +1,4 @@
 import type { event } from "@/server/db/schema";
-import { format, isSameDay } from "date-fns";
-import { nb } from "date-fns/locale";
 import {
   ArrowRightIcon,
   CalendarIcon,
@@ -20,6 +18,7 @@ import {
   CardTitle,
 } from "./card";
 import { cn } from "@/lib/utils";
+import { formatEventDateRange } from "@/lib/event-date-format";
 
 type LandingEventListProps = {
   events: (typeof event.$inferSelect)[];
@@ -61,19 +60,7 @@ const LandingEventList = ({
               <CardContent className="flex h-full flex-col gap-2.5">
                 <p className="flex items-center gap-1">
                   <ClockIcon />
-                  {isSameDay(event.start, event.end)
-                    ? format(event.start, "do LLL yyy HH:mm", {
-                        locale: nb,
-                      }) +
-                      " - " +
-                      format(event.end, "HH:mm", {
-                        locale: nb,
-                      })
-                    : format(event.start, "do LLL yyy HH:mm", {
-                        locale: nb,
-                      }) +
-                      " - " +
-                      format(event.end, "do LLL yyy", { locale: nb })}
+                  {formatEventDateRange(event.start, event.end)}
                 </p>
                 {event.location && (
                   <p className="flex items-center gap-1">
