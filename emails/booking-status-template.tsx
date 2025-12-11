@@ -42,8 +42,8 @@ function BookingStatusTemplate({
               Bookingforespørselen er behandlet
             </Heading>
             <Text className="text-[16px] leading-[24px] text-gray-500">
-              Bookingforespørselen din er nå behandlet. Du kan se status og
-              eventuelle begrunnelser for avslag ved å trykke på knappen under.
+              Bookingforespørselen din er nå behandlet. Du kan se status ved å
+              trykke på knappen under.
             </Text>
 
             <Hr className="my-[16px] border-t-2 border-gray-300" />

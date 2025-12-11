@@ -14,9 +14,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             { href: "/admin", label: "Admin" },
           ]}
         />
-        <div className="flex h-full gap-5">
+        <div className="flex h-fit min-h-full flex-col gap-5 lg:flex-row">
           <AdminSidebar />
-          <Card className="h-full w-full">
+          <Card className="h-fit min-h-full w-full">
             <CardContent>{children}</CardContent>
           </Card>
         </div>
