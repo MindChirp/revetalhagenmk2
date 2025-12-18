@@ -25,11 +25,11 @@ const Booking = async () => {
 
   return (
     <div className="w-full">
-      <h1 className="text-6xl font-black">Booking</h1>
+      <h1 className="text-3xl font-black md:text-6xl">Booking</h1>
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2.5">
           <h2>Aktive forespørsler</h2>
-          <div className="grid grid-cols-2 gap-2.5 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
             {bookings
               .filter((booking) => booking.item !== null)
               .map((booking) => (
@@ -67,7 +67,7 @@ const Booking = async () => {
         <Accordion type="multiple">
           <AccordionItem value="accepted-bookings">
             <AccordionTrigger>Godkjente bookinger</AccordionTrigger>
-            <AccordionContent className="grid grid-cols-2 gap-2.5 xl:grid-cols-3">
+            <AccordionContent className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
               {accepted.map((booking) => (
                 <BookingItemCard
                   withImage={false}

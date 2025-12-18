@@ -14,11 +14,12 @@ import EditableItemDescription from "@/components/ui/editable-item-description";
 import { Separator } from "@/components/ui/separator";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { ItemType } from "@/lib/item-type";
+import { cn } from "@/lib/utils";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
-import { CheckIcon, TriangleAlertIcon } from "lucide-react";
+import { ArrowRight, CheckIcon, TriangleAlertIcon } from "lucide-react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { headers } from "next/headers";
 import Image from "next/image";
@@ -87,13 +88,15 @@ async function Item({
             ))}
           </CarouselContent>
         </Carousel>
-        {/* <Image
-          src={itemData?.image ?? ""}
-          alt="Gjenstandsbilde"
-          width={1000}
-          height={1000}
-          className="absolute top-0 left-0 h-full w-full object-cover"
-        /> */}
+        <div
+          className={cn(
+            "mx-auto hidden w-fit flex-row items-center gap-2.5 opacity-50 max-sm:flex",
+            itemData.itemImage?.length === 1 ? "hidden" : undefined,
+          )}
+        >
+          <span>Sveip for flere bilder</span>
+          <ArrowRight className="animate-bounce-right" size={16} />
+        </div>
       </div>
       <div className="mt-5 flex flex-col gap-2.5">
         {itemData.type && (

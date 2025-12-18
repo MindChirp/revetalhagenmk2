@@ -36,7 +36,7 @@ async function BookingStatus({
   });
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-5 pt-20 pb-10 md:px-10">
+    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-5 pt-40 pb-10 md:px-10">
       <BookingStatusHero
         item={bookingData?.item}
         from={bookingData?.from}

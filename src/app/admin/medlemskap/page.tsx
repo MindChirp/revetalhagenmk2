@@ -5,7 +5,7 @@ const MembershipPage = async () => {
   const applications = await api.member.getApplications();
   return (
     <div>
-      <h1 className="text-6xl font-black">Medlemskap</h1>
+      <h1 className="text-3xl font-black md:text-6xl">Medlemskap</h1>
 
       <h2>Aktive forespørsler</h2>
       <main className="flex flex-row flex-wrap gap-5">
