@@ -13,7 +13,7 @@ const Admin = () => {
   return (
     <div className="flex w-full flex-col gap-5">
       <div>
-        <h1 className="text-6xl font-black">Admin</h1>
+        <h1 className="text-3xl font-black md:text-6xl">Admin</h1>
         <span>Hva vil du gjøre?</span>
       </div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
