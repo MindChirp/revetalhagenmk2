@@ -15,6 +15,7 @@ import TextEditor from "./ui/portable-text/portable-text";
 import type { PortableTextBlock } from "@portabletext/editor";
 import PortableRenderer from "./ui/portable-text/render-components/PortableRenderer";
 import BottomDialog from "./ui/bottom-dialog";
+import { cn } from "@/lib/utils";
 
 interface EditableParagraphProps
   extends Omit<React.HTMLProps<HTMLSpanElement>, "onChange"> {
@@ -56,7 +57,12 @@ function EditableParagraph({
           />
         </>
       ) : (
-        <span {...props}>{content}</span>
+        <span
+          {...props}
+          className={cn("whitespace-pre-wrap", props.className)}
+        >
+          {content}
+        </span>
       )}
       <AnimatePresence>
         {admin && (
