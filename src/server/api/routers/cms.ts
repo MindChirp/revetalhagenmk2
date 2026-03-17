@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { pageContent } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 
 export const cmsRouter = createTRPCRouter({
   getContent: publicProcedure
@@ -20,6 +20,10 @@ export const cmsRouter = createTRPCRouter({
                 eq(pageContent.id, input.id),
               )
             : eq(pageContent.slug, input.slug),
+        orderBy: (pageContent, { asc, desc }) => [
+          asc(pageContent.order),
+          desc(pageContent.id),
+        ],
       });
 
       return content;

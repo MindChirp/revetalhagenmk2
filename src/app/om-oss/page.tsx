@@ -10,6 +10,14 @@ const About = async () => {
   const data = await api.cms.getContent({
     slug: "about",
   });
+  const initialEntry = data[0]
+    ? {
+        id: data[0].id,
+        content: data[0].content.content,
+        title: data[0].content.title,
+        image: data[0].content.image,
+      }
+    : undefined;
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-5 px-5 pt-24 md:px-10 md:pt-36">
@@ -27,10 +35,7 @@ const About = async () => {
             },
           ]}
         />
-        <HybridParagraph
-          initialData={data?.[0]?.content.content}
-          slug={"about"}
-        />
+        <HybridParagraph initialEntry={initialEntry} slug="about" />
       </SlideAnimation>
     </div>
   );
