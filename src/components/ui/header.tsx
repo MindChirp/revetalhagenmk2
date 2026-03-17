@@ -45,23 +45,23 @@ function Header() {
   return (
     <div
       className={cn(
-        "fixed top-0 z-50 flex w-full flex-row items-center justify-between px-5 py-5 transition-colors md:px-10",
+        "fixed top-0 z-50 flex w-full flex-row items-center justify-between px-5 py-5 transition-colors lg:px-10",
         scrolled ? "bg-background/80 backdrop-blur-md" : "bg-transparent",
       )}
     >
       <div className="flex w-fit flex-row items-center gap-5">
         <MobileSideBar open={sheetOpen} onOpenChange={setSheetOpen} />
-        <Link href="/">
+        <Link href="/" className="bg-background/80 rounded-3xl px-2 shrink-0">
           <Image
-            className="h-auto w-52"
-            src="/images/revetalhagen-logo.svg"
+            className="h-auto w-52 z-10 relative"
+            src="/images/revetalhagen_logo.svg"
             alt="Nakuhel logo"
             height={500}
             width={500}
           />
         </Link>
       </div>
-      <div className="hidden w-full items-center justify-center gap-5 md:flex">
+      <div className="hidden w-full items-center justify-center gap-5 lg:flex">
         <HeaderNavigationButton icon={<HomeIcon />} href="/">
           Hjem
         </HeaderNavigationButton>
@@ -78,7 +78,7 @@ function Header() {
           Om oss
         </HeaderNavigationButton>
       </div>
-      <div className="absolute top-1/2 right-10 hidden w-fit -translate-y-1/2 md:block">
+      <div className="absolute top-1/2 right-10 hidden w-fit -translate-y-1/2 lg:block">
         <AnimatePresence mode="wait">
           {!session && !isPending && (
             <motion.div

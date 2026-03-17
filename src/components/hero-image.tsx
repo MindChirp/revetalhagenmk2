@@ -45,7 +45,7 @@ const HeroImage = ({
           direction="up"
           className="md:absolute md:bottom-0 md:ml-40 md:translate-y-2/3"
         >
-          <Card className="bg-card/60 w-fit gap-0 shadow-none backdrop-blur-sm">
+          <Card className="bg-card/60 w-full gap-0 shadow-none backdrop-blur-sm">
             <CardContent className="mx-auto flex w-fit max-w-3/4 flex-col gap-2.5 md:max-w-xl">
               {cardContentLoading && (
                 <Loader className="mx-auto animate-spin" />

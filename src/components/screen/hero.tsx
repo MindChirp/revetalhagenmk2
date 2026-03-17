@@ -90,7 +90,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
           cardContent={
             <>
               <EditableParagraph
-                className="line-clamp-[7] w-full md:w-fit"
+                className="line-clamp-[7] w-full lg:w-fit"
                 content={paragraph?.[0]?.content.content}
                 admin={session?.user?.role === "admin"}
                 onChange={(content) => {
@@ -119,7 +119,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
           href="/bli-medlem"
           className="col-start-1 row-start-2 flex h-auto w-full md:w-fit"
         >
-          <button className="bg-secondary/50 border-secondary text-secondary-foreground flex h-auto w-full cursor-pointer flex-col items-center justify-evenly border border-l-0 p-5 backdrop-blur-md transition-all hover:pl-10 max-sm:rounded-full md:w-fit md:rounded-[60px]">
+          <button className="bg-secondary/50 border-secondary text-secondary-foreground flex h-auto w-full cursor-pointer flex-col items-center justify-evenly border border-l-0 p-5 backdrop-blur-md transition-all hover:pl-10 max-md:rounded-full md:w-fit md:rounded-[60px]">
             <div className="flex flex-row items-center gap-2.5 text-nowrap">
               <p>Bli medlem</p>
 
@@ -146,7 +146,7 @@ function Hero({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
         <p>Bla ned</p>
       </button> */}
       {/* <SquigglyCircle
-        className="absolute top-0 right-0 w-[400] translate-x-1/3 -translate-y-1/2 animate-spin opacity-50 md:w-[800] md:opacity-30"
+        className="absolute top-0 right-0 w-[400] translate-x-1/3 -translate-y-1/2 animate-spin opacity-50 :w-[800] md:opacity-30"
         style={{
           animationDuration: "50s",
         }}
