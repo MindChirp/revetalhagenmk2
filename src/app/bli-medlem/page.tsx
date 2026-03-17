@@ -14,6 +14,7 @@ import {
   ThumbsUpIcon,
   UsersIcon,
 } from "lucide-react";
+import Image from "next/image";
 import { toast } from "sonner";
 
 const Page = () => {
@@ -120,6 +121,8 @@ const Page = () => {
             <MembershipForm />
           </CardContent>
         </Card>
+
+        <Image src="/images/revetalhagen-vipps.png" alt="QR-kode for Vippsbetaling" width={300} height={300}  className="mx-auto" />
       </SlideAnimation>
     </div>
   );
