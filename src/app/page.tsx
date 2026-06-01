@@ -1,4 +1,5 @@
 import Hero from "@/components/screen/hero";
+import PromotionalVideo from "@/components/screen/promotional-video";
 import LandingEventList from "@/components/ui/landing-event-list";
 import { api, HydrateClient } from "@/trpc/server";
 import Image from "next/image";
@@ -24,7 +25,10 @@ export default async function Home() {
           />
           <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-t from-transparent to-white to-80%" />
           <Hero className="relative z-10" />
-          <LandingEventList className="my-20" events={events} />
+          <div className="my-20 flex flex-col items-center gap-20">
+            <PromotionalVideo />
+            <LandingEventList events={events} />
+          </div>
           {/* <AboutUs /> */}
         </div>
       </div>
