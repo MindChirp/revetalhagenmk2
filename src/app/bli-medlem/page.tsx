@@ -83,26 +83,6 @@ const Page = () => {
           cardContentLoading={false}
         />
 
-        <div className="mt-40 flex w-full flex-col items-center gap-5">
-          <h2 className="text-3xl font-bold">Hvorfor bli medlem?</h2>
-          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-3">
-            <MembershipBenefit
-              title="Fellesskap"
-              description="Møt nye mennesker og bli med på sosiale aktiviteter"
-              Icon={MessageCircleIcon}
-            />
-            <MembershipBenefit
-              title="Aktivitetstilgang"
-              description="Få prioritet ved arrangementer og booking"
-              Icon={UsersIcon}
-            />
-            <MembershipBenefit
-              title="Velvære"
-              description="Bidra til et sunt og inkluderende miljø"
-              Icon={ThumbsUpIcon}
-            />
-          </div>
-        </div>
         <div className="mt-20 flex w-full flex-col items-center gap-5">
           <h2 className="text-3xl font-bold">Om medlemskap</h2>
           <EditableParagraph
