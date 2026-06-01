@@ -3,7 +3,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import SlideAnimation from "@/components/ui/animated/slide-animation";
-import { GraduationCap, Users, Sprout, Heart } from "lucide-react";
+import { GraduationCap, Users, Sprout, Heart, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const PromotionalVideo = () => {
   return (
@@ -68,6 +70,20 @@ const PromotionalVideo = () => {
                 <span className="font-medium">Mestring</span>
               </div>
             </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mt-4"
+            >
+              <Link href="/ungdomsskoleprosjektet">
+                <Button size="lg" className="rounded-full shadow-lg transition-all hover:scale-105">
+                  Les mer om prosjektet <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </motion.div>
           </div>
 
           {/* Video Container */}

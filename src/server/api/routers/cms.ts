@@ -38,11 +38,14 @@ export const cmsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      console.log("SLUG: ", input.slug);
       const created = await ctx.db.insert(pageContent).values({
         slug: input.slug,
         order: input.order,
         content: input.content,
       });
+
+      console.log("Created content:", created);
 
       return created;
     }),

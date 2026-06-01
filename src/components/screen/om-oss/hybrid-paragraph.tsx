@@ -8,8 +8,13 @@ import React from "react";
 type HybridParagraphProps = {
   initialData?: string;
   slug: string;
+  title?: string;
 };
-const HybridParagraph = ({ initialData, slug }: HybridParagraphProps) => {
+const HybridParagraph = ({
+  initialData,
+  slug,
+  title,
+}: HybridParagraphProps) => {
   const { data: session } = authClient.useSession();
   const { mutateAsync } = api.cms.updateContent.useMutation();
   const { mutateAsync: create } = api.cms.createContent.useMutation();
@@ -22,10 +27,10 @@ const HybridParagraph = ({ initialData, slug }: HybridParagraphProps) => {
       onChange={async (content) => {
         if (data?.[0]?.id) {
           return mutateAsync({
-            slug: "about",
+            slug,
             content: {
               content: content,
-              title: "Om oss",
+              title: title ?? "Ingen tittel",
             },
             id: data?.[0]?.id ?? 0,
           }).then(() => {
@@ -33,10 +38,10 @@ const HybridParagraph = ({ initialData, slug }: HybridParagraphProps) => {
           });
         } else {
           return create({
-            slug: "about",
+            slug,
             content: {
               content: content,
-              title: "Om oss",
+              title: title ?? "Ingen tittel",
             },
           }).then(() => {
             void utils.cms.getContent.invalidate({ slug });
