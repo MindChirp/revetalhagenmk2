@@ -54,7 +54,7 @@ function Header() {
         <Link href="/">
           <Image
             className="h-auto w-52"
-            src="/images/revetalhagen-logo.svg"
+            src="/images/revetalhagen_logo.svg"
             alt="Nakuhel logo"
             height={500}
             width={500}
